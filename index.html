@@ -1140,8 +1140,8 @@ async function fetchNearbyStores(lat,lng){
   list.innerHTML='<div class="ai-loading"><div class="spinner"></div><span style="font-size:13px;color:var(--gm)">Searching nearby stores...</span></div>';
   try{
     const r=UP.radius||2000;
-    const res=await fetch(`/api/stores?lat=${lat}&lng=${lng}&radius=${r}&_=${Date.now()}`);
-    const data=await res.json();
+    const url=`/api/stores?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&radius=${r}&_=${Date.now()}`;
+    const res=await fetch(url);
     if(data.elements?.length){
       const ebtChains=['h-e-b','heb','walmart','fiesta','aldi','kroger','randalls','whole foods'];
       const stores=data.elements.map(el=>{
