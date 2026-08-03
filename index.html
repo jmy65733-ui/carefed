@@ -223,15 +223,14 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
       <div class="sh"><span style="font-size:16px;font-weight:600;color:var(--tx)">⭐ Your Top Picks</span><span style="font-size:11px;color:var(--t3)">Based on your ratings</span></div>
       <div id="top-rated-list" style="padding:0 20px"></div>
     </div>
-    <!-- AI Daily Picks -->
+    <!-- Today's Picks (personalized algorithm) -->
     <div id="ai-daily-sec">
       <div class="sh">
         <span style="font-size:16px;font-weight:600;color:var(--tx)" id="daily-title">✨ Today's Picks</span>
-        <button onclick="loadDailyRecipes(true)" style="font-size:12px;color:var(--gm);font-weight:500;background:none;border:none;cursor:pointer" id="refresh-btn">↻ Refresh</button>
+        <button onclick="renderTodaysPicks()" style="font-size:12px;color:var(--gm);font-weight:500;background:none;border:none;cursor:pointer" id="refresh-btn">↻ Refresh</button>
       </div>
-      <div id="daily-loading" class="ai-loading" style="margin:0 20px 12px;display:none">
-        <div class="spinner"></div>
-        <span style="font-size:13px;color:var(--gm);font-weight:500" id="loading-text">Generating recipes for you...</span>
+      <div style="margin:0 20px 10px;padding:10px 12px;background:var(--gp);border-radius:var(--rs2)">
+        <p style="font-size:12px;color:var(--gm);line-height:1.5">Recipes picked for you based on your age, budget, health conditions, and taste preferences. Rate recipes to make your picks smarter over time.</p>
       </div>
       <div id="daily-list" style="padding:0 20px"></div>
     </div>
@@ -268,7 +267,6 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
       <button id="ebt-filter-btn" onclick="toggleStoreFilter('ebt')" style="padding:6px 13px;background:var(--sd);color:var(--t2);border:1.5px solid var(--bd);border-radius:16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer">EBT Only</button>
       <button id="wic-filter-btn" onclick="toggleStoreFilter('wic')" style="padding:6px 13px;background:var(--sd);color:var(--t2);border:1.5px solid var(--bd);border-radius:16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer">WIC Only</button>
       <button id="sale-filter-btn" onclick="toggleStoreFilter('sale')" style="padding:6px 13px;background:var(--sd);color:var(--t2);border:1.5px solid var(--bd);border-radius:16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer">🔥 On Sale</button>
-      <button onclick="getLocationAndSearch()" style="padding:6px 13px;background:var(--gp);color:var(--gm);border:1.5px solid var(--gm);border-radius:16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer">📍 Near Me</button>
     </div>
     <div id="store-list" style="padding:0 20px"></div>
   </div>
@@ -545,7 +543,22 @@ async function loadDailyRecipes(force=false) {
     localStorage.setItem('carefed_daily', JSON.stringify({date:today, recipes:aiDailyRecipes}));
     renderDailyList();
   } catch(e) {
-    document.getElementById('daily-list').innerHTML = '<p style="color:var(--t3);font-size:13px;padding:4px 0">Could not load AI recipes. Check your connection.</p>';
+    // Retry once after 2 seconds
+    setTimeout(async () => {
+      try {
+        const data2 = await callClaude({messages:[{role:'user',content:prompt}]});
+        const raw2 = data2.content?.[0]?.text || '[]';
+        const recipes2 = JSON.parse(raw2.replace(/```json|```/g,'').trim());
+        aiDailyRecipes = recipes2.map((r,i) => ({...r, id:'daily-'+Date.now()+i, ai:true}));
+        localStorage.setItem('carefed_daily', JSON.stringify({date:today, recipes:aiDailyRecipes}));
+        renderDailyList();
+        document.getElementById('daily-loading').style.display = 'none';
+      } catch(e2) {
+        document.getElementById('daily-list').innerHTML = '<p style="color:var(--t3);font-size:13px;padding:4px 0">Could not load AI recipes right now.</p>';
+        document.getElementById('daily-loading').style.display = 'none';
+      }
+    }, 2000);
+    return;
   }
   document.getElementById('daily-loading').style.display = 'none';
 }
@@ -770,6 +783,32 @@ function getRelatedIds(ratedIds) {
     return r?.cuisine;
   }).filter(Boolean);
   return { likedCuisines, likedBadges, dislikedCuisines };
+}
+
+function renderTodaysPicks() {
+  const list = document.getElementById('daily-list');
+  if(!list) return;
+  const allIds = Object.keys(R).filter(id => !R[id].ai);
+  const personalizedIds = getPersonalizedIds(allIds);
+  const picks = [];
+  const usedBadges = new Set();
+  for(const id of personalizedIds) {
+    if(picks.length >= 4) break;
+    const r = R[id];
+    if(!usedBadges.has(r.badge) || picks.length >= 3) {
+      picks.push(id);
+      usedBadges.add(r.badge);
+    }
+  }
+  const seed = new Date().getDate();
+  const shuffled = [...picks].sort((a,b)=>{
+    const ra=(R[a].name.charCodeAt(0)+seed)%7;
+    const rb=(R[b].name.charCodeAt(0)+seed)%7;
+    return ra-rb;
+  });
+  list.innerHTML = shuffled.length
+    ? shuffled.map(id=>renderCard(id)).join('')
+    : '<p style="color:var(--t3);font-size:13px;padding:4px 0">Complete your profile to get personalized picks!</p>';
 }
 
 function getPersonalizedIds(allIds) {
@@ -1059,19 +1098,8 @@ function styleFilterBtn(id,on){const b=document.getElementById(id);if(!b)return;
 function toggleStoreFilter(type){storeFilters[type]=!storeFilters[type];styleFilterBtn(type+'-filter-btn',storeFilters[type]);renderStoreList();}
 function renderStoreList(){
   const list=document.getElementById('store-list');
-  // If user has GPS coords, show real nearby stores
-  if(UP.lat && UP.lng){
-    fetchNearbyStores(UP.lat, UP.lng);
-    return;
-  }
-  // Otherwise show empty state with prompt
-  list.innerHTML=`<div style="text-align:center;padding:30px 20px;background:var(--sd);border-radius:var(--r);margin-bottom:12px">
-    <div style="font-size:36px;margin-bottom:10px">📍</div>
-    <p style="font-size:15px;font-weight:600;color:var(--tx);margin-bottom:6px">Find stores near you</p>
-    <p style="font-size:13px;color:var(--t3);margin-bottom:14px">Tap the button above to find grocery stores near your location</p>
-    <button onclick="getLocationAndSearch()" style="padding:11px 22px;background:var(--gm);color:#fff;border:none;border-radius:var(--rs2);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer">📍 Use My Location</button>
-  </div>`;
-  return;
+  // GPS coords handled by updateStoreLocator - this is fallback
+  if(UP.lat && UP.lng){ fetchNearbyStores(UP.lat, UP.lng); return; }
   let stores=STORES;
   if(storeFilters.ebt)stores=stores.filter(s=>s.ebt);
   if(storeFilters.wic)stores=stores.filter(s=>s.wic);
@@ -1261,7 +1289,7 @@ function saveProfile(){
   UP={age,household,condition:conditions.length?conditions.join(', '):'None',budget:'$'+budget+'/week',location,radius,ebt,wic,transport,avoid,language,lat:sameLocation?UP.lat:null,lng:sameLocation?UP.lng:null};
   localStorage.setItem('carefed_profile',JSON.stringify(UP));
   applyTranslations();
-  loadDailyRecipes(true);
+  renderTodaysPicks();
   showMain('home');
 }
 function loadProfileToForm(){
@@ -1287,7 +1315,7 @@ function showMain(tab){
   const activeScreen=document.getElementById('screen-'+tab);
   if(activeScreen){const map={home:0,store:1,saved:2,chat:3};const nbs=activeScreen.querySelectorAll('.nb');if(map[tab]!==undefined&&nbs[map[tab]])nbs[map[tab]].classList.add('on');}
   if(tab==='ob')loadProfileToForm();
-  if(tab==='store'){updateStoreLocator();renderStoreList();}
+  if(tab==='store'){updateStoreLocator();}
   if(tab==='saved')renderSaved();
   if(tab==='home')renderHome();
   if(tab==='chat')switchMode('chat');
@@ -1372,7 +1400,7 @@ function applyTranslations(){
     const labels=isEs?['Inicio','Tiendas','Guardado','Chat IA']:['Home','Stores','Saved','AI Chat'];
     if(el(id))el(id).textContent=labels[i];
   });
-  if(el('loading-text'))el('loading-text').textContent=isEs?'Generando recetas para ti...':'Generating recipes for you...';
+
   if(el('refresh-btn'))el('refresh-btn').textContent=isEs?'↻ Actualizar':'↻ Refresh';
   if(el('store-title'))el('store-title').textContent=isEs?'Tiendas Cercanas':'Nearby Stores';
   if(el('saved-title'))el('saved-title').textContent=isEs?'Recetas Guardadas':'Saved Recipes';
@@ -1412,7 +1440,7 @@ if('serviceWorker' in navigator){
 // ── INIT ──
 applyTranslations();
 renderHome();
-loadDailyRecipes();
+renderTodaysPicks();
 
 </script>
 </body>
