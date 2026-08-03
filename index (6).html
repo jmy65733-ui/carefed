@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#2d6a4f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Carefed">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<title>Carefed</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap');
+:root{
+  --gd:#1a3a2a;--gm:#2d6a4f;--gl:#52b788;--gp:#d8f3dc;
+  --cr:#f8f9f4;--sd:#f0f2eb;--tx:#1a2017;--t2:#4a5244;--t3:#8a9483;
+  --bd:#dde3d8;--rs:#fee2e2;--rd:#dc2626;--am:#fef3c7;--at:#92400e;
+  --r:14px;--rs2:8px;--nav:64px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;display:flex;justify-content:center;align-items:center;}
+.phone{width:100%;max-width:430px;height:100svh;background:var(--cr);display:flex;flex-direction:column;position:relative;overflow:hidden;}
+@media(min-width:500px){.phone{height:780px;border-radius:40px;box-shadow:0 30px 80px rgba(0,0,0,.2);margin:20px;}}
+.screen{display:none;flex-direction:column;height:100%;overflow:hidden;}
+.screen.active{display:flex;}
+.sc{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav) + 8px);}
+.sc::-webkit-scrollbar{display:none;}
+/* STATUS BAR */
+.sb{padding:14px 20px 0;display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--tx);flex-shrink:0;}
+/* BOTTOM NAV */
+.bnav{position:absolute;bottom:0;left:0;right:0;height:var(--nav);background:#fff;border-top:1px solid var(--bd);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom);}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;}
+.ni{font-size:22px;line-height:1;}
+.nl{font-size:10px;font-weight:500;color:var(--t3);}
+.nb.on .nl{color:var(--gm);font-weight:600;}
+/* COMMON */
+.fl{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin:20px 0 10px;}
+.fl:first-child{margin-top:0;}
+.frow{display:flex;gap:10px;margin-bottom:8px;}
+.ff{flex:1;background:var(--sd);border-radius:var(--rs2);padding:12px 14px;}
+.ffl{font-size:11px;color:var(--t3);margin-bottom:3px;}
+.cr2{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px;}
+.ch{padding:7px 14px;border-radius:20px;font-size:13px;font-weight:500;border:1.5px solid var(--bd);color:var(--t2);cursor:pointer;background:var(--cr);transition:all .15s;}
+.ch.on{background:var(--gm);color:#fff;border-color:var(--gm);}
+.bp{width:100%;padding:16px;background:var(--gm);color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;border:none;border-radius:var(--r);cursor:pointer;margin-top:20px;transition:background .15s;}
+.bp:hover{background:var(--gd);}
+.tog{width:44px;height:26px;background:var(--gl);border-radius:13px;position:relative;cursor:pointer;flex-shrink:0;transition:background .2s;}
+.tog.off{background:var(--bd);}
+.tog::after{content:'';position:absolute;width:20px;height:20px;background:#fff;border-radius:50%;top:3px;right:3px;transition:right .2s,left .2s;}
+.tog.off::after{right:auto;left:3px;}
+.trow{display:flex;align-items:center;justify-content:space-between;background:var(--sd);border-radius:var(--rs2);padding:12px 14px;margin-bottom:8px;cursor:pointer;}
+/* RECIPE CARDS */
+.rc{background:#fff;border-radius:var(--r);padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:transform .15s;position:relative;margin-bottom:10px;}
+.rc:hover{transform:translateY(-1px);}
+.re{width:52px;height:52px;background:var(--gp);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.ri{flex:1;min-width:0;}
+.rn{font-size:15px;font-weight:600;color:var(--tx);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rm{font-size:12px;color:var(--t3);display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.md{width:3px;height:3px;background:var(--t3);border-radius:50%;flex-shrink:0;}
+.cb{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;margin-top:4px;display:inline-block;}
+.cbd{background:var(--am);color:var(--at);}
+.cbh{background:#fce7f3;color:#9d174d;}
+.cbc{background:var(--gp);color:var(--gm);}
+.hbtn{position:absolute;top:10px;right:10px;background:none;border:none;font-size:20px;cursor:pointer;line-height:1;padding:4px;}
+/* FILTER */
+.ftabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;}
+.ftabs::-webkit-scrollbar{display:none;}
+.ftab{padding:7px 14px;border-radius:20px;font-size:13px;font-weight:500;border:1.5px solid var(--bd);color:var(--t2);cursor:pointer;white-space:nowrap;background:var(--cr);flex-shrink:0;transition:all .15s;}
+.ftab.on{background:var(--gm);color:#fff;border-color:var(--gm);}
+.flabel{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:7px;}
+/* TABS */
+.tbar{display:flex;border-bottom:1.5px solid var(--bd);background:var(--cr);flex-shrink:0;}
+.tbtn{flex:1;padding:13px 8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--t3);background:none;border:none;border-bottom:2.5px solid transparent;cursor:pointer;margin-bottom:-1.5px;transition:all .15s;}
+.tbtn.on{color:var(--gm);border-bottom-color:var(--gm);font-weight:600;}
+.tc{display:none;padding:20px;}
+.tc.on{display:block;}
+/* STORE */
+.sli{background:#fff;border-radius:var(--r);padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer;}
+.sli-b{font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;}
+.b-ebt{background:var(--gp);color:var(--gm);}
+.b-wic{background:#ede9fe;color:#5b21b6;}
+.b-sale{background:var(--am);color:var(--at);}
+.b-snap{background:#fce7f3;color:#9d174d;}
+/* AI LOADING */
+.ai-loading{display:flex;gap:10px;align-items:center;padding:16px;background:var(--gp);border-radius:var(--r);margin-bottom:12px;}
+.spinner{width:20px;height:20px;border:2px solid var(--gl);border-top-color:var(--gm);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* CHAT */
+.msgs{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.msgs::-webkit-scrollbar{display:none;}
+.msg{max-width:82%;padding:11px 14px;border-radius:16px;font-size:14px;line-height:1.5;}
+.msg.ai{background:var(--sd);color:var(--tx);border-bottom-left-radius:4px;align-self:flex-start;}
+.msg.usr{background:var(--gm);color:#fff;border-bottom-right-radius:4px;align-self:flex-end;}
+.tdots span{width:7px;height:7px;background:var(--t3);border-radius:50%;display:inline-block;margin:0 2px;animation:bounce 1.2s infinite;}
+.tdots span:nth-child(2){animation-delay:.2s;}
+.tdots span:nth-child(3){animation-delay:.4s;}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.cinput-a{padding:10px 14px;border-top:1px solid var(--bd);flex-shrink:0;display:flex;gap:8px;align-items:flex-end;padding-bottom:calc(10px + env(safe-area-inset-bottom));}
+.cinput{flex:1;background:var(--sd);border:none;border-radius:18px;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--tx);resize:none;outline:none;max-height:90px;}
+.csend{width:38px;height:38px;background:var(--gm);border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;color:#fff;}
+.csend:disabled{background:var(--bd);cursor:not-allowed;}
+/* DETAIL OVERLAY */
+#detail-overlay{display:none;position:absolute;inset:0;background:var(--cr);z-index:300;overflow-y:auto;border-radius:inherit;}
+.dhero{background:var(--gd);padding:18px 18px 24px;flex-shrink:0;}
+.aibadge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:8px;background:linear-gradient(135deg,#d8f3dc,#b7e4c7);color:var(--gm);margin-bottom:10px;}
+.step{display:flex;gap:11px;margin-bottom:12px;align-items:flex-start;}
+.snum{width:24px;height:24px;background:var(--gm);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px;}
+/* MISC */
+.sh{display:flex;justify-content:space-between;align-items:center;padding:12px 20px 8px;}
+.ins-box{margin:0 20px 14px;background:linear-gradient(135deg,var(--gd),var(--gm));border-radius:var(--r);padding:14px;}
+.pchip{padding:7px 14px;border-radius:20px;font-size:13px;font-weight:500;border:1.5px solid var(--bd);color:var(--t2);cursor:pointer;background:var(--cr);margin:3px;}
+.pchip.on{background:var(--gm);color:#fff;border-color:var(--gm);}
+.pchip.ex{background:var(--rs);color:var(--rd);border-color:var(--rd);}
+</style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+<div class="phone">
+
+<!-- ONBOARDING -->
+<div class="screen active" id="screen-ob" style="background:var(--gd)">
+  <div style="padding:14px 20px 0;display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:rgba(255,255,255,.5)"><span>9:41</span></div>
+  <div style="padding:50px 28px 32px;flex-shrink:0">
+    <div id="ob-tagline" style="font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--gl);text-transform:uppercase;margin-bottom:14px">worry less · spend less · eat well</div>
+    <h1 style="font-family:'DM Serif Display',serif;font-size:44px;color:#fff;line-height:1.05;margin-bottom:10px">Care<span style="color:var(--gl)">fed</span></h1>
+    <p id="ob-desc" style="font-size:14px;color:rgba(255,255,255,.6);line-height:1.5">Healthy recipes built around your budget — and where to buy every ingredient nearby.</p>
+  </div>
+  <div style="background:var(--cr);border-radius:28px 28px 0 0;padding:24px 20px;flex:1;overflow-y:auto">
+    <div class="fl">Household</div>
+    <div class="frow">
+      <div class="ff"><div class="ffl">Age</div><input id="ob-age" type="number" min="13" max="100" value="" placeholder="e.g. 20" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+      <div class="ff"><div class="ffl">Household size</div><input id="ob-household" type="number" min="1" max="10" value="1" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+    </div>
+    <div class="fl">Budget & Benefits</div>
+    <div class="ff" style="margin-bottom:8px"><div class="ffl">Weekly food budget ($)</div><input id="ob-budget" type="number" min="10" max="500" value="" placeholder="e.g. 50" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+    <div class="trow" onclick="toggleTog('ob-ebt')"><span style="font-size:14px;font-weight:500;color:var(--tx)">EBT / SNAP</span><div class="tog" id="ob-ebt"></div></div>
+    <div class="trow" onclick="toggleTog('ob-wic')"><span style="font-size:14px;font-weight:500;color:var(--tx)">WIC</span><div class="tog off" id="ob-wic"></div></div>
+    <div class="fl">Location & Transport</div>
+    <div class="ff" style="margin-bottom:8px"><div class="ffl">Home address</div><input id="ob-location" type="text" value="" placeholder="Tap button or type your address" style="font-size:13px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+    <div style="margin-bottom:8px"><button id="loc-btn" onclick="useMyLocation()" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--gp);color:var(--gm);border:none;border-radius:var(--rs2);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer">📍 Use my current location</button></div>
+    <div class="ff" style="margin-bottom:8px"><div class="ffl">Search radius</div><select id="ob-radius" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"><option value="1000">Walking (0.6 mi)</option><option value="2000" selected>Short drive (1.2 mi)</option><option value="5000">Drive (3 mi)</option><option value="10000">Far drive (6 mi)</option></select></div>
+    <div class="cr2" id="ob-transport"><div class="ch on" onclick="toggleSingle(this,'ob-transport')">🚶 Walking</div><div class="ch" onclick="toggleSingle(this,'ob-transport')">🚌 Bus</div><div class="ch" onclick="toggleSingle(this,'ob-transport')">🚗 Car</div></div>
+    <div class="fl">Health Conditions</div>
+    <div class="cr2" id="ob-conditions"><div class="ch" onclick="toggleMulti(this)">Type 2 Diabetes</div><div class="ch" onclick="toggleMulti(this)">Cardiovascular</div><div class="ch" onclick="toggleMulti(this)">Cancer history</div><div class="ch on" onclick="toggleMulti(this)">None</div></div>
+    <div class="fl">Allergies / Avoid</div>
+    <div class="ff" style="margin-bottom:8px">
+      <div class="ffl">Type ingredients to avoid (comma separated)</div>
+      <input id="ob-allergies-input" type="text" onkeydown="handleAllergyInput(event)" placeholder="e.g. peanuts, gluten, dairy, shellfish" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px" id="allergy-tags"></div>
+    <div class="cr2" style="margin-bottom:4px">
+      <div class="ch" onclick="quickAddAllergy('Peanuts')">+ Peanuts</div>
+      <div class="ch" onclick="quickAddAllergy('Gluten')">+ Gluten</div>
+      <div class="ch" onclick="quickAddAllergy('Dairy')">+ Dairy</div>
+      <div class="ch" onclick="quickAddAllergy('Shellfish')">+ Shellfish</div>
+      <div class="ch" onclick="quickAddAllergy('Eggs')">+ Eggs</div>
+      <div class="ch" onclick="quickAddAllergy('Soy')">+ Soy</div>
+    </div>
+    <div class="fl">Language</div>
+    <div class="cr2" id="ob-lang"><div class="ch on" onclick="toggleSingle(this,'ob-lang');previewLang('English')">English</div><div class="ch" onclick="toggleSingle(this,'ob-lang');previewLang('Español')">Español</div></div>
+    <button class="bp" onclick="saveProfile()">Get Started →</button>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="screen" id="screen-home">
+  <div class="sb"><span>9:41</span></div>
+  <div style="padding:12px 20px 0;flex-shrink:0">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+      <div style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--tx)">Carefed</div>
+      <div onclick="showScreen('ob');loadProfileToForm()" style="width:34px;height:34px;background:var(--gp);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--gm);cursor:pointer" id="avatar">JY</div>
+    </div>
+    <div id="home-tagline" style="font-size:11px;color:var(--t3);margin-bottom:12px">worry less · spend less · eat well</div>
+    <div style="background:var(--sd);border-radius:var(--rs2);padding:10px 14px;display:flex;align-items:center;gap:8px;margin-bottom:12px">
+      <span>🔍</span>
+      <input id="search-input" type="text" placeholder="Search recipes or ingredients..." style="flex:1;border:none;background:none;outline:none;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--tx)" oninput="handleSearch(this.value)"/>
+      <button id="search-clear" onclick="clearSearch()" style="display:none;background:none;border:none;color:var(--t3);font-size:18px;cursor:pointer">×</button>
+    </div>
+    <!-- Filter toggle -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div id="filter-summary" style="font-size:12px;color:var(--t3)">All recipes</div>
+      <button id="filter-toggle-btn" onclick="toggleFilters()" style="display:flex;align-items:center;gap:5px;padding:6px 12px;background:var(--sd);border:1.5px solid var(--bd);border-radius:20px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--t2);cursor:pointer">🎛️ Filters <span id="filter-arrow">▼</span></button>
+    </div>
+    <!-- Filter panel -->
+    <div id="filter-panel" style="display:none">
+      <div class="flabel">Cuisine</div>
+      <div class="ftabs" id="region-tabs" style="margin-bottom:6px">
+        <div class="ftab on" onclick="selectRegion('all',this)">🍽️ All</div>
+        <div class="ftab" onclick="selectRegion('asian',this)">🥢 Asian</div>
+        <div class="ftab" onclick="selectRegion('european',this)">🇪🇺 European</div>
+        <div class="ftab" onclick="selectRegion('latin',this)">🌎 Latin</div>
+        <div class="ftab" onclick="selectRegion('mediterranean',this)">🫒 Mediterranean</div>
+      </div>
+      <div id="sub-wrap" style="display:none;margin-bottom:6px"><div class="ftabs" id="sub-tabs"></div></div>
+      <div class="flabel">Health Goal</div>
+      <div class="ftabs" id="health-tabs" style="margin-bottom:6px">
+        <div class="ftab on" onclick="filterHealth('all',this)">All</div>
+        <div class="ftab" onclick="filterHealth('Diabetes-friendly',this)">🩸 Diabetes</div>
+        <div class="ftab" onclick="filterHealth('Heart-healthy',this)">❤️ Heart</div>
+        <div class="ftab" onclick="filterHealth('Low processed food',this)">🌿 Clean</div>
+      </div>
+      <div class="flabel">Quick Filters</div>
+      <div class="ftabs" id="quick-tabs" style="margin-bottom:8px">
+        <div class="ftab on" onclick="filterQuick('all',this)">All</div>
+        <div class="ftab" onclick="filterQuick('quick',this)">⏱️ Quick</div>
+        <div class="ftab" onclick="filterQuick('budget',this)">💰 Budget</div>
+        <div class="ftab" onclick="filterQuick('plant',this)">🥗 Plant-based</div>
+      </div>
+      <div class="flabel">Ingredients</div>
+      <div class="ftabs" id="count-tabs" style="margin-bottom:10px">
+        <div class="ftab on" onclick="filterCount('any',this)">Any</div>
+        <div class="ftab" onclick="filterCount('3',this)">3</div>
+        <div class="ftab" onclick="filterCount('4',this)">4</div>
+        <div class="ftab" onclick="filterCount('5',this)">5</div>
+      </div>
+    </div>
+  </div>
+  <div class="sc">
+    <!-- Top Rated Picks -->
+    <div id="top-rated-sec" style="display:none">
+      <div class="sh"><span style="font-size:16px;font-weight:600;color:var(--tx)">⭐ Your Top Picks</span><span style="font-size:11px;color:var(--t3)">Based on your ratings</span></div>
+      <div id="top-rated-list" style="padding:0 20px"></div>
+    </div>
+    <!-- Today's Picks (personalized algorithm) -->
+    <div id="ai-daily-sec">
+      <div class="sh">
+        <span style="font-size:16px;font-weight:600;color:var(--tx)" id="daily-title">✨ Today's Picks</span>
+        <button onclick="renderTodaysPicks()" style="font-size:12px;color:var(--gm);font-weight:500;background:none;border:none;cursor:pointer" id="refresh-btn">↻ Refresh</button>
+      </div>
+      <div style="margin:0 20px 10px;padding:10px 12px;background:var(--gp);border-radius:var(--rs2)">
+        <p style="font-size:12px;color:var(--gm);line-height:1.5">Recipes picked for you based on your age, budget, health conditions, and taste preferences. Rate recipes to make your picks smarter over time.</p>
+      </div>
+      <div id="daily-list" style="padding:0 20px"></div>
+    </div>
+    <!-- All recipes (trending mixed in) -->
+    <div id="all-sec">
+      <div class="sh"><span style="font-size:16px;font-weight:600;color:var(--tx)" id="all-title">All Recipes</span></div>
+      <div id="recipe-list" style="padding:0 20px"></div>
+    </div>
+    <!-- AI Picks for you -->
+    <div id="ai-recs-sec" style="display:none">
+      <div class="sh"><span style="font-size:16px;font-weight:600;color:var(--tx)">✨ Based on Your Saves</span><button onclick="genAIRecs()" style="font-size:12px;color:var(--gm);font-weight:500;background:none;border:none;cursor:pointer">Refresh</button></div>
+      <div id="ai-recs-list" style="padding:0 20px"></div>
+    </div>
+  </div>
+  <button onclick="showMain('chat')" style="position:absolute;bottom:calc(var(--nav) + 14px);right:16px;background:var(--gm);color:#fff;border:none;border-radius:var(--r);padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 4px 14px rgba(45,106,79,.4)" id="fab-btn">💬 Ask AI / Scan</button>
+  <div class="bnav">
+    <button class="nb on" onclick="showMain('home')"><span class="ni">🏠</span><span class="nl" id="nav-home">Home</span></button>
+    <button class="nb" onclick="showMain('store')"><span class="ni">📍</span><span class="nl" id="nav-store">Stores</span></button>
+    <button class="nb" onclick="showMain('saved')"><span class="ni">🔖</span><span class="nl" id="nav-saved">Saved</span></button>
+    <button class="nb" onclick="showMain('chat')"><span class="ni">💬</span><span class="nl" id="nav-chat">AI Chat</span></button>
+  </div>
+</div>
+
+<!-- STORE -->
+<div class="screen" id="screen-store">
+  <div class="sb"><span>9:41</span></div>
+  <div style="padding:16px 20px 12px;flex-shrink:0">
+    <h2 style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--tx);margin-bottom:3px" id="store-title">Nearby Stores</h2>
+    <p style="font-size:13px;color:var(--t3)" id="store-subtitle">Find stores near you</p>
+  </div>
+  <div class="sc">
+    <div id="store-map" style="margin:0 20px 12px;border-radius:var(--r);overflow:hidden;height:175px;z-index:0"></div>
+    <div style="display:flex;gap:7px;padding:0 20px 12px;flex-wrap:wrap">
+      <button id="ebt-filter-btn" onclick="toggleStoreFilter('ebt')" style="padding:6px 13px;background:var(--sd);color:var(--t2);border:1.5px solid var(--bd);border-radius:16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer">EBT Only</button>
+      <button id="wic-filter-btn" onclick="toggleStoreFilter('wic')" style="padding:6px 13px;background:var(--sd);color:var(--t2);border:1.5px solid var(--bd);border-radius:16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer">WIC Only</button>
+      <button id="sale-filter-btn" onclick="toggleStoreFilter('sale')" style="padding:6px 13px;background:var(--sd);color:var(--t2);border:1.5px solid var(--bd);border-radius:16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer">🔥 On Sale</button>
+    </div>
+    <div id="store-list" style="padding:0 20px"></div>
+  </div>
+  <!-- Store detail overlay -->
+  <div id="store-detail" style="display:none;position:absolute;inset:0;background:var(--cr);z-index:200;overflow-y:auto;border-radius:inherit">
+    <div style="padding:20px"><button onclick="document.getElementById('store-detail').style.display='none'" style="display:flex;align-items:center;gap:6px;color:var(--t2);font-size:14px;font-weight:500;cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;margin-bottom:14px">← Back to Stores</button><div id="store-detail-content"></div></div>
+  </div>
+  <div class="bnav">
+    <button class="nb" onclick="showMain('home')"><span class="ni">🏠</span><span class="nl">Home</span></button>
+    <button class="nb on" onclick="showMain('store')"><span class="ni">📍</span><span class="nl">Stores</span></button>
+    <button class="nb" onclick="showMain('saved')"><span class="ni">🔖</span><span class="nl">Saved</span></button>
+    <button class="nb" onclick="showMain('chat')"><span class="ni">💬</span><span class="nl">AI Chat</span></button>
+  </div>
+</div>
+
+<!-- SAVED -->
+<div class="screen" id="screen-saved">
+  <div class="sb"><span>9:41</span></div>
+  <div style="padding:16px 20px 12px;flex-shrink:0">
+    <h2 style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--tx);margin-bottom:3px" id="saved-title">Saved Recipes</h2>
+    <p style="font-size:13px;color:var(--t3)" id="saved-sub">Heart recipes to build your profile</p>
+  </div>
+  <div class="sc">
+    <div id="ins-container"></div>
+    <div id="saved-list" style="padding:0 20px"></div>
+    <div id="empty-sv" style="text-align:center;padding:50px 28px;display:none">
+      <div style="font-size:44px;margin-bottom:10px">🤍</div>
+      <p style="font-size:14px;color:var(--t3);margin-bottom:14px" id="empty-txt">Heart recipes to save them here</p>
+      <button class="bp" style="width:auto;padding:12px 22px" onclick="showMain('home')" id="browse-btn">Browse Recipes</button>
+    </div>
+  </div>
+  <div class="bnav">
+    <button class="nb" onclick="showMain('home')"><span class="ni">🏠</span><span class="nl">Home</span></button>
+    <button class="nb" onclick="showMain('store')"><span class="ni">📍</span><span class="nl">Stores</span></button>
+    <button class="nb on" onclick="showMain('saved')"><span class="ni">🔖</span><span class="nl">Saved</span></button>
+    <button class="nb" onclick="showMain('chat')"><span class="ni">💬</span><span class="nl">AI Chat</span></button>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div class="screen" id="screen-chat">
+  <div class="sb"><span>9:41</span></div>
+  <div style="padding:12px 20px 12px;border-bottom:1px solid var(--bd);flex-shrink:0;display:flex;align-items:center;gap:10px">
+    <button onclick="showMain('home')" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--t2)">←</button>
+    <div><h3 id="chat-title" style="font-size:16px;font-weight:600;color:var(--tx)">Carefed AI ✨</h3><p id="chat-sub" style="font-size:12px;color:var(--t3)">Chat or scan your pantry</p></div>
+  </div>
+  <div style="display:flex;border-bottom:1.5px solid var(--bd);flex-shrink:0;background:var(--cr)">
+    <button class="tbtn on" id="mb-chat" onclick="switchMode('chat')" style="flex:1;padding:11px 8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--gm);background:none;border:none;border-bottom:2.5px solid var(--gm);cursor:pointer;margin-bottom:-1.5px">💬 Chat</button>
+    <button class="tbtn" id="mb-scan" onclick="switchMode('scan')" style="flex:1;padding:11px 8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--t3);background:none;border:none;border-bottom:2.5px solid transparent;cursor:pointer;margin-bottom:-1.5px">📷 Scan</button>
+  </div>
+  <div id="mode-chat" style="display:flex;flex-direction:column;flex:1;overflow:hidden;padding-bottom:var(--nav)">
+    <div class="msgs" id="chat-msgs">
+      <div class="msg ai" id="chat-welcome">Hey! Tell me what ingredients you have and I'll create a healthy recipe — one that fits your budget and health goals. 🌿</div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 8px;flex-shrink:0" id="csugg">
+      <button onclick="sendSugg('I have eggs, rice, and soy sauce')" style="padding:6px 11px;background:var(--gp);color:var(--gm);border:none;border-radius:14px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif">🥚 Eggs + rice</button>
+      <button onclick="sendSugg('Under $5 for diabetes')" style="padding:6px 11px;background:var(--gp);color:var(--gm);border:none;border-radius:14px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif">💰 Under $5</button>
+      <button onclick="sendSugg('Quick healthy meal under 15 minutes')" style="padding:6px 11px;background:var(--gp);color:var(--gm);border:none;border-radius:14px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif">⏱️ Quick</button>
+      <button onclick="sendSugg('Korean food with what I have')" style="padding:6px 11px;background:var(--gp);color:var(--gm);border:none;border-radius:14px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif">🇰🇷 Korean</button>
+    </div>
+    <div class="cinput-a">
+      <textarea class="cinput" id="cinput" placeholder="List ingredients or ask anything..." rows="1" onkeydown="handleKey(event)"></textarea>
+      <button class="csend" id="csend" onclick="sendChat()">➤</button>
+    </div>
+  </div>
+  <div id="mode-scan" style="display:none;flex:1;overflow-y:auto;padding:18px 18px calc(18px + var(--nav)) 18px">
+    <div style="background:var(--sd);border-radius:var(--r);padding:18px;text-align:center;margin-bottom:14px;border:2px dashed var(--bd)">
+      <div style="font-size:44px;margin-bottom:10px">📷</div>
+      <p id="scan-title" style="font-size:15px;font-weight:600;color:var(--tx);margin-bottom:5px">Scan your fridge or pantry</p>
+      <p id="scan-desc" style="font-size:13px;color:var(--t3);margin-bottom:14px">Point camera at ingredients — we'll detect them</p>
+      <button id="scan-open-camera" onclick="simScan()" style="padding:11px 22px;background:var(--gm);color:#fff;border:none;border-radius:var(--rs2);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer">Open Camera</button>
+    </div>
+    <p id="scan-manual-label" style="font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:9px">Or type manually</p>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px" id="scan-tags"></div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <input id="scan-add-input" placeholder="e.g. eggs, spinach, garlic" onkeydown="if(event.key==='Enter')addTag()" style="flex:1;background:var(--sd);border:none;border-radius:var(--rs2);padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--tx);outline:none"/>
+      <button id="scan-add-btn" onclick="addTag()" style="padding:10px 15px;background:var(--gm);color:#fff;border:none;border-radius:var(--rs2);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer">Add</button>
+    </div>
+    <button id="gen-btn" onclick="genFromScan()" style="width:100%;padding:13px;background:var(--gm);color:#fff;border:none;border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;display:none">✨ Generate Recipe</button>
+    <div id="scan-result" style="margin-top:14px"></div>
+  </div>
+  <div class="bnav">
+    <button class="nb" onclick="showMain('home')"><span class="ni">🏠</span><span class="nl">Home</span></button>
+    <button class="nb" onclick="showMain('store')"><span class="ni">📍</span><span class="nl">Stores</span></button>
+    <button class="nb" onclick="showMain('saved')"><span class="ni">🔖</span><span class="nl">Saved</span></button>
+    <button class="nb on" onclick="showMain('chat')"><span class="ni">💬</span><span class="nl">AI Chat</span></button>
+  </div>
+</div>
+
+<!-- RECIPE DETAIL OVERLAY -->
+<div id="detail-overlay">
+  <div class="dhero">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <button id="detail-back" style="display:flex;align-items:center;gap:5px;color:rgba(255,255,255,.7);font-size:14px;cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif">← Back</button>
+      <button id="d-save-btn" onclick="toggleSaveDetail()" style="background:rgba(255,255,255,.15);border:none;color:#fff;font-size:18px;cursor:pointer;padding:5px 10px;border-radius:8px">🤍</button>
+    </div>
+    <div id="d-emoji" style="font-size:46px;margin-bottom:10px">🍳</div>
+    <div id="d-name" style="font-family:'DM Serif Display',serif;font-size:27px;color:#fff;margin-bottom:7px">Recipe</div>
+    <div id="d-badges" style="display:flex;gap:7px;flex-wrap:wrap"></div>
+  </div>
+  <div class="tbar">
+    <button class="tbtn on" onclick="showDetailTab('recipe',this)" id="dtab-btn-recipe">Recipe</button>
+    <button class="tbtn" onclick="showDetailTab('why',this)" id="dtab-btn-why">Why It's Good</button>
+    <button class="tbtn" onclick="showDetailTab('ingredients',this)" id="dtab-btn-ingredients">Ingredients</button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding-bottom:20px">
+    <div class="tc on" id="dtab-recipe">
+      <div id="ai-badge-d"></div>
+      <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:11px">Steps</div>
+      <div id="d-steps"></div>
+      <!-- Rating section -->
+      <div id="rating-section" style="margin-top:20px;padding:16px;background:var(--sd);border-radius:var(--r)">
+        <div style="font-size:13px;font-weight:700;color:var(--tx);margin-bottom:10px">⭐ Rate this recipe</div>
+        <div id="star-display" style="display:flex;gap:6px;margin-bottom:8px"></div>
+        <div id="rating-feedback" style="font-size:12px;color:var(--t3)">Tap a star to rate</div>
+      </div>
+    </div>
+    <div class="tc" id="dtab-why">
+      <div style="background:var(--gp);border-radius:var(--rs2);padding:16px;margin-bottom:16px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gm);margin-bottom:8px">✨ Why this is good for you</div>
+        <p id="d-health" style="font-size:14px;color:var(--gd);line-height:1.6"></p>
+      </div>
+      <div id="ai-badge-d2"></div>
+    </div>
+    <div class="tc" id="dtab-ingredients">
+      <p style="font-size:13px;color:var(--t3);margin-bottom:12px" id="d-store-subtitle">Stores near you · sorted by distance</p>
+      <div id="d-stores"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- .phone -->
+
+<script>
+const R = {
+  "egg-rice":{emoji:"🍳",name:"Egg Fried Rice",cuisine:"asian",region:"asian",count:3,cost:"$3.80",time:"15 min",badge:"Diabetes-friendly",bc:"cbd",trending:false,health:"Brown rice has a lower glycemic index than white rice, raising blood sugar more slowly — key for Type 2 diabetes. Eggs provide protein without added sugar.",steps:["Cook 1 cup brown rice; let cool 10 min.","Heat 1 tbsp vegetable oil over medium-high.","Scramble 2 eggs, push to side.","Add rice, stir together, season with low-sodium soy sauce.","Cook 3–4 min until slightly crispy."],si:[["Brown rice (2 lb)","$2.49","$3.19","$2.29"],["Eggs (6-pk)","$1.89","$2.10","$1.79"],["Veg. oil","$1.99","$2.29","$1.89"]],name_es:"Arroz Frito con Huevo",health_es:"El arroz integral tiene un índice glucémico más bajo que el arroz blanco, lo que eleva el azúcar en sangre más lentamente — clave para la diabetes tipo 2. Los huevos aportan proteína sin azúcar añadida.",steps_es:["Cocina 1 taza de arroz integral; deja enfriar 10 min.","Calienta 1 cdta de aceite vegetal a fuego medio-alto.","Revuelve 2 huevos, empuja a un lado.","Añade el arroz, mezcla y sazona con salsa de soya baja en sodio.","Cocina 3-4 min hasta que esté ligeramente crujiente."]},
+  "lentil":{emoji:"🥣",name:"Lentil Soup",cuisine:"western",region:"european",count:5,cost:"$5.20",time:"25 min",badge:"Heart-healthy",bc:"cbh",trending:false,health:"Lentils are high in fiber and plant protein, helping lower LDL cholesterol. Made fresh, no added sodium — a top risk factor for heart disease in Texas.",steps:["Dice 1 onion and 2 garlic cloves.","Sauté in 1 tbsp olive oil 3–4 min.","Add 1 cup lentils + 4 cups low-sodium broth.","Add 1 can no-salt diced tomatoes.","Simmer 20 min. Season with cumin."],si:[["Lentils (1 lb)","$1.49","$1.79","$1.39"],["Onion","$0.59","$0.69","$0.49"],["Garlic","$0.79","$0.89","$0.75"],["Veg. broth","$1.99","$2.29","$1.89"],["Diced tomatoes","$0.89","$0.99","$0.85"]],name_es:"Sopa de Lentejas",health_es:"Las lentejas son ricas en fibra y proteína vegetal, ayudando a reducir el colesterol LDL. Preparada en casa, no tiene sodio añadido — un factor clave de riesgo de enfermedades cardíacas.",steps_es:["Pica 1 cebolla y 2 dientes de ajo.","Sofríe en 1 cdta de aceite de oliva 3-4 min.","Añade 1 taza de lentejas + 4 tazas de caldo bajo en sodio.","Agrega 1 lata de tomates sin sal.","Cocina a fuego lento 20 min. Sazona con comino."]},
+  "tuna":{emoji:"🥗",name:"Tuna Salad",cuisine:"western",region:"european",count:4,cost:"$4.50",time:"10 min",badge:"Low processed food",bc:"cbc",trending:false,health:"Canned tuna in water is minimally processed — no added sugars, low sodium, rich in omega-3s. Reduced ultra-processed food intake is linked to lower cancer risk.",steps:["Drain 1 can tuna (in water).","Mix with 2 tbsp plain Greek yogurt.","Add diced celery + squeeze of lemon.","Serve over romaine or with whole grain crackers."],si:[["Tuna, canned","$1.29","$1.49","$1.19"],["Greek yogurt","$1.49","$1.69","$1.39"],["Celery","$0.99","$1.19","$0.89"],["Romaine","$1.79","$1.99","$1.69"]],name_es:"Ensalada de Atún",health_es:"El atún enlatado en agua es mínimamente procesado — sin azúcares añadidas, bajo en sodio, rico en omega-3. Reducir los alimentos ultraprocesados se asocia con menor riesgo de cáncer.",steps_es:["Escurre 1 lata de atún en agua.","Mezcla con 2 cdas de yogur griego natural.","Añade apio picado y jugo de limón.","Sirve sobre lechuga romana o con galletas integrales."]},
+  "bean":{emoji:"🌮",name:"Black Bean Tacos",cuisine:"mexican",region:"latin",count:4,cost:"$4.20",time:"20 min",badge:"Diabetes-friendly",bc:"cbd",trending:false,health:"Black beans have a low glycemic index — great for blood sugar control. WHO classifies processed red meat as a Group 1 carcinogen; beans replace it entirely.",steps:["Drain and rinse 1 can black beans.","Heat with cumin, garlic powder, chili 5 min.","Warm corn tortillas on stove 30 sec each.","Fill with beans, diced onion, lime squeeze.","Top with low-sodium salsa."],si:[["Black beans","$0.89","$0.99","$0.79"],["Corn tortillas (12)","$1.49","$1.69","$1.39"],["Onion","$0.59","$0.69","$0.49"],["Lime (2-pk)","$0.79","$0.89","$0.75"]],name_es:"Tacos de Frijoles Negros",health_es:"Los frijoles negros tienen un índice glucémico bajo — excelente para el control del azúcar en sangre. La OMS clasifica la carne procesada como carcinógeno del Grupo 1; los frijoles la reemplazan completamente.",steps_es:["Escurre y enjuaga 1 lata de frijoles negros.","Calienta con comino, ajo en polvo y chile 5 min.","Calienta tortillas de maíz en la estufa 30 seg cada una.","Rellena con frijoles, cebolla picada y jugo de limón.","Añade salsa baja en sodio al gusto."]},
+  "bibimbap":{emoji:"🍚",name:"Veggie Bibimbap",cuisine:"korean",region:"asian",count:5,cost:"$5.80",time:"30 min",badge:"Heart-healthy",bc:"cbh",trending:false,health:"Rich in vegetables, providing fiber and antioxidants that reduce inflammation — a risk factor for cardiovascular disease and some cancers.",steps:["Cook 1 cup brown rice.","Sauté spinach, carrots, zucchini separately in sesame oil.","Fry 1 egg sunny-side up.","Arrange veggies and egg over rice.","Top with 1 tsp gochujang and sesame seeds."],si:[["Brown rice","$2.49","$3.19","$2.29"],["Spinach (bag)","$2.99","$3.29","$2.89"],["Carrots","$0.99","$1.19","$0.89"],["Zucchini","$0.89","$1.09","$0.79"],["Eggs","$1.89","$2.10","$1.79"]],name_es:"Bibimbap de Verduras",health_es:"Rico en verduras que aportan fibra y antioxidantes que reducen la inflamación — un factor de riesgo de enfermedades cardiovasculares y algunos tipos de cáncer.",steps_es:["Cocina 1 taza de arroz integral.","Saltea espinacas, zanahorias y calabacín por separado en aceite de sésamo.","Fríe 1 huevo al gusto.","Coloca las verduras y el huevo sobre el arroz.","Añade 1 cdta de gochujang y semillas de sésamo."]},
+  "miso-soup":{emoji:"🍜",name:"Miso Tofu Soup",cuisine:"japanese",region:"asian",count:4,cost:"$4.80",time:"15 min",badge:"Low processed food",bc:"cbc",trending:false,health:"Tofu is a low-fat, high-protein alternative to processed meat. Miso provides probiotics that support gut health, linked to reduced cancer risk.",steps:["Bring 3 cups water to a simmer.","Dissolve 1.5 tbsp white miso paste in warm water, add to pot.","Add cubed firm tofu and sliced green onions.","Add dried wakame seaweed (optional).","Remove from heat; do not boil after adding miso."],si:[["Firm tofu","$1.99","$2.29","$1.89"],["White miso paste","$3.49","$3.99","$3.29"],["Green onions","$0.79","$0.89","$0.69"],["Seaweed (optional)","$1.49","$1.79","$1.39"]],name_es:"Sopa de Miso con Tofu",health_es:"El tofu es una alternativa proteica baja en grasas saturadas. El miso aporta probióticos que apoyan la salud intestinal, relacionada con menor riesgo de cáncer.",steps_es:["Calienta 3 tazas de agua hasta hervir suavemente.","Disuelve 1.5 cdas de pasta de miso blanco en agua tibia, añade a la olla.","Agrega tofu firme en cubos y cebollín picado.","Añade alga wakame seca (opcional).","Retira del fuego; no dejes hervir después de añadir el miso."]},
+  "doenjang":{emoji:"🍲",name:"Doenjang Jjigae",cuisine:"korean",region:"asian",count:5,cost:"$4.20",time:"20 min",badge:"Heart-healthy",bc:"cbh",trending:false,health:"Fermented soybean paste is rich in probiotics and plant protein, reducing inflammation linked to cardiovascular disease. Tofu adds low-fat protein without processed meat.",steps:["Sauté zucchini and mushrooms with sesame oil.","Add 3 cups water and bring to boil.","Dissolve 2 tbsp doenjang paste into broth.","Add cubed tofu and sliced green onion.","Simmer 10 min. Serve with brown rice."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Doenjang Jjigae (Estofado de Soya)",health_es:"La pasta de soya fermentada es rica en probióticos y proteína vegetal, reduciendo la inflamación ligada a enfermedades cardiovasculares. El tofu añade proteína sin carne procesada.",steps_es:["Saltea calabacín y champiñones con aceite de sésamo.","Añade 3 tazas de agua y lleva a ebullición.","Disuelve 2 cdas de pasta doenjang en el caldo.","Agrega tofu en cubos y cebollín.","Cocina a fuego lento 10 min. Sirve con arroz integral."]},
+  "japchae":{emoji:"🍜",name:"Japchae (Glass Noodles)",cuisine:"korean",region:"asian",count:5,cost:"$5.50",time:"25 min",badge:"Diabetes-friendly",bc:"cbd",trending:false,health:"Sweet potato glass noodles have a lower glycemic index than wheat noodles. Spinach and carrots add fiber and antioxidants that help prevent cancer.",steps:["Soak glass noodles in warm water 20 min, boil 5 min.","Sauté spinach, carrots, mushrooms separately.","Mix noodles with soy sauce, sesame oil, sugar.","Combine with veggies and toss.","Top with sesame seeds."],si:[["Glass noodles","$2.49","$2.99","$2.29"],["Spinach","$2.99","$3.29","$2.79"],["Carrots","$0.99","$1.19","$0.89"],["Mushrooms","$1.99","$2.29","$1.79"],["Sesame oil","$2.99","$3.49","$2.79"]],name_es:"Japchae (Fideos de Batata)",health_es:"Los fideos de batata tienen un índice glucémico más bajo que los fideos de trigo. Las espinacas y zanahorias añaden fibra y antioxidantes que ayudan a prevenir el cáncer.",steps_es:["Remoja los fideos en agua tibia 20 min, luego hierve 5 min.","Saltea espinacas, zanahorias y champiñones por separado.","Mezcla los fideos con salsa de soya, aceite de sésamo y azúcar.","Combina con las verduras y mezcla bien.","Decora con semillas de sésamo."]},
+  "kimchi-rice":{emoji:"🍳",name:"Kimchi Fried Rice",cuisine:"korean",region:"asian",count:4,cost:"$3.90",time:"15 min",badge:"Low processed food",bc:"cbc",trending:false,health:"Kimchi is fermented, rich in probiotics and vitamin C, associated with reduced inflammation and lower cancer risk.",steps:["Heat 1 tbsp oil in pan over high heat.","Add ½ cup chopped kimchi, stir-fry 2 min.","Add 1 cup day-old rice and mix.","Push to side, scramble 1 egg, mix everything.","Season with soy sauce. Top with sesame seeds."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Arroz Frito con Kimchi",health_es:"El kimchi es un alimento fermentado rico en probióticos y vitamina C, asociado con menor inflamación y menor riesgo de cáncer.",steps_es:["Calienta 1 cdta de aceite en sartén a fuego alto.","Añade ½ taza de kimchi picado, sofríe 2 min.","Agrega 1 taza de arroz del día anterior y mezcla.","Empuja a un lado, revuelve 1 huevo, mezcla todo.","Sazona con salsa de soya. Decora con semillas de sésamo."]},
+  "egg-drop":{emoji:"🥚",name:"Egg Drop Soup",cuisine:"chinese",region:"asian",count:3,cost:"$2.80",time:"10 min",badge:"Diabetes-friendly",bc:"cbd",trending:false,health:"Light and low-calorie, excellent for blood sugar management. Eggs provide complete protein with no carbohydrates. Low-sodium broth reduces cardiovascular risk.",steps:["Bring 3 cups low-sodium chicken broth to gentle boil.","Mix 1 tsp cornstarch with 2 tbsp cold water, stir in.","Beat 2 eggs, slowly drizzle into simmering broth while stirring.","Add sliced green onion.","Season lightly with white pepper."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Sopa de Huevo",health_es:"Ligera y baja en calorías, excelente para el control del azúcar en sangre. Los huevos aportan proteína completa sin carbohidratos. El caldo bajo en sodio reduce el riesgo cardiovascular.",steps_es:["Lleva 3 tazas de caldo bajo en sodio a ebullición suave.","Mezcla 1 cdta de maicena con 2 cdas de agua fría, revuelve en el caldo.","Bate 2 huevos, vierte lentamente en el caldo mientras revuelves.","Añade cebollín picado.","Sazona con pimienta blanca."]},
+  "congee":{emoji:"🍚",name:"Rice Congee (Jook)",cuisine:"chinese",region:"asian",count:3,cost:"$2.50",time:"30 min",badge:"Heart-healthy",bc:"cbh",trending:false,health:"Naturally low in fat and easy to digest. Brown rice adds fiber that helps lower cholesterol. Great for heart conditions.",steps:["Combine ¼ cup brown rice with 4 cups water or broth.","Bring to boil, reduce to low simmer.","Cook 25–30 min, stirring occasionally, until thick and creamy.","Top with sliced ginger, green onion, sesame oil.","Add a soft-boiled egg for protein."],si:[["Brown rice","$2.49","$3.19","$2.29"],["Ginger","$0.99","$1.19","$0.89"],["Green onion","$0.79","$0.89","$0.69"]],name_es:"Congee (Gachas de Arroz)",health_es:"Naturalmente bajo en grasa y fácil de digerir. El arroz integral añade fibra que ayuda a reducir el colesterol. Ideal para condiciones cardíacas.",steps_es:["Combina ¼ taza de arroz integral con 4 tazas de agua o caldo.","Lleva a ebullición, luego reduce a fuego bajo.","Cocina 25-30 min, revolviendo ocasionalmente, hasta que espese.","Decora con jengibre, cebollín y aceite de sésamo.","Añade un huevo cocido para más proteína."]},
+  "oyakodon":{emoji:"🍗",name:"Oyakodon",cuisine:"japanese",region:"asian",count:4,cost:"$4.90",time:"20 min",badge:"Diabetes-friendly",bc:"cbd",trending:false,health:"Chicken thigh provides iron and protein without the cancer risk of processed meat. Low-sodium soy sauce controls intake critical for diabetes and heart health.",steps:["Slice ½ chicken thigh into thin pieces.","Simmer in ½ cup dashi, 1 tbsp low-sodium soy sauce, 1 tsp mirin.","Beat 2 eggs and pour over chicken when almost cooked.","Cover and cook 1 min until egg is just set.","Serve over brown rice with green onion."],si:[["Chicken thigh","$2.49","$2.99","$2.29"],["Eggs","$1.89","$2.10","$1.79"],["Low-sodium soy sauce","$2.49","$2.79","$2.29"],["Brown rice","$2.49","$3.19","$2.29"]],name_es:"Oyakodon (Bowl de Pollo y Huevo)",health_es:"El muslo de pollo aporta hierro y proteína sin el riesgo de cáncer de la carne procesada. La salsa de soya baja en sodio controla la ingesta — crítica para la diabetes y la salud cardíaca.",steps_es:["Corta ½ muslo de pollo en trozos delgados.","Cocina a fuego lento en dashi, salsa de soya y mirin.","Bate 2 huevos y vierte sobre el pollo casi cocido.","Tapa y cocina 1 min hasta que el huevo esté justo cuajado.","Sirve sobre arroz integral con cebollín."]},
+  "dal-tadka":{emoji:"🫘",name:"Dal Tadka",cuisine:"indian",region:"asian",count:5,cost:"$3.80",time:"25 min",badge:"Heart-healthy",bc:"cbh",trending:false,health:"Lentils are one of the most heart-healthy foods — high in fiber, folate, and plant protein. Turmeric contains curcumin, studied for cancer prevention.",steps:["Boil 1 cup red lentils in 3 cups water until soft, 15 min.","In separate pan, heat oil and add cumin seeds.","Add diced onion, garlic, ginger — cook until golden.","Add turmeric, coriander, chili powder. Cook 1 min.","Pour spice mixture over lentils. Simmer 5 min."],si:[["Red lentils (1 lb)","$1.99","$2.29","$1.79"],["Onion","$0.59","$0.69","$0.49"],["Garlic","$0.79","$0.89","$0.75"],["Ginger","$0.99","$1.19","$0.89"],["Spice blend","$1.99","$2.29","$1.79"]],name_es:"Dal Tadka (Lentejas Especiadas)",health_es:"Las lentejas son uno de los alimentos más saludables para el corazón — ricas en fibra, folato y proteína vegetal. La cúrcuma contiene curcumina, estudiada para la prevención del cáncer.",steps_es:["Hierve 1 taza de lentejas rojas en 3 tazas de agua 15 min.","En sartén aparte, calienta aceite y añade comino hasta que chisporrotee.","Añade cebolla, ajo y jengibre picados — cocina hasta dorar.","Añade cúrcuma, cilantro y chile en polvo. Cocina 1 min.","Vierte la mezcla de especias sobre las lentejas. Hierve 5 min."]},
+  "chana-masala":{emoji:"🫘",name:"Chana Masala",cuisine:"indian",region:"asian",count:5,cost:"$4.20",time:"25 min",badge:"Diabetes-friendly",bc:"cbd",trending:false,health:"Chickpeas have a very low glycemic index — one of the best foods for diabetes prevention. High fiber feeds good gut bacteria, linked to reduced colorectal cancer risk.",steps:["Sauté diced onion until golden, 5 min.","Add garlic, ginger, cumin, coriander, garam masala — cook 2 min.","Add 1 can crushed tomatoes, cook 5 min.","Add 1 can drained chickpeas and ½ cup water.","Simmer 10 min. Squeeze lemon juice."],si:[["Chickpeas, canned","$0.99","$1.19","$0.89"],["Crushed tomatoes","$1.29","$1.49","$1.19"],["Onion","$0.59","$0.69","$0.49"],["Garlic","$0.79","$0.89","$0.75"],["Garam masala","$1.99","$2.29","$1.79"]],name_es:"Chana Masala (Garbanzos Especiados)",health_es:"Los garbanzos tienen un índice glucémico muy bajo, uno de los mejores alimentos para la prevención de la diabetes. La fibra alimenta las bacterias intestinales beneficiosas, reduciendo el riesgo de cáncer colorrectal.",steps_es:["Sofríe cebolla picada hasta dorar, 5 min.","Añade ajo, jengibre, comino, cilantro y garam masala — cocina 2 min.","Añade 1 lata de tomates triturados, cocina 5 min.","Agrega 1 lata de garbanzos escurridos y ½ taza de agua.","Cocina a fuego lento 10 min. Exprime jugo de limón."]},
+  "larb":{emoji:"🥗",name:"Larb (Thai Herb Salad)",cuisine:"thai",region:"asian",count:5,cost:"$4.80",time:"15 min",badge:"Low processed food",bc:"cbc",trending:false,health:"Fresh herbs like mint and cilantro are rich in antioxidants. Lean ground chicken reduces cancer risk significantly compared to processed meat.",steps:["Cook ½ lb ground chicken in a dry pan until done.","Let cool, mix with 2 tbsp lime juice, 1 tbsp fish sauce.","Add sliced red onion, fresh mint, cilantro, chili flakes.","Toss with toasted rice powder.","Serve over lettuce or with sticky rice."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Larb (Ensalada de Hierbas Tailandesa)",health_es:"Las hierbas frescas como la menta y el cilantro son ricas en antioxidantes. El pollo molido reduce significativamente el riesgo de cáncer en comparación con la carne procesada.",steps_es:["Cocina ½ lb de pollo molido en sartén seco.","Deja enfriar, mezcla con jugo de limón y salsa de pescado.","Añade cebolla roja en rodajas, menta fresca, cilantro y chile.","Mezcla con arroz tostado molido.","Sirve sobre lechuga o con arroz glutinoso."]},
+  "pasta-pom":{emoji:"🍝",name:"Pasta al Pomodoro",cuisine:"italian",region:"european",count:4,cost:"$4.50",time:"20 min",badge:"Low processed food",bc:"cbc",trending:false,health:"Tomatoes are rich in lycopene, strongly associated with reduced cancer risk. Whole wheat pasta adds fiber that prevents blood sugar spikes.",steps:["Cook whole wheat pasta per package directions.","Sauté 3 cloves minced garlic in 2 tbsp olive oil.","Add 1 can crushed tomatoes, salt, and fresh basil.","Simmer sauce 10 min.","Toss with pasta."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Pasta al Pomodoro",health_es:"Los tomates son ricos en licopeno, fuertemente asociado con menor riesgo de cáncer. La pasta integral añade fibra que previene picos de azúcar en sangre.",steps_es:["Cocina la pasta integral según las instrucciones.","Sofríe 3 dientes de ajo picados en 2 cdas de aceite de oliva.","Añade 1 lata de tomates triturados, sal y albahaca fresca.","Cocina la salsa 10 min.","Mezcla con la pasta."]},
+  "ribollita":{emoji:"🥣",name:"Ribollita (Tuscan Bean Soup)",cuisine:"italian",region:"european",count:5,cost:"$4.80",time:"30 min",badge:"Heart-healthy",bc:"cbh",trending:false,health:"White beans and kale together proven to lower LDL cholesterol. Exceptional fiber content supports gut health and reduces colorectal cancer risk.",steps:["Sauté onion, carrot, celery in olive oil until soft.","Add 1 can cannellini beans and 4 cups low-sodium broth.","Add 2 cups chopped kale.","Simmer 20 min. Add torn day-old bread.","Drizzle with olive oil and serve hot."],si:[["Cannellini beans","$0.99","$1.19","$0.89"],["Kale (bunch)","$1.99","$2.29","$1.79"],["Carrots","$0.99","$1.19","$0.89"],["Celery","$0.99","$1.19","$0.89"],["Veg. broth","$1.99","$2.29","$1.89"]],name_es:"Ribollita (Sopa Toscana de Frijoles)",health_es:"Los frijoles blancos y la col rizada juntos reducen el colesterol LDL. El contenido excepcional de fibra apoya la salud intestinal y reduce el riesgo de cáncer colorrectal.",steps_es:["Sofríe cebolla, zanahoria y apio en aceite de oliva.","Añade 1 lata de frijoles cannellini y 4 tazas de caldo vegetal bajo en sodio.","Añade 2 tazas de col rizada picada.","Cocina a fuego lento 20 min. Añade pan del día anterior troceado.","Rocía con aceite de oliva y sirve caliente."]},
+  "ratatouille":{emoji:"🫑",name:"Ratatouille",cuisine:"french",region:"european",count:5,cost:"$5.50",time:"35 min",badge:"Low processed food",bc:"cbc",trending:false,health:"A celebration of antioxidant-rich vegetables — zucchini, eggplant, tomatoes, and peppers contain compounds that protect cells from cancer damage.",steps:["Slice zucchini, eggplant, tomatoes, bell pepper into thin rounds.","Spread tomato sauce in a baking dish.","Layer vegetables in overlapping circles.","Drizzle with olive oil, season with herbes de Provence.","Bake at 375°F for 30 min."],si:[["Zucchini","$0.89","$1.09","$0.79"],["Eggplant","$1.29","$1.49","$1.19"],["Bell pepper","$1.29","$1.49","$1.19"],["Tomatoes","$1.49","$1.79","$1.29"],["Tomato sauce","$1.29","$1.49","$1.19"]],name_es:"Ratatouille",health_es:"Una celebración de verduras ricas en antioxidantes — calabacín, berenjena, tomates y pimientos contienen compuestos que protegen las células del daño relacionado con el cáncer.",steps_es:["Corta en rodajas finas el calabacín, la berenjena, los tomates y el pimiento.","Extiende salsa de tomate en una bandeja para horno.","Coloca las verduras en círculos superpuestos.","Rocía con aceite de oliva y sazona con hierbas de Provenza.","Hornea a 190°C durante 30 min."]},
+  "gazpacho":{emoji:"🍅",name:"Gazpacho",cuisine:"spanish",region:"european",count:5,cost:"$4.20",time:"15 min",badge:"Low processed food",bc:"cbc",trending:false,health:"Raw vegetables blended together — nothing processed. Raw tomatoes retain more lycopene (cancer-fighting antioxidant) than cooked.",steps:["Blend 4 ripe tomatoes, ½ cucumber, ½ bell pepper, 1 garlic clove.","Add 2 tbsp olive oil and 1 tbsp red wine vinegar.","Season with salt and black pepper.","Blend until smooth. Refrigerate at least 1 hour.","Serve cold, topped with diced cucumber."],si:[["Tomatoes (4)","$1.99","$2.29","$1.79"],["Cucumber","$0.89","$1.09","$0.79"],["Bell pepper","$1.29","$1.49","$1.19"],["Garlic","$0.79","$0.89","$0.75"],["Red wine vinegar","$1.99","$2.29","$1.79"]],name_es:"Gazpacho",health_es:"Verduras crudas licuadas — sin procesar. Los tomates crudos conservan más licopeno (antioxidante anticancerígeno) que los cocidos. El aceite de oliva añade grasas monoinsaturadas saludables.",steps_es:["Licúa 4 tomates maduros, ½ pepino, ½ pimiento, 1 diente de ajo.","Añade 2 cdas de aceite de oliva y 1 cda de vinagre de vino tinto.","Sazona con sal y pimienta negra.","Licúa hasta obtener una mezcla suave. Refrigera al menos 1 hora.","Sirve frío, decorado con pepino picado."]},
+  "turkey-chili":{emoji:"🥘",name:"Turkey Chili",cuisine:"western",region:"european",count:5,cost:"$5.50",time:"30 min",badge:"Diabetes-friendly",bc:"cbd",trending:false,health:"Ground turkey is leaner than beef, significantly reducing saturated fat. Kidney beans double the fiber and protein, supporting blood sugar stability.",steps:["Brown ½ lb ground turkey in a pot.","Add diced onion, bell pepper, garlic — cook 3 min.","Add 1 can kidney beans, 1 can diced tomatoes, 1 cup water.","Season with chili powder, cumin, paprika, salt.","Simmer 20 min. Serve over rice."],si:[["Ground turkey","$3.99","$4.49","$3.79"],["Kidney beans","$0.99","$1.19","$0.89"],["Diced tomatoes","$0.89","$0.99","$0.85"],["Bell pepper","$1.29","$1.49","$1.19"],["Onion","$0.59","$0.69","$0.49"]],name_es:"Chili de Pavo",health_es:"El pavo molido es más magro que la res, reduciendo significativamente la grasa saturada. Los frijoles kidney duplican la fibra y proteína, apoyando la estabilidad del azúcar en sangre.",steps_es:["Dora ½ lb de pavo molido en una olla.","Añade cebolla picada, pimiento y ajo — cocina 3 min.","Añade 1 lata de frijoles kidney, 1 lata de tomates picados y 1 taza de agua.","Sazona con chile en polvo, comino, pimentón y sal.","Cocina a fuego lento 20 min."]},
+  "frijoles":{emoji:"🫘",name:"Frijoles de Olla",cuisine:"mexican",region:"latin",count:3,cost:"$2.50",time:"60 min",badge:"Diabetes-friendly",bc:"cbd",trending:false,health:"Dried pinto beans cooked from scratch have no added sodium and provide exceptional fiber for blood sugar control. One of the most affordable staples for diabetes prevention.",steps:["Soak 1 cup dried pinto beans overnight, drain.","Simmer beans with ½ onion and 2 garlic cloves in 4 cups water.","Cook on low heat 45–60 min until tender.","Season with salt only at the end.","Serve as a side or over rice."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Frijoles de Olla",health_es:"Los frijoles pintos cocidos desde cero no tienen sodio añadido y aportan una fibra excepcional para el control del azúcar en sangre. Uno de los alimentos más asequibles para prevenir la diabetes.",steps_es:["Remoja 1 taza de frijoles pintos secos toda la noche, escurre.","Cocina a fuego lento con ½ cebolla y 2 dientes de ajo en 4 tazas de agua.","Cocina a fuego bajo 45-60 min hasta que estén tiernos.","Sazona con sal solo al final.","Sirve como acompañamiento o sobre arroz."]},
+  "ceviche":{emoji:"🍋",name:"Ceviche (Peruvian Style)",cuisine:"peruvian",region:"latin",count:5,cost:"$6.50",time:"20 min",badge:"Low processed food",bc:"cbc",trending:false,health:"Fresh fish marinated in citrus is one of the least processed meals. Omega-3 fatty acids reduce inflammation associated with cardiovascular disease and cancer.",steps:["Cut ½ lb fresh white fish (tilapia) into small cubes.","Marinate in juice of 4 limes for 15 min — acid \"cooks\" the fish.","Add diced red onion, jalapeño, and cilantro.","Season with salt. Add diced avocado if desired.","Serve with corn tortilla chips."],si:[["White fish (tilapia)","$3.99","$4.49","$3.79"],["Limes (4)","$0.99","$1.29","$0.89"],["Red onion","$0.69","$0.89","$0.59"],["Jalapeño","$0.49","$0.59","$0.39"],["Cilantro","$0.79","$0.89","$0.69"]],name_es:"Ceviche (Estilo Peruano)",health_es:"El pescado fresco marinado en jugo de cítricos es una de las comidas menos procesadas. Los ácidos grasos omega-3 reducen la inflamación asociada con enfermedades cardiovasculares y cáncer.",steps_es:["Corta ½ lb de pescado blanco fresco (tilapia) en cubos pequeños.","Marina en jugo de 4 limones durante 15 min — el ácido \\"," el pescado.","Añade cebolla roja picada, jalapeño y cilantro.","Sazona con sal. Añade aguacate picado si deseas.","Sirve con totopos de maíz o hojas de lechuga."]},
+  "hummus-bowl":{emoji:"🫘",name:"Hummus & Veggie Bowl",cuisine:"middle-eastern",region:"mediterranean",count:4,cost:"$4.50",time:"10 min",badge:"Heart-healthy",bc:"cbh",trending:false,health:"Chickpeas and tahini form a complete protein with heart-healthy fats. Olive oil provides anti-inflammatory oleocanthal, studied for cancer prevention.",steps:["Blend 1 can chickpeas, 2 tbsp tahini, 2 tbsp lemon juice, 1 garlic clove until smooth.","Add water tablespoon at a time until creamy.","Spread in a bowl, drizzle with olive oil and paprika.","Arrange sliced cucumber, cherry tomatoes, and olives.","Serve with warm pita or whole grain crackers."],si:[["Chickpeas, canned","$0.99","$1.19","$0.89"],["Tahini","$3.99","$4.49","$3.79"],["Cucumber","$0.89","$1.09","$0.79"],["Cherry tomatoes","$2.49","$2.79","$2.29"]],name_es:"Bowl de Hummus y Verduras",health_es:"Los garbanzos y el tahini forman una proteína completa con grasas saludables para el corazón. El aceite de oliva aporta oleocantal antiinflamatorio, estudiado para la prevención del cáncer.",steps_es:["Licúa 1 lata de garbanzos, 2 cdas de tahini, 2 cdas de jugo de limón y 1 diente de ajo.","Añade agua cucharada a cucharada hasta obtener una textura cremosa.","Extiende en un bowl, rocía con aceite de oliva y pimentón.","Coloca pepino en rodajas, tomates cherry y aceitunas alrededor.","Sirve con pan pita o galletas integrales."]},
+  "shakshuka":{emoji:"🍳",name:"Shakshuka",cuisine:"middle-eastern",region:"mediterranean",count:5,cost:"$4.20",time:"20 min",badge:"Diabetes-friendly",bc:"cbd",trending:false,health:"No processed meat. Eggs poached in tomato sauce absorb lycopene (cancer-fighting antioxidant). Cumin and paprika have anti-inflammatory properties for diabetes management.",steps:["Sauté diced onion and bell pepper in olive oil until soft.","Add 3 cloves minced garlic, cumin, paprika, chili flakes — cook 1 min.","Pour in 1 can crushed tomatoes. Simmer 10 min.","Make 4 wells in the sauce, crack an egg into each.","Cover and cook until whites are set."],si:[["Crushed tomatoes","$1.29","$1.49","$1.19"],["Bell pepper","$1.29","$1.49","$1.19"],["Eggs","$1.89","$2.10","$1.79"],["Onion","$0.59","$0.69","$0.49"],["Garlic","$0.79","$0.89","$0.75"]],name_es:"Shakshuka (Huevos en Salsa de Tomate)",health_es:"Sin carne procesada. Los huevos pochados en salsa de tomate absorben licopeno (antioxidante anticancerígeno). El comino y el pimentón tienen propiedades antiinflamatorias para el manejo de la diabetes.",steps_es:["Sofríe cebolla y pimiento en aceite de oliva hasta que estén suaves.","Añade 3 dientes de ajo picados, comino, pimentón y chile — cocina 1 min.","Vierte 1 lata de tomates triturados. Cocina a fuego lento 10 min.","Haz 4 huecos en la salsa, rompe un huevo en cada uno.","Tapa y cocina hasta que las claras estén cuajadas."]},
+  "greek-salad":{emoji:"🥗",name:"Greek Salad (Horiatiki)",cuisine:"greek",region:"mediterranean",count:5,cost:"$5.20",time:"10 min",badge:"Low processed food",bc:"cbc",trending:false,health:"Zero processed ingredients. Olive oil and olives provide oleic acid shown to reduce breast and colon cancer risk. Highest antioxidant density per dollar of any salad.",steps:["Chop 2 large tomatoes, 1 cucumber, ½ red onion into chunks.","Add ½ cup kalamata olives.","Top with a block of feta cheese.","Drizzle generously with extra virgin olive oil.","Season with dried oregano and a pinch of salt."],si:[["Tomatoes","$1.49","$1.79","$1.29"],["Cucumber","$0.89","$1.09","$0.79"],["Feta cheese","$2.99","$3.49","$2.79"],["Kalamata olives","$2.49","$2.79","$2.29"],["Red onion","$0.69","$0.89","$0.59"]],name_es:"Ensalada Griega (Horiatiki)",health_es:"Cero ingredientes procesados. El aceite de oliva y las aceitunas aportan ácido oleico que reduce el riesgo de cáncer de mama y colon. La mayor densidad de antioxidantes por dólar de cualquier ensalada.",steps_es:["Corta en trozos 2 tomates grandes, 1 pepino y ½ cebolla roja.","Añade ½ taza de aceitunas kalamata.","Coloca un bloque de queso feta encima.","Rocía generosamente con aceite de oliva extra virgen.","Sazona con orégano seco y una pizca de sal."]},
+  "falafel":{emoji:"🧆",name:"Falafel Wrap",cuisine:"middle-eastern",region:"mediterranean",count:5,cost:"$4.80",time:"20 min",badge:"Diabetes-friendly",bc:"cbd",trending:false,health:"Chickpea-based falafel has a low glycemic index, excellent for blood sugar management. Completely replaces processed meat — avoiding WHO-classified carcinogens entirely.",steps:["Blend 1 can drained chickpeas with garlic, cumin, coriander, parsley until chunky.","Form into small patties. Pan-fry in 1 tbsp olive oil, 3 min per side.","Mix yogurt sauce: Greek yogurt, lemon juice, garlic, salt.","Warm a whole wheat wrap. Layer with falafel, lettuce, tomato, yogurt sauce.","Roll tightly and serve."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Wrap de Falafel",health_es:"El falafel de garbanzo tiene un índice glucémico bajo, excelente para el control del azúcar en sangre. Reemplaza completamente la carne procesada — evitando los carcinógenos clasificados por la OMS.",steps_es:["Licúa 1 lata de garbanzos escurridos con ajo, comino, cilantro y perejil (textura gruesa).","Forma patties pequeños. Fríe en 1 cda de aceite de oliva, 3 min por lado.","Mezcla salsa de yogur: yogur griego, jugo de limón, ajo y sal.","Calienta una tortilla integral. Rellena con falafel, lechuga, tomate y salsa.","Enrolla bien y sirve."]},
+  "sundubu":{emoji:"🌶️",name:"Sundubu Jjigae",cuisine:"korean",region:"asian",count:4,cost:"$4.80",time:"20 min",badge:"Heart-healthy",bc:"cbh",trending:false,health:"Soft tofu is low in saturated fat and sodium, directly supporting heart health. Gochugaru contains capsaicin, shown to boost metabolism and reduce inflammation.",steps:["Sauté 1 tbsp gochugaru in sesame oil 1 min.","Add 2 cups water or broth, bring to boil.","Add 1 tube soft tofu, breaking into chunks.","Crack 1 egg directly into the stew.","Add mushrooms and green onion. Simmer 5 min."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Sundubu Jjigae (Estofado de Tofu Suave)",health_es:"El tofu suave es bajo en grasas saturadas y sodio, apoyando directamente la salud cardíaca. El gochugaru (chile coreano) contiene capsaicina, que estimula el metabolismo.",steps_es:["Sofríe 1 cda de gochugaru en aceite de sésamo 1 min.","Añade 2 tazas de agua o caldo, lleva a ebullición.","Añade 1 tubo de tofu suave, deshaciendo en trozos.","Rompe 1 huevo directamente en el estofado.","Añade champiñones y cebollín. Cocina a fuego lento 5 min."]},
+  "gyeran-bap":{emoji:"🍳",name:"Gyeran Bap (Egg Rice Bowl)",cuisine:"korean",region:"asian",count:3,cost:"$2.50",time:"10 min",badge:"Diabetes-friendly",bc:"cbd",trending:false,health:"A simple 3-ingredient meal that is naturally low in processed ingredients. Eggs provide complete protein and healthy fats without raising blood sugar.",steps:["Cook 1 cup brown rice.","Fry 1-2 eggs sunny-side up in butter or sesame oil.","Place egg over rice. Add soy sauce, sesame oil, and sesame seeds."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Gyeran Bap (Bowl de Arroz con Huevo)",health_es:"Una comida simple de 3 ingredientes naturalmente baja en procesados. Los huevos aportan proteína completa y grasas saludables sin elevar el azúcar en sangre.",steps_es:["Cocina 1 taza de arroz integral.","Fríe 1-2 huevos al gusto en mantequilla o aceite de sésamo.","Coloca el huevo sobre el arroz. Añade salsa de soya, aceite de sésamo y semillas de sésamo."]},
+  "dakgalbi":{emoji:"🍗",name:"Spicy Stir-Fried Chicken",cuisine:"korean",region:"asian",count:5,cost:"$6.20",time:"25 min",badge:"Low processed food",bc:"cbc",trending:false,health:"Chicken breast is a lean protein with no saturated fat. Gochujang adds capsaicin and probiotics. Sweet potato adds fiber that stabilizes blood sugar.",steps:["Cut chicken breast into bite-size pieces.","Mix marinade: 2 tbsp gochujang, 1 tbsp soy sauce, 1 tsp sesame oil, garlic.","Marinate chicken 10 min.","Stir-fry on high heat with sweet potato and cabbage 8-10 min.","Serve with rice or lettuce wraps."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Pollo Salteado Picante",health_es:"La pechuga de pollo es una proteína magra sin grasa saturada. El gochujang añade capsaicina y probióticos. La batata añade fibra que estabiliza el azúcar en sangre.",steps_es:["Corta la pechuga de pollo en trozos del tamaño de un bocado.","Mezcla marinada: gochujang, salsa de soya, aceite de sésamo y ajo.","Marina el pollo 10 min.","Saltea a fuego alto con batata y repollo 8-10 min.","Sirve con arroz o en hojas de lechuga."]},
+  "mapo-tofu":{emoji:"🌶️",name:"Light Mapo Tofu",cuisine:"chinese",region:"asian",count:5,cost:"$4.50",time:"20 min",badge:"Low processed food",bc:"cbc",trending:false,health:"This lighter version uses minimal oil and less doubanjiang to reduce sodium. Tofu provides the same protein as meat without the cancer risk of processed red meat.",steps:["Heat 1 tbsp oil, add 1 tbsp doubanjiang and minced ginger, stir 1 min.","Add 1 cup water and bring to simmer.","Add cubed firm tofu, cook 5 min.","Thicken with 1 tsp cornstarch mixed in water.","Top with Sichuan pepper and green onion."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Mapo Tofu Ligero",health_es:"Esta versión más ligera usa menos aceite y doubanjiang para reducir el sodio. El tofu aporta la misma proteína que la carne sin el riesgo de cáncer de la carne procesada.",steps_es:["Calienta 1 cda de aceite, añade doubanjiang y jengibre picado, revuelve 1 min.","Añade 1 taza de agua y lleva a ebullición.","Añade tofu firme en cubos, cocina 5 min.","Espesa con maicena disuelta en agua.","Decora con pimienta de Sichuan y cebollín."]},
+  "fried-rice-veg":{emoji:"🍚",name:"Vegetable Fried Rice",cuisine:"chinese",region:"asian",count:4,cost:"$3.50",time:"15 min",badge:"Diabetes-friendly",bc:"cbd",trending:false,health:"Packed with colorful vegetables, this dish provides fiber and antioxidants while keeping blood sugar stable. Using brown rice further lowers the glycemic impact.",steps:["Cook 1 cup brown rice; let cool.","Scramble 2 eggs in a hot wok, set aside.","Stir-fry diced carrots, peas, and corn in 1 tbsp oil.","Add rice and eggs, season with low-sodium soy sauce.","Toss on high heat 2-3 min."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Arroz Frito con Verduras",health_es:"Lleno de verduras coloridas que aportan fibra y antioxidantes para mantener estable el azúcar en sangre. El arroz integral reduce aún más el impacto glucémico.",steps_es:["Cocina 1 taza de arroz integral; deja enfriar.","Revuelve 2 huevos en un wok caliente, reserva.","Saltea zanahoria, arvejas y maíz en 1 cda de aceite.","Añade el arroz y los huevos, sazona con salsa de soya baja en sodio.","Saltea a fuego alto 2-3 min."]},
+  "teriyaki-chicken":{emoji:"🍗",name:"Homemade Teriyaki Chicken",cuisine:"japanese",region:"asian",count:4,cost:"$5.50",time:"20 min",badge:"Diabetes-friendly",bc:"cbd",trending:false,health:"Homemade teriyaki uses far less sugar and sodium than store-bought sauce. Chicken breast is lean protein that supports blood sugar stability without saturated fat.",steps:["Mix sauce: 2 tbsp low-sodium soy sauce, 1 tbsp honey, 1 tsp garlic, 1 tsp ginger.","Pound chicken breast to even thickness.","Pan-fry chicken 4 min per side until cooked.","Pour sauce over and cook 1 min until glazed.","Serve over brown rice with steamed broccoli."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Pollo Teriyaki Casero",health_es:"El teriyaki casero usa mucho menos azúcar y sodio que la salsa comprada. La pechuga de pollo es proteína magra que apoya la estabilidad del azúcar en sangre sin grasa saturada.",steps_es:["Mezcla la salsa: salsa de soya baja en sodio, miel, ajo y jengibre.","Aplana la pechuga de pollo a un grosor uniforme.","Fríe el pollo en sartén 4 min por lado hasta que esté cocido.","Vierte la salsa y cocina 1 min hasta que esté glaseado.","Sirve sobre arroz integral con brócoli al vapor."]},
+  "soba-salad":{emoji:"🍜",name:"Cold Soba Noodle Salad",cuisine:"japanese",region:"asian",count:5,cost:"$5.00",time:"15 min",badge:"Heart-healthy",bc:"cbh",trending:false,health:"Buckwheat soba noodles are higher in protein and fiber than regular wheat noodles, supporting heart health and cholesterol reduction. Edamame adds plant-based protein.",steps:["Cook soba noodles per package; rinse under cold water.","Mix dressing: 2 tbsp rice vinegar, 1 tbsp soy sauce, 1 tsp sesame oil.","Toss noodles with shredded cucumber, edamame, and carrots.","Drizzle dressing and top with sesame seeds.","Serve cold immediately."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Ensalada Fría de Fideos Soba",health_es:"Los fideos soba de trigo sarraceno tienen más proteína y fibra que los fideos regulares, apoyando la salud cardíaca y la reducción del colesterol. La edamame añade proteína vegetal.",steps_es:["Cocina los fideos soba; enjuaga con agua fría.","Mezcla aderezo: vinagre de arroz, salsa de soya y aceite de sésamo.","Mezcla los fideos con pepino rallado, edamame y zanahorias.","Rocía el aderezo y decora con semillas de sésamo.","Sirve frío inmediatamente."]},
+  "palak-paneer":{emoji:"🥬",name:"Palak Paneer (Spinach & Cheese)",cuisine:"indian",region:"asian",count:5,cost:"$5.80",time:"25 min",badge:"Heart-healthy",bc:"cbh",trending:false,health:"Spinach is one of the most nutrient-dense vegetables — packed with iron, folate, and antioxidants that protect against cancer. Paneer provides calcium and protein without processed meat.",steps:["Blanch 2 cups spinach in boiling water 2 min; blend into puree.","Sauté onion, garlic, ginger in oil until golden.","Add cumin, coriander, garam masala. Cook 1 min.","Add spinach puree and ½ cup water. Simmer 5 min.","Add cubed paneer. Simmer 5 more min."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Palak Paneer (Espinacas con Queso)",health_es:"Las espinacas son uno de los vegetales más nutritivos — ricas en hierro, folato y antioxidantes que protegen contra el cáncer. El paneer aporta calcio y proteína sin carne procesada.",steps_es:["Blanquea 2 tazas de espinacas en agua hirviendo 2 min; licúa.","Sofríe cebolla, ajo y jengibre en aceite hasta dorar.","Añade comino, cilantro y garam masala. Cocina 1 min.","Añade el puré de espinacas y ½ taza de agua. Cocina a fuego lento 5 min.","Añade paneer en cubos. Cocina 5 min más."]},
+  "aloo-gobi":{emoji:"🥔",name:"Aloo Gobi (Potato & Cauliflower)",cuisine:"indian",region:"asian",count:4,cost:"$3.80",time:"25 min",badge:"Low processed food",bc:"cbc",trending:false,health:"Cauliflower contains sulforaphane, a compound studied for cancer prevention. Potatoes with skin provide potassium that helps lower blood pressure. Turmeric adds anti-inflammatory curcumin.",steps:["Cut 1 potato and ½ head cauliflower into florets.","Heat oil, add cumin seeds until they sizzle.","Add turmeric, coriander, chili powder. Stir 30 sec.","Add potatoes and cauliflower. Toss to coat.","Cover and cook on low 20 min, stirring occasionally."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Aloo Gobi (Papa y Coliflor)",health_es:"La coliflor contiene sulforafano, un compuesto estudiado para la prevención del cáncer. Las papas con cáscara aportan potasio que ayuda a reducir la presión arterial. La cúrcuma añade curcumina antiinflamatoria.",steps_es:["Corta 1 papa y ½ coliflor en flores.","Calienta aceite, añade semillas de comino hasta que chisporroteen.","Añade cúrcuma, cilantro y chile en polvo. Revuelve 30 seg.","Añade las papas y la coliflor. Mezcla para cubrir.","Tapa y cocina a fuego bajo 20 min, revolviendo ocasionalmente."]},
+  "pad-see-ew":{emoji:"🍜",name:"Pad See Ew (Thai Noodles)",cuisine:"thai",region:"asian",count:5,cost:"$5.00",time:"20 min",badge:"Low processed food",bc:"cbc",trending:false,health:"Wide rice noodles are gluten-free and lower in sodium when made at home. Chinese broccoli is packed with vitamins C and K, important for immune function and cancer prevention.",steps:["Soak wide rice noodles in warm water 20 min.","Heat wok on high, add oil, fry 1 egg until just set.","Add noodles, 1 tbsp oyster sauce, 1 tbsp low-sodium soy sauce, 1 tsp sugar.","Add Chinese broccoli or regular broccoli.","Toss everything over high heat 2-3 min."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Pad See Ew (Fideos Tailandeses)",health_es:"Los fideos de arroz anchos son sin gluten y bajos en sodio cuando se preparan en casa. El brócoli está lleno de vitaminas C y K, importantes para la función inmune y la prevención del cáncer.",steps_es:["Remoja los fideos de arroz anchos en agua tibia 20 min.","Calienta el wok a fuego alto, añade aceite, fríe 1 huevo.","Añade los fideos, salsa de ostras, salsa de soya baja en sodio y 1 cdta de azúcar.","Añade brócoli chino o brócoli regular.","Saltea todo a fuego alto 2-3 min."]},
+  "tom-yum":{emoji:"🍲",name:"Tom Yum Soup",cuisine:"thai",region:"asian",count:5,cost:"$5.50",time:"20 min",badge:"Low processed food",bc:"cbc",trending:false,health:"Lemongrass and galangal in tom yum have antimicrobial and anti-inflammatory properties. Mushrooms add immune-supporting beta-glucans. Low in calories and fat.",steps:["Bring 3 cups water to boil with lemongrass stalk (bruised) and galangal slices.","Add mushrooms and cherry tomatoes; simmer 5 min.","Add 2 tbsp fish sauce, 3 tbsp lime juice, 1 tsp chili.","Add shrimp or tofu; cook 2-3 min until done.","Top with fresh cilantro and serve hot."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Sopa Tom Yum",health_es:"La hierba limón y la galanga tienen propiedades antimicrobianas y antiinflamatorias. Los champiñones añaden beta-glucanos que apoyan el sistema inmune. Baja en calorías y grasas.",steps_es:["Hierve 3 tazas de agua con hierba limón (golpeada) y rodajas de galanga.","Añade champiñones y tomates cherry; cocina 5 min.","Añade salsa de pescado, jugo de limón y chile.","Añade camarones o tofu; cocina 2-3 min.","Decora con cilantro fresco y sirve caliente."]},
+  "minestrone":{emoji:"🥣",name:"Minestrone Soup",cuisine:"italian",region:"european",count:5,cost:"$4.20",time:"30 min",badge:"Heart-healthy",bc:"cbh",trending:false,health:"Packed with 5+ types of vegetables, this classic soup provides exceptional fiber for heart health and cancer prevention. No processed meat needed — beans provide all the protein.",steps:["Sauté onion, carrot, celery in olive oil 5 min.","Add diced zucchini, diced tomatoes, and 4 cups low-sodium broth.","Add 1 can kidney beans and ½ cup small pasta.","Simmer 15 min until pasta is cooked.","Season with basil and black pepper."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Minestrone",health_es:"Repleta de más de 5 tipos de verduras, esta sopa clásica aporta una fibra excepcional para la salud cardíaca y la prevención del cáncer. Los frijoles aportan toda la proteína necesaria.",steps_es:["Sofríe cebolla, zanahoria y apio en aceite de oliva 5 min.","Añade calabacín picado, tomates y 4 tazas de caldo bajo en sodio.","Añade 1 lata de frijoles kidney y ½ taza de pasta pequeña.","Cocina a fuego lento 15 min.","Sazona con albahaca y pimienta negra."]},
+  "caprese":{emoji:"🍅",name:"Caprese Salad",cuisine:"italian",region:"european",count:3,cost:"$5.80",time:"5 min",badge:"Low processed food",bc:"cbc",trending:false,health:"Fresh tomatoes and basil provide lycopene and flavonoids shown to reduce cancer risk. Fresh mozzarella has no additives or preservatives unlike processed cheese.",steps:["Slice ripe tomatoes and fresh mozzarella into rounds.","Alternate tomato and mozzarella slices on a plate.","Tuck fresh basil leaves between each slice.","Drizzle with extra virgin olive oil.","Season with salt, black pepper, and a splash of balsamic vinegar."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Ensalada Caprese",health_es:"Los tomates frescos y la albahaca aportan licopeno y flavonoides que reducen el riesgo de cáncer. La mozzarella fresca no tiene aditivos ni conservantes a diferencia del queso procesado.",steps_es:["Corta tomates maduros y mozzarella fresca en rodajas.","Alterna rodajas de tomate y mozzarella en un plato.","Coloca hojas de albahaca fresca entre cada rodaja.","Rocía con aceite de oliva extra virgen.","Sazona con sal, pimienta negra y un toque de vinagre balsámico."]},
+  "egg-avocado-toast":{emoji:"🥑",name:"Egg & Avocado Toast",cuisine:"western",region:"european",count:3,cost:"$3.50",time:"10 min",badge:"Heart-healthy",bc:"cbh",trending:false,health:"Avocado provides monounsaturated fats that lower LDL cholesterol. Whole grain bread adds fiber for heart health. Eggs provide complete protein without processed meat.",steps:["Toast 2 slices of whole grain bread.","Mash ½ ripe avocado with lemon juice, salt, and pepper.","Spread avocado on toast.","Fry or poach 1-2 eggs to your liking.","Top toast with egg. Add chili flakes if desired."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Tostada de Aguacate con Huevo",health_es:"El aguacate aporta grasas monoinsaturadas que reducen el colesterol LDL. El pan integral añade fibra para la salud cardíaca. Los huevos aportan proteína completa sin carne procesada.",steps_es:["Tuesta 2 rebanadas de pan integral.","Aplasta ½ aguacate maduro con jugo de limón, sal y pimienta.","Extiende el aguacate sobre las tostadas.","Fríe o pochea 1-2 huevos al gusto.","Coloca el huevo sobre la tostada. Añade chile si deseas."]},
+  "chicken-soup":{emoji:"🍲",name:"Homemade Chicken Soup",cuisine:"western",region:"european",count:5,cost:"$5.80",time:"35 min",badge:"Heart-healthy",bc:"cbh",trending:false,health:"Homemade chicken soup has significantly less sodium than canned versions. Carrots and celery provide antioxidants. Chicken provides lean protein that supports immune function.",steps:["Simmer 1 chicken thigh in 4 cups low-sodium broth 20 min.","Remove chicken, shred with a fork.","Add diced carrots, celery, onion to broth; simmer 10 min.","Return shredded chicken to pot.","Season with thyme, black pepper, and parsley."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Sopa de Pollo Casera",health_es:"La sopa de pollo casera tiene mucho menos sodio que la de lata. Las zanahorias y el apio aportan antioxidantes. El pollo aporta proteína magra que apoya la función inmune.",steps_es:["Cuece a fuego lento 1 muslo de pollo en 4 tazas de caldo bajo en sodio 20 min.","Retira el pollo y deshilacha con un tenedor.","Añade zanahoria, apio y cebolla picados al caldo; cocina 10 min.","Devuelve el pollo deshilachado a la olla.","Sazona con tomillo, pimienta negra y perejil."]},
+  "oat-bowl":{emoji:"🥣",name:"Savory Oat Bowl",cuisine:"western",region:"european",count:4,cost:"$2.80",time:"10 min",badge:"Heart-healthy",bc:"cbh",trending:false,health:"Oats contain beta-glucan, a soluble fiber proven to lower LDL cholesterol. Adding an egg boosts protein without increasing cardiovascular risk.",steps:["Cook ½ cup rolled oats in 1 cup water or low-sodium broth.","While oats cook, fry 1 egg.","Top oats with the fried egg, sliced avocado, and cherry tomatoes.","Drizzle with olive oil and season with salt, pepper, chili flakes."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Bowl de Avena Salada",health_es:"La avena contiene beta-glucano, una fibra soluble probada para reducir el colesterol LDL — uno de los alimentos más estudiados para la prevención de enfermedades cardiovasculares.",steps_es:["Cocina ½ taza de avena en 1 taza de agua o caldo bajo en sodio.","Mientras la avena se cocina, fríe 1 huevo.","Coloca encima el huevo frito, aguacate en rodajas y tomates cherry.","Rocía con aceite de oliva y sazona con sal, pimienta y chile."]},
+  "french-onion-soup":{emoji:"🧅",name:"French Onion Soup (Light)",cuisine:"french",region:"european",count:4,cost:"$4.50",time:"40 min",badge:"Heart-healthy",bc:"cbh",trending:false,health:"Onions are rich in quercetin, an antioxidant associated with reduced cardiovascular disease and cancer risk. This lighter version uses less butter and cheese to keep saturated fat in check.",steps:["Slice 3 large onions thinly. Cook in 1 tbsp butter on low heat 30 min until caramelized.","Add 3 cups low-sodium beef or vegetable broth.","Simmer 10 min. Season with thyme and black pepper.","Ladle into bowls. Top with a slice of whole grain bread.","Sprinkle a small amount of gruyere or swiss cheese and broil 2 min."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Sopa de Cebolla Francesa (Ligera)",health_es:"Las cebollas son ricas en quercetina, un antioxidante asociado con menor riesgo de enfermedades cardiovasculares y cáncer. Esta versión más ligera usa menos mantequilla y queso.",steps_es:["Corta 3 cebollas grandes en rodajas finas. Cocina en 1 cda de mantequilla a fuego bajo 30 min hasta caramelizar.","Añade 3 tazas de caldo bajo en sodio.","Cocina a fuego lento 10 min. Sazona con tomillo y pimienta negra.","Sirve en bowls. Coloca una rebanada de pan integral encima.","Espolvorea con una pequeña cantidad de queso suizo y gratina 2 min."]},
+  "tortilla-espanola":{emoji:"🍳",name:"Tortilla Española (Potato Omelette)",cuisine:"spanish",region:"european",count:3,cost:"$3.50",time:"25 min",badge:"Diabetes-friendly",bc:"cbd",trending:false,health:"This traditional Spanish omelette uses only eggs, potato, and olive oil — no processed ingredients. Eggs provide complete protein and the olive oil adds heart-healthy monounsaturated fats.",steps:["Slice 2 medium potatoes thinly.","Cook potato slices in olive oil on low heat 15 min until tender; drain.","Beat 4 eggs, mix with potatoes, season with salt.","Cook in an oiled pan on medium-low 5 min per side.","Let rest 5 min before slicing."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Tortilla Española",health_es:"Esta tortilla española tradicional usa solo huevos, papa y aceite de oliva — sin ingredientes procesados. Los huevos aportan proteína completa y el aceite de oliva añade grasas monoinsaturadas saludables.",steps_es:["Corta 2 papas medianas en rodajas finas.","Cocina las rodajas de papa en aceite de oliva a fuego bajo 15 min hasta que estén tiernas; escurre.","Bate 4 huevos, mezcla con las papas y sazona con sal.","Cocina en sartén aceitada a fuego medio-bajo 5 min por lado.","Deja reposar 5 min antes de cortar."]},
+  "sopa-lima":{emoji:"🍋",name:"Sopa de Lima (Lime Soup)",cuisine:"mexican",region:"latin",count:5,cost:"$5.20",time:"25 min",badge:"Low processed food",bc:"cbc",trending:false,health:"This Yucatan soup uses fresh lime juice for bright flavor without sodium. Chicken provides lean protein and the fresh tomatoes add lycopene, a cancer-fighting antioxidant.",steps:["Simmer 1 chicken breast in 4 cups low-sodium broth with garlic and onion 15 min.","Shred chicken. Strain broth.","Return chicken to broth. Add diced tomatoes and peppers.","Simmer 5 min. Add fresh lime juice to taste.","Serve with corn tortilla strips and cilantro."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Sopa de Lima",health_es:"Esta sopa yucateca usa jugo de limón fresco para dar sabor sin sodio. El pollo aporta proteína magra y los tomates frescos añaden licopeno, un antioxidante anticancerígeno.",steps_es:["Cuece a fuego lento 1 pechuga de pollo en 4 tazas de caldo con ajo y cebolla 15 min.","Deshilacha el pollo. Cuela el caldo.","Devuelve el pollo al caldo. Añade tomates y chiles picados.","Cocina a fuego lento 5 min. Añade jugo de limón fresco al gusto.","Sirve con tiras de tortilla de maíz y cilantro."]},
+  "veggie-quesadilla":{emoji:"🫓",name:"Veggie Quesadilla",cuisine:"mexican",region:"latin",count:4,cost:"$3.80",time:"15 min",badge:"Diabetes-friendly",bc:"cbd",trending:false,health:"Using corn tortillas instead of flour keeps this low in refined carbs. Black beans and vegetables provide fiber that stabilizes blood sugar. No processed meat needed.",steps:["Sauté diced bell pepper, onion, and corn in a pan 3 min.","Add ½ cup black beans; season with cumin and chili powder.","Place filling and a small amount of cheese on one half of a corn tortilla.","Fold in half and cook in a dry pan 2 min per side until crispy.","Serve with fresh salsa or Greek yogurt instead of sour cream."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Quesadilla de Verduras",health_es:"Las tortillas de maíz en lugar de harina mantienen esto bajo en carbohidratos refinados. Los frijoles negros y las verduras aportan fibra que estabiliza el azúcar en sangre. Sin carne procesada.",steps_es:["Saltea pimiento, cebolla y maíz en sartén 3 min.","Añade ½ taza de frijoles negros; sazona con comino y chile en polvo.","Coloca el relleno y un poco de queso en la mitad de una tortilla de maíz.","Dobla por la mitad y cocina en sartén seco 2 min por lado hasta que esté crujiente.","Sirve con salsa fresca o yogur griego en lugar de crema."]},
+  "arroz-con-leche":{emoji:"🍚",name:"Arroz con Leche (Rice Pudding)",cuisine:"peruvian",region:"latin",count:4,cost:"$3.20",time:"30 min",badge:"Heart-healthy",bc:"cbh",trending:false,health:"Made with brown rice and low-fat milk, this dessert is much lower in saturated fat than traditional versions. Cinnamon helps improve insulin sensitivity, beneficial for blood sugar management.",steps:["Cook ½ cup brown rice in 2 cups low-fat milk on low heat.","Stir frequently to prevent sticking, about 25 min.","Add 2 tbsp honey and 1 tsp cinnamon.","Cook 5 more min until creamy.","Serve warm or cold, sprinkled with extra cinnamon."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Arroz con Leche",health_es:"Preparado con arroz integral y leche descremada, este postre es mucho más bajo en grasas saturadas que las versiones tradicionales. La canela ayuda a mejorar la sensibilidad a la insulina.",steps_es:["Cocina ½ taza de arroz integral con 2 tazas de leche descremada a fuego bajo.","Revuelve frecuentemente para evitar que se pegue, unos 25 min.","Añade 2 cdas de miel y 1 cdta de canela.","Cocina 5 min más hasta que esté cremoso.","Sirve caliente o frío, espolvoreado con canela extra."]},
+  "lentil-soup-me":{emoji:"🥣",name:"Red Lentil Soup (Mercimek)",cuisine:"middle-eastern",region:"mediterranean",count:5,cost:"$3.80",time:"25 min",badge:"Heart-healthy",bc:"cbh",trending:false,health:"Red lentils dissolve as they cook, creating a naturally creamy soup without added fat. They are exceptionally high in folate and fiber, directly supporting cardiovascular health.",steps:["Sauté diced onion and 2 garlic cloves in olive oil 4 min.","Add 1 cup red lentils, 1 tsp cumin, ½ tsp turmeric.","Add 4 cups low-sodium broth; bring to boil.","Simmer 20 min until lentils dissolve.","Squeeze lemon juice. Serve with drizzle of olive oil and paprika."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Sopa de Lentejas Rojas",health_es:"Las lentejas rojas se disuelven al cocinarse, creando una sopa naturalmente cremosa sin grasa añadida. Excepcionalmente ricas en folato y fibra, apoyan directamente la salud cardiovascular.",steps_es:["Sofríe cebolla picada y 2 dientes de ajo en aceite de oliva 4 min.","Añade 1 taza de lentejas rojas, 1 cdta de comino y ½ cdta de cúrcuma.","Añade 4 tazas de caldo bajo en sodio; lleva a ebullición.","Cocina a fuego lento 20 min hasta que las lentejas se disuelvan.","Exprime jugo de limón. Sirve con aceite de oliva y pimentón."]},
+  "tabbouleh":{emoji:"🥗",name:"Tabbouleh",cuisine:"middle-eastern",region:"mediterranean",count:5,cost:"$4.50",time:"20 min",badge:"Low processed food",bc:"cbc",trending:false,health:"Tabbouleh is mostly fresh herbs — parsley is one of the most antioxidant-dense foods available. Bulgur wheat provides fiber and complex carbohydrates for sustained energy without blood sugar spikes.",steps:["Soak ½ cup bulgur wheat in 1 cup boiling water for 15 min; drain.","Finely chop 2 cups fresh parsley, ½ cup mint, 3 tomatoes, ½ cucumber.","Mix with bulgur.","Dress with 3 tbsp lemon juice and 2 tbsp olive oil.","Season with salt and black pepper."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Tabbouleh",health_es:"El tabbouleh es principalmente hierbas frescas — el perejil es uno de los alimentos más ricos en antioxidantes. El trigo bulgur aporta fibra y carbohidratos complejos sin picos de azúcar.",steps_es:["Remoja ½ taza de trigo bulgur en 1 taza de agua hirviendo 15 min; escurre.","Pica finamente 2 tazas de perejil fresco, ½ taza de menta, 3 tomates y ½ pepino.","Mezcla con el bulgur.","Aliña con 3 cdas de jugo de limón y 2 cdas de aceite de oliva.","Sazona con sal y pimienta negra."]},
+  "avgolemono":{emoji:"🍋",name:"Avgolemono (Greek Lemon Soup)",cuisine:"greek",region:"mediterranean",count:4,cost:"$4.20",time:"25 min",badge:"Diabetes-friendly",bc:"cbd",trending:false,health:"This protein-rich soup uses eggs to create a creamy texture without any cream or processed thickeners. Lemon provides vitamin C and the broth is naturally low in fat.",steps:["Bring 4 cups low-sodium chicken broth to a boil.","Add ½ cup orzo or rice; cook 10 min.","Whisk 2 eggs with juice of 1 lemon in a bowl.","Ladle 1 cup hot broth into egg mixture while whisking constantly.","Pour egg mixture back into pot. Do not boil. Add shredded chicken."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Avgolemono (Sopa Griega de Limón)",health_es:"Esta sopa rica en proteínas usa huevos para crear una textura cremosa sin crema ni espesantes procesados. El limón aporta vitamina C y el caldo es naturalmente bajo en grasas.",steps_es:["Lleva a ebullición 4 tazas de caldo de pollo bajo en sodio.","Añade ½ taza de orzo o arroz; cocina 10 min.","Bate 2 huevos con jugo de 1 limón en un bowl.","Añade 1 taza de caldo caliente a la mezcla de huevo batiendo constantemente.","Vierte la mezcla de huevo de vuelta a la olla. No dejes hervir."]},
+  "spanakopita-bowl":{emoji:"🥬",name:"Spanakopita Bowl",cuisine:"greek",region:"mediterranean",count:4,cost:"$4.80",time:"15 min",badge:"Heart-healthy",bc:"cbh",trending:false,health:"Spinach is exceptionally high in iron, folate, and vitamin K — all important for cardiovascular health. Feta provides calcium and protein. No pastry means fewer refined carbs.",steps:["Sauté 2 cups fresh spinach with garlic in olive oil until wilted.","Mix in 2 tbsp crumbled feta cheese and a squeeze of lemon.","Serve over cooked farro or brown rice.","Top with sliced cherry tomatoes and kalamata olives.","Drizzle with extra virgin olive oil."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Bowl de Espanakopita",health_es:"Las espinacas son excepcionalmente ricas en hierro, folato y vitamina K — importantes para la salud cardiovascular. El feta aporta calcio y proteína. Sin masa, menos carbohidratos refinados.",steps_es:["Saltea 2 tazas de espinacas frescas con ajo en aceite de oliva hasta marchitar.","Mezcla con 2 cdas de queso feta desmenuzado y jugo de limón.","Sirve sobre farro o arroz integral cocido.","Añade tomates cherry en rodajas y aceitunas kalamata encima.","Rocía con aceite de oliva extra virgen."]},
+  "cottage-cheese-wrap":{emoji:"🌯",name:"Cottage Cheese Wrap",cuisine:"western",region:"european",count:4,cost:"$3.50",time:"10 min",badge:"Low processed food",bc:"cbc",trending:true,health:"Cottage cheese is one of the highest-protein, lowest-calorie foods available — a single cup has 25g of protein with minimal processing. High protein intake supports muscle building and helps stabilize blood sugar, reducing Type 2 diabetes risk.",steps:["Blend ½ cup cottage cheese until smooth (optional but makes it creamier).","Lay a large flour tortilla flat. Spread blended cottage cheese evenly.","Add scrambled eggs, sliced avocado, and a pinch of salt and pepper.","Fold sides in, roll tightly like a burrito.","Optional: toast in a dry pan 1-2 min each side for a crispy wrap."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Wrap de Requesón",health_es:"El requesón es uno de los alimentos más ricos en proteína y bajos en calorías — una taza tiene 25g de proteína con procesamiento mínimo. La proteína alta apoya el control del azúcar en sangre, reduciendo el riesgo de diabetes tipo 2.",steps_es:["Licúa ½ taza de requesón hasta obtener una textura suave.","Extiende el requesón sobre una tortilla grande.","Añade huevos revueltos, aguacate en rodajas y sal y pimienta.","Dobla los lados y enrolla apretado como un burrito.","Opcional: tuesta en sartén seco 1-2 min por lado para que quede crujiente."]},
+  "chopped-salad-sandwich":{emoji:"🥪",name:"Chopped Salad Sandwich",cuisine:"western",region:"european",count:5,cost:"$4.80",time:"15 min",badge:"Low processed food",bc:"cbc",trending:true,health:"This viral sandwich chops all ingredients together so every bite has everything — more vegetables per bite than a regular sandwich. Romaine, cucumber, and tomatoes pack antioxidants and fiber linked to reduced cancer and cardiovascular disease risk.",steps:["Finely chop romaine lettuce, cucumber, cherry tomatoes, red onion, and pepperoncini.","Mix chopped veggies with 1 tbsp olive oil, 1 tbsp red wine vinegar, salt, pepper, and oregano.","Add 2-3 slices of turkey or salami to the mix and chop together.","Open a hoagie roll and stuff generously with the chopped mixture.","Top with a sprinkle of parmesan. Eat immediately so it stays crispy."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Sándwich de Ensalada Picada",health_es:"Este sándwich viral pica todos los ingredientes juntos para que cada bocado tenga de todo — más verduras por bocado que un sándwich regular. La lechuga romana, el pepino y los tomates aportan antioxidantes y fibra.",steps_es:["Pica finamente lechuga romana, pepino, tomates cherry, cebolla morada y pepperoncini.","Mezcla las verduras con aceite de oliva, vinagre de vino tinto, sal, pimienta y orégano.","Añade 2-3 rebanadas de pavo o salami a la mezcla y pica junto.","Abre un pan hoagie y rellena generosamente con la mezcla picada.","Espolvorea con parmesano. Come inmediatamente para que quede crujiente."]},
+  "snickers-yogurt-bowl":{emoji:"🍫",name:"\"Snickers\" Yogurt Bowl",cuisine:"western",region:"european",count:5,cost:"$4.20",time:"5 min",badge:"Diabetes-friendly",bc:"cbd",trending:true,health:"Greek yogurt has 15-20g of protein per cup with no added sugar. This viral dessert satisfies sweet cravings without the 250+ calories and 27g of sugar in a real Snickers bar. Dark chocolate and peanuts add antioxidants and healthy fats.",steps:["Add 1 cup plain Greek yogurt to a bowl.","Drizzle 1 tbsp natural peanut butter over the yogurt.","Add a small drizzle of honey (½ tsp — keep it minimal).","Chop 2-3 Medjool dates and scatter on top (these replace caramel).","Finish with a few dark chocolate chips and crushed peanuts."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Bowl de Yogur \\\"Snickers\\\"",health_es:"El yogur griego tiene 15-20g de proteína por taza sin azúcar añadida. Este postre viral satisface el antojo sin las 250+ calorías y 27g de azúcar de una barra Snickers real.",steps_es:["Coloca 1 taza de yogur griego natural en un bowl.","Rocía 1 cda de mantequilla de maní natural sobre el yogur.","Añade un pequeño toque de miel (½ cdta — mantén mínimo).","Pica 2-3 dátiles Medjool y coloca encima (reemplazan el caramelo).","Termina con unos trocitos de chocolate oscuro y cacahuates triturados."]},
+  "big-mac-tacos":{emoji:"🌮",name:"High-Protein Big Mac Tacos",cuisine:"western",region:"european",count:5,cost:"$5.80",time:"20 min",badge:"Low processed food",bc:"cbc",trending:true,health:"This viral recipe replaces the processed fast food version with lean ground beef and no ultra-processed bun. Making the \"Big Mac sauce\" at home cuts sodium by half compared to the restaurant version. Corn tortillas reduce refined carbs vs a white bun.",steps:["Brown ½ lb lean ground beef with garlic powder, onion powder, salt, and pepper.","Make the sauce: mix 2 tbsp Greek yogurt, 1 tbsp mustard, 1 tbsp ketchup, 1 tsp pickle juice, ½ tsp paprika.","Warm corn tortillas on the stove.","Layer: beef, shredded lettuce, diced white onion, pickles.","Drizzle with homemade Big Mac sauce. Top with sesame seeds."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Tacos Big Mac Altos en Proteína",health_es:"Esta receta viral reemplaza la versión de comida rápida procesada con carne molida magra y sin pan ultraprocesado. La salsa \\\"Big Mac\\\" casera reduce el sodio a la mitad en comparación con el restaurante.",steps_es:["Dora ½ lb de carne molida magra con ajo en polvo, cebolla en polvo, sal y pimienta.","Prepara la salsa: yogur griego, mostaza, ketchup, jugo de pepinillo y pimentón.","Calienta las tortillas de maíz en la estufa.","Rellena: carne, lechuga picada, cebolla blanca picada y pepinillos.","Rocía con la salsa Big Mac casera. Decora con semillas de sésamo."]},
+  "shaved-peach-dessert":{emoji:"🍑",name:"Shaved Peach Dessert",cuisine:"western",region:"european",count:3,cost:"$3.20",time:"5 min",badge:"Low processed food",bc:"cbc",trending:true,health:"Frozen and shaved fruit is one of the most naturally sweet, zero-processed desserts possible — no added sugar, no artificial ingredients. Peaches are high in vitamin C and antioxidants that support immune function and reduce inflammation linked to cancer.",steps:["Freeze 2 ripe peaches whole overnight (or use frozen peaches).","Use a microplane or cheese grater to shave the frozen peach directly into a bowl.","The result is a light, snow-like texture that melts on your tongue.","Add a drizzle of honey and a few fresh mint leaves.","Serve immediately — it melts fast!"],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Postre de Durazno Raspado",health_es:"La fruta congelada y raspada es uno de los postres más naturales y sin procesar posibles — sin azúcar añadida, sin ingredientes artificiales. Los duraznos son ricos en vitamina C y antioxidantes que reducen la inflamación.",steps_es:["Congela 2 duraznos maduros enteros toda la noche (o usa duraznos congelados).","Usa un rallador o microplane para raspar el durazno congelado directamente en un bowl.","El resultado es una textura ligera como nieve que se derrite en la lengua.","Añade un toque de miel y unas hojas de menta fresca.","Sirve inmediatamente — ¡se derrite rápido!"]},
+  "gut-health-bark":{emoji:"🍓",name:"Prebiotic Gut Health Bark",cuisine:"western",region:"european",count:4,cost:"$5.20",time:"70 min",badge:"Low processed food",bc:"cbc",trending:true,health:"Greek yogurt contains live probiotic cultures that feed good gut bacteria. Raw honey and berries add prebiotics — the fiber that probiotics feed on. A healthy gut microbiome is linked to reduced inflammation, better immune function, and lower colorectal cancer risk. Only 4 ingredients, zero processing.",steps:["Mix 2 cups Greek yogurt with ⅓ cup raw honey until smooth.","Squeeze in a little fresh lemon juice and mix.","Pour the mixture onto a parchment-lined baking sheet and spread evenly (about ½ inch thick).","Top generously with sliced strawberries and blueberries.","Freeze for at least 1 hour until solid. Break into pieces and serve straight from freezer."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Barra de Yogur Probiótico",health_es:"El yogur griego contiene cultivos probióticos vivos que alimentan las bacterias intestinales beneficiosas. La miel cruda y las frutas añaden prebióticos. Un microbioma intestinal saludable reduce la inflamación y el riesgo de cáncer colorrectal.",steps_es:["Mezcla 2 tazas de yogur griego con ⅓ taza de miel cruda hasta obtener una mezcla suave.","Exprime un poco de jugo de limón fresco y mezcla.","Vierte la mezcla en una bandeja cubierta con papel pergamino y extiende uniformemente.","Decora generosamente con fresas en rodajas y arándanos.","Congela al menos 1 hora hasta que esté sólido. Rompe en trozos y sirve directamente del congelador."]},
+  "kefir-smoothie":{emoji:"🥛",name:"Kefir Berry Smoothie",cuisine:"western",region:"european",count:4,cost:"$4.50",time:"5 min",badge:"Low processed food",bc:"cbc",trending:true,health:"Kefir contains up to 61 different strains of probiotic bacteria — far more than regular yogurt. In 2026, gut health is the #1 functional food trend, and kefir is one of the most scientifically backed options. Probiotics reduce inflammation linked to cardiovascular disease and colorectal cancer risk.",steps:["Add 1 cup plain kefir to a blender.","Add ½ cup frozen blueberries and ½ cup frozen strawberries.","Add 1 banana for natural sweetness and creaminess.","Add 1 tsp honey if desired — keep it minimal.","Blend until smooth. Drink immediately for maximum probiotic benefit."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Smoothie de Kéfir con Frutas",health_es:"El kéfir contiene hasta 61 cepas diferentes de bacterias probióticas. En 2026, la salud intestinal es la tendencia #1 en alimentación funcional, y el kéfir es una de las opciones más respaldadas científicamente.",steps_es:["Añade 1 taza de kéfir natural a una licuadora.","Añade ½ taza de arándanos congelados y ½ taza de fresas congeladas.","Añade 1 banana para dulzor y cremosidad natural.","Añade 1 cdta de miel si deseas — mantén mínimo.","Licúa hasta obtener una mezcla suave. Bebe inmediatamente para mayor beneficio probiótico."]},
+  "turmeric-golden-oats":{emoji:"🌿",name:"Golden Turmeric Oats",cuisine:"western",region:"european",count:5,cost:"$3.20",time:"10 min",badge:"Heart-healthy",bc:"cbh",trending:true,health:"Turmeric contains curcumin, one of the most studied anti-inflammatory compounds in nutrition research. Combined with oats (which lower LDL cholesterol via beta-glucan), this breakfast targets both cardiovascular disease and cancer prevention simultaneously. Black pepper increases curcumin absorption by 2000%.",steps:["Cook ½ cup rolled oats with 1 cup low-fat milk or water.","Stir in ½ tsp turmeric, ¼ tsp cinnamon, and a pinch of black pepper.","Sweeten with 1 tsp honey.","Top with sliced banana and a small handful of walnuts.","Optional: add a few blueberries for extra antioxidants."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Avena Dorada con Cúrcuma",health_es:"La cúrcuma contiene curcumina, uno de los compuestos antiinflamatorios más estudiados en nutrición. Combinada con avena (que reduce el colesterol LDL), este desayuno ataca simultáneamente la enfermedad cardiovascular y la prevención del cáncer.",steps_es:["Cocina ½ taza de avena en 1 taza de leche descremada o agua.","Agrega ½ cdta de cúrcuma, ¼ cdta de canela y una pizca de pimienta negra.","Endulza con 1 cdta de miel.","Decora con banana en rodajas y un pequeño puñado de nueces.","Opcional: añade algunos arándanos para antioxidantes extra."]},
+  "edamame-protein-bowl":{emoji:"🫛",name:"Edamame Protein Power Bowl",cuisine:"asian",region:"asian",count:5,cost:"$5.50",time:"15 min",badge:"Diabetes-friendly",bc:"cbd",trending:true,health:"Edamame is one of the only plant foods that is a complete protein — containing all 9 essential amino acids. With 17g protein per cup and a low glycemic index, it is a top 2026 trend for blood sugar management. Unlike processed plant burgers, edamame has zero additives.",steps:["Cook 1 cup frozen shelled edamame in boiling water 3-5 min; drain.","Cook ½ cup brown rice or quinoa.","Slice ½ avocado and prepare shredded carrots and cucumber.","Arrange everything in a bowl.","Dress with 1 tbsp low-sodium soy sauce, 1 tsp sesame oil, and lime juice."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Bowl de Edamame Rico en Proteína",health_es:"La edamame es uno de los pocos alimentos vegetales que es una proteína completa — contiene los 9 aminoácidos esenciales. Con 17g de proteína por taza y un índice glucémico bajo, es una tendencia top de 2026 para el manejo del azúcar en sangre.",steps_es:["Cocina 1 taza de edamame congelado pelado en agua hirviendo 3-5 min; escurre.","Cocina ½ taza de arroz integral o quinoa.","Corta ½ aguacate y prepara zanahorias ralladas y pepino.","Organiza todo en un bowl.","Aliña con salsa de soya baja en sodio, aceite de sésamo y jugo de limón."]},
+  "shiitake-miso-bowl":{emoji:"🍄",name:"Shiitake Mushroom & Miso Rice Bowl",cuisine:"japanese",region:"asian",count:4,cost:"$5.20",time:"20 min",badge:"Low processed food",bc:"cbc",trending:true,health:"Shiitake mushrooms contain beta-glucans — compounds studied for immune support and cancer prevention. Functional mushrooms are one of the biggest 2026 food trends, backed by growing clinical evidence. Miso adds probiotics for gut health. Zero processed ingredients.",steps:["Slice 1 cup fresh shiitake mushrooms; sauté in 1 tbsp sesame oil 5-7 min until golden.","Cook 1 cup brown rice.","Dissolve 1 tbsp white miso in 3 tbsp warm water to make a sauce.","Assemble: rice in bowl, mushrooms on top, drizzle with miso sauce.","Garnish with green onion, sesame seeds, and a soft-boiled egg if desired."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Bowl de Champiñones Shiitake y Miso",health_es:"Los champiñones shiitake contienen beta-glucanos — compuestos estudiados para el apoyo inmune y la prevención del cáncer. Los champiñones funcionales son una de las grandes tendencias de 2026. El miso añade probióticos para la salud intestinal.",steps_es:["Corta 1 taza de champiñones shiitake frescos; saltea en 1 cda de aceite de sésamo 5-7 min hasta dorar.","Cocina 1 taza de arroz integral.","Disuelve 1 cda de miso blanco en 3 cdas de agua tibia para hacer una salsa.","Ensambla: arroz en el bowl, champiñones encima, rocía con salsa de miso.","Decora con cebollín, semillas de sésamo y un huevo cocido si deseas."]},
+  "walnut-berry-oatmeal":{emoji:"🫐",name:"Walnut & Blueberry Oatmeal",cuisine:"western",region:"european",count:4,cost:"$3.80",time:"10 min",badge:"Heart-healthy",bc:"cbh",trending:true,health:"Blueberries are now the #1 ingredient consumers associate with brain health in 2026, beating matcha and turmeric. Walnuts are the only nut with significant omega-3 fatty acids, proven to reduce cardiovascular disease risk. Together, this bowl targets heart health and cognitive function simultaneously.",steps:["Cook ½ cup rolled oats in 1 cup water or low-fat milk.","Stir in 1 tsp honey and a pinch of cinnamon.","Top with ½ cup fresh or frozen blueberries.","Add a small handful of roughly chopped walnuts (about 7-8 walnuts).","Optional: add 1 tbsp ground flaxseed for extra fiber and omega-3."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Avena con Nueces y Arándanos",health_es:"Los arándanos son el ingrediente #1 que los consumidores asocian con la salud cerebral en 2026. Las nueces son la única nuez con ácidos grasos omega-3 significativos, probados para reducir el riesgo de enfermedades cardiovasculares.",steps_es:["Cocina ½ taza de avena en 1 taza de agua o leche descremada.","Agrega 1 cdta de miel y una pizca de canela.","Decora con ½ taza de arándanos frescos o congelados.","Añade un pequeño puñado de nueces picadas (unas 7-8 nueces).","Opcional: añade 1 cda de linaza molida para fibra y omega-3 extra."]},
+  "fiber-lentil-bowl":{emoji:"🥣",name:"Fibermaxxing Lentil Bowl",cuisine:"western",region:"european",count:5,cost:"$4.20",time:"20 min",badge:"Diabetes-friendly",bc:"cbd",trending:true,health:"\"Fibermaxxing\" is the #1 expert-recommended nutrition trend of 2026 — maximizing fiber intake to reduce colorectal cancer risk (which is rising in young adults), improve digestion, and stabilize blood sugar. This bowl packs 18g+ of fiber per serving from three different sources.",steps:["Cook ½ cup red lentils in 1.5 cups water until soft, 15 min.","Meanwhile, roast ½ cup canned chickpeas with olive oil and paprika at 400°F for 15 min.","Chop kale or spinach and massage with a little olive oil and lemon juice.","Assemble: greens at base, lentils in center, crispy chickpeas on top.","Dress with tahini sauce: 1 tbsp tahini + 1 tbsp lemon juice + water to thin."],si:[["Main ingredients","$3.99","$4.49","$3.79"],["Seasonings & spices","$1.99","$2.29","$1.79"],["Fresh produce","$2.49","$2.79","$2.29"]],name_es:"Bowl de Lentejas Rico en Fibra",health_es:"\\\"Fibermaxxing\\\" es la tendencia #1 recomendada por expertos en nutrición en 2026 — maximizar la ingesta de fibra para reducir el riesgo de cáncer colorrectal. Este bowl aporta 18g+ de fibra por porción de tres fuentes diferentes.",steps_es:["Cocina ½ taza de lentejas rojas en 1.5 tazas de agua hasta que estén suaves, 15 min.","Mientras tanto, tuesta ½ taza de garbanzos enlatados con aceite de oliva y pimentón a 200°C durante 15 min.","Pica col rizada o espinacas y masajea con un poco de aceite de oliva y jugo de limón.","Ensambla: verduras en la base, lentejas en el centro, garbanzos crujientes encima.","Aliña con salsa tahini: tahini + jugo de limón + agua para aligerar."]}
+};
+
+// ── STORES DATA ──
+const STORES = [
+  {id:'heb',name:'H-E-B',dist:'0.8 mi',addr:'E 7th St',hours:'6am–11pm',ebt:true,wic:true,sale:true,sales:[{item:'🥦 Broccoli',price:'$0.99/lb'},{item:'🍅 Tomatoes',price:'$1.29/lb'},{item:'🥚 Eggs (12-pk)',price:'$2.49'},{item:'🍌 Bananas',price:'$0.29/lb'},{item:'🔪 Chicken breast',price:'$2.49/lb'},{item:'🍎 Apples (3lb)',price:'$3.99'},{item:'🫘 Black beans',price:'$0.79'},{item:'🧅 Onions (3lb)',price:'$1.99'}],about:'Texas-based grocery chain with excellent produce. Accepts EBT, SNAP, and WIC.'},
+  {id:'fiesta',name:'Fiesta Mart',dist:'1.2 mi',addr:'E Cesar Chavez',hours:'7am–10pm',ebt:true,wic:false,sale:true,sales:[{item:'🌽 Corn tortillas',price:'$1.19'},{item:'🫘 Black beans',price:'$0.79'},{item:'🧅 Onions',price:'$0.49/lb'},{item:'🍋 Limes 5-pk',price:'$1.00'},{item:'🌶️ Jalapeños',price:'$0.89/lb'}],about:'Specializes in Latin American groceries. Spanish-speaking staff. EBT/SNAP accepted.'},
+  {id:'walmart',name:'Walmart Neighborhood',dist:'2.1 mi',addr:'Rundberg Ln',hours:'Open 24hrs',ebt:true,wic:true,sale:false,sales:[{item:'🥫 Canned tuna',price:'$1.09'},{item:'🍚 Brown rice (2lb)',price:'$2.29'},{item:'🫙 Greek yogurt',price:'$1.39'},{item:'🥛 Milk (gallon)',price:'$3.49'}],about:'Open 24 hours. Best for bulk staples and store brands. EBT, SNAP, and WIC accepted.'},
+  {id:'farmers',name:'E Austin Farmers Market',dist:'0.5 mi',addr:'Boggy Creek Farm',hours:'Sat 9am–1pm',ebt:true,wic:false,sale:false,sales:[{item:'🥬 Seasonal greens',price:'~$3.00'},{item:'🍅 Heirloom tomatoes',price:'~$4.00/lb'},{item:'🥚 Farm eggs (dozen)',price:'~$6.00'}],about:'SNAP 2x Match — spend $10 EBT, get $20 in produce tokens. Cash and EBT accepted.'},
+  {id:'wheatsville',name:'Wheatsville Food Co-op',dist:'3.2 mi',addr:'Guadalupe St',hours:'7am–11pm',ebt:true,wic:false,sale:false,sales:[{item:'🥦 Organic broccoli',price:'$2.49/lb'},{item:'🌾 Bulk oats',price:'$1.29/lb'},{item:'🫘 Bulk lentils',price:'$1.79/lb'}],about:'Community-owned co-op with bulk foods. Great for buying exactly what you need. EBT accepted.'},
+  {id:'target',name:'Target (with grocery)',dist:'2.8 mi',addr:'E Ben White Blvd',hours:'8am–10pm',ebt:false,wic:false,sale:true,sales:[{item:'🥚 Eggs (12-pk)',price:'$2.79'},{item:'🍞 Good Gather bread',price:'$2.99'},{item:'🍗 Rotisserie chicken',price:'$4.99'}],about:'Good Gather store brand for grocery items. Does not accept EBT/SNAP or WIC.'}
+];
+
+// ── STATE ──
+let UP = JSON.parse(localStorage.getItem('carefed_profile')||'null') || {age:'',household:1,condition:'None',budget:'',location:'',radius:2000,ebt:false,wic:false,transport:'Walking',avoid:[],language:'English',lat:null,lng:null};
+let saved = JSON.parse(localStorage.getItem('carefed_saved')||'{}');
+let chatHistory = [];
+let isLoading = false;
+let scanTags = [];
+let currentRegion = 'all';
+let currentSub = 'all';
+let currentSearch = '';
+let currentCount = 'any';
+let currentHealth = 'all';
+let currentQuick = 'all';
+let storeFilters = {ebt:false,wic:false,sale:false};
+let currentDetailId = null;
+let ratings = JSON.parse(localStorage.getItem('carefed_ratings')||'{}');
+let aiDailyRecipes = [];
+
+const REGION_SUBS = {
+  asian:[{key:'all-asian',label:'🥢 All'},{key:'korean',label:'🇰🇷 Korean'},{key:'chinese',label:'🇨🇳 Chinese'},{key:'japanese',label:'🇯🇵 Japanese'},{key:'indian',label:'🇮🇳 Indian'},{key:'thai',label:'🇹🇭 Thai'}],
+  european:[{key:'all-european',label:'🇪🇺 All'},{key:'italian',label:'🇮🇹 Italian'},{key:'french',label:'🇫🇷 French'},{key:'spanish',label:'🇪🇸 Spanish'},{key:'western',label:'🍽️ Western'}],
+  latin:[{key:'all-latin',label:'🌎 All'},{key:'mexican',label:'🌮 Mexican'},{key:'peruvian',label:'🇵🇪 Peruvian'}],
+  mediterranean:[{key:'all-mediterranean',label:'🫒 All'},{key:'middle-eastern',label:'🌙 Middle Eastern'},{key:'greek',label:'🇬🇷 Greek'}]
+};
+
+// ── API CALL ──
+async function callClaude(body) {
+  const res = await fetch('/api/claude', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({model:'claude-sonnet-4-6', max_tokens:1000, ...body})
+  });
+  return await res.json();
+}
+
+// ── AI DAILY RECIPES ──
+async function loadDailyRecipes(force=false) {
+  const today = new Date().toDateString();
+  const cached = JSON.parse(localStorage.getItem('carefed_daily')||'null');
+  if(!force && cached && cached.date === today && cached.recipes?.length > 0) {
+    aiDailyRecipes = cached.recipes;
+    renderDailyList();
+    return;
+  }
+  document.getElementById('daily-loading').style.display = 'flex';
+  document.getElementById('daily-list').innerHTML = '';
+  const lang = UP.language === 'Español';
+  try {
+    const conditions = UP.condition !== 'None' ? UP.condition : 'general health';
+
+    const avoidList = (UP.avoid||[]).join(', ') || 'none';
+    const age = UP.age || 20;
+    const household = UP.household || 1;
+    const hasEbt = UP.ebt || UP.wic;
+    const budgetNote = hasEbt ? 'User has EBT/SNAP benefits — prioritize budget-friendly options under $5.' : `Budget: ${UP.budget} for ${household} person(s).`;
+    const ageNote = age <= 22 ? 'User is a college student — prefer quick, trendy recipes.' : age >= 55 ? 'User is older — prefer heart-healthy, easy-to-digest recipes.' : '';
+    const prompt = lang
+      ? `Eres Carefed AI. Genera 6 recetas saludables únicas. Edad: ${age}. ${household} persona(s). ${hasEbt?'Tiene EBT/SNAP — recetas económicas bajo $5.':'Presupuesto: '+UP.budget+'.'} Condición: ${conditions}. EVITAR: ${avoidList}. ${ageNote} Prioriza según condición y presupuesto. Responde SOLO con JSON array: [{"emoji":"🍳","name":"Nombre","cuisine":"korean","badge":"Apto para diabetes","cost":"$4.50","time":"15 min","count":3,"health":"Por qué es saludable en 2 frases.","steps":["paso 1","paso 2","paso 3","paso 4"],"ingredients":["ingrediente 1","ingrediente 2","ingrediente 3"]}]`
+      : `You are Carefed AI. Generate 6 unique healthy recipes. User age: ${age}. Household: ${household} person(s). ${budgetNote} Health condition: ${conditions}. AVOID ingredients: ${avoidList}. ${ageNote} Prioritize recipes matching their health condition and budget. Reply ONLY with JSON array: [{"emoji":"🍳","name":"Recipe Name","cuisine":"korean","badge":"Diabetes-friendly","cost":"$4.50","time":"15 min","count":3,"health":"Why healthy in 2 sentences.","steps":["step 1","step 2","step 3","step 4"],"ingredients":["ingredient 1","ingredient 2","ingredient 3"]}]`;
+
+    const data = await callClaude({messages:[{role:'user',content:prompt}]});
+    const raw = data.content?.[0]?.text || '[]';
+    const recipes = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    aiDailyRecipes = recipes.map((r,i) => ({...r, id:'daily-'+Date.now()+i, ai:true}));
+    localStorage.setItem('carefed_daily', JSON.stringify({date:today, recipes:aiDailyRecipes}));
+    renderDailyList();
+  } catch(e) {
+    // Retry once after 2 seconds
+    setTimeout(async () => {
+      try {
+        const data2 = await callClaude({messages:[{role:'user',content:prompt}]});
+        const raw2 = data2.content?.[0]?.text || '[]';
+        const recipes2 = JSON.parse(raw2.replace(/```json|```/g,'').trim());
+        aiDailyRecipes = recipes2.map((r,i) => ({...r, id:'daily-'+Date.now()+i, ai:true}));
+        localStorage.setItem('carefed_daily', JSON.stringify({date:today, recipes:aiDailyRecipes}));
+        renderDailyList();
+        document.getElementById('daily-loading').style.display = 'none';
+      } catch(e2) {
+        document.getElementById('daily-list').innerHTML = '<p style="color:var(--t3);font-size:13px;padding:4px 0">Could not load AI recipes right now.</p>';
+        document.getElementById('daily-loading').style.display = 'none';
+      }
+    }, 2000);
+    return;
+  }
+  document.getElementById('daily-loading').style.display = 'none';
+}
+
+function renderDailyList() {
+  const list = document.getElementById('daily-list');
+  if(!aiDailyRecipes.length) return;
+  const filtered = currentSearch
+    ? aiDailyRecipes.filter(r => (r.name+r.cuisine+r.badge).toLowerCase().includes(currentSearch))
+    : aiDailyRecipes;
+  list.innerHTML = filtered.map(r => renderCard(r.id, r)).join('');
+}
+
+// ── RENDER CARD ──
+function renderCard(id, rObj) {
+  const r = rObj || R[id];
+  if(!r) return '';
+  const isLiked = !!saved[id];
+  const isEs = UP.language === 'Español';
+  const name = isEs && r.name_es ? r.name_es : r.name;
+  const badge = r.badge || '';
+  const badgeClass = badge.includes('Diabetes') ? 'cbd' : badge.includes('Heart') ? 'cbh' : 'cbc';
+  return `<div class="rc" onclick="showRecipe('${id}',${rObj?'true':'false'})">
+    <div class="re">${r.emoji}</div>
+    <div class="ri">
+      <div class="rn">${name}${r.trending?'<span style="font-size:10px;background:#fff3e0;color:#e65100;padding:2px 5px;border-radius:5px;font-weight:700;margin-left:5px">🔥 Trending</span>':''}</div>
+      <div class="rm"><span>${r.count||'?'} ingredients</span><div class="md"></div><span>${r.cost||'?'}</span><div class="md"></div><span>${r.time||'?'}</span></div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap">
+        <div class="cb ${badgeClass}">✓ ${badge}</div>
+        ${ratings[id]>0?`<span style="font-size:11px;color:#f59e0b;font-weight:600">${'⭐'.repeat(ratings[id])}</span>`:''}
+      </div>
+    </div>
+    <button class="hbtn" onclick="event.stopPropagation();toggleSave('${id}',${rObj?JSON.stringify(rObj):'null'})" id="heart-${id}">${isLiked?'❤️':'🤍'}</button>
+  </div>`;
+}
+
+// ── SHOW RECIPE ──
+function showRecipe(id, isAI=false) {
+  let r = R[id];
+  if(!r) r = aiDailyRecipes.find(x=>x.id===id);
+  if(!r) r = JSON.parse(localStorage.getItem('saved_recipe_'+id)||'null');
+  if(!r) return;
+  currentDetailId = id;
+  const isEs = UP.language === 'Español';
+  const name = isEs && r.name_es ? r.name_es : r.name;
+  const health = isEs && r.health_es ? r.health_es : (r.health || '');
+  const steps = isEs && r.steps_es ? r.steps_es : (r.steps || []);
+  const badge = r.badge || '';
+  const badgeClass = badge.includes('Diabetes') ? 'cbd' : badge.includes('Heart') ? 'cbh' : 'cbc';
+
+  document.getElementById('d-emoji').textContent = r.emoji;
+  document.getElementById('d-name').textContent = name;
+  document.getElementById('d-health').textContent = health;
+  document.getElementById('ai-badge-d').innerHTML = (r.ai||isAI) ? '<div class="aibadge">✨ AI Generated</div>' : '';
+  const abd2 = document.getElementById('ai-badge-d2');
+  if(abd2) abd2.innerHTML = (r.ai||isAI) ? '<div class="aibadge">✨ AI Generated</div>' : '';
+  document.getElementById('d-save-btn').textContent = saved[id] ? '❤️' : '🤍';
+  document.getElementById('d-badges').innerHTML = `<span style="font-size:12px;font-weight:600;padding:4px 9px;border-radius:7px;background:rgba(255,255,255,.15);color:rgba(255,255,255,.9)">${r.count||''} ingredients</span><span style="font-size:12px;font-weight:600;padding:4px 9px;border-radius:7px;background:rgba(255,255,255,.15);color:rgba(255,255,255,.9)">${r.cost||''}</span><span style="font-size:12px;font-weight:600;padding:4px 9px;border-radius:7px;background:rgba(255,255,255,.15);color:rgba(255,255,255,.9)">${r.time||''}</span>`;
+  document.getElementById('d-steps').innerHTML = steps.map((s,i)=>`<div class="step"><div class="snum">${i+1}</div><p style="font-size:14px;color:var(--t2);line-height:1.5;padding-top:2px">${s}</p></div>`).join('');
+
+  // Store items
+  const si = r.si || r.storeItems || [];
+  document.getElementById('d-stores').innerHTML = si.length ? ['H-E-B','Fiesta Mart','Walmart'].map((storeName,si_idx)=>`
+    <div style="background:#fff;border-radius:var(--rs2);padding:13px;margin-bottom:9px;box-shadow:0 1px 3px rgba(0,0,0,.06)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+        <span style="font-size:14px;font-weight:600;color:var(--tx)">${storeName}</span>
+        <span style="font-size:11px;font-weight:700;padding:2px 7px;border-radius:5px;background:var(--gp);color:var(--gm)">EBT ✓</span>
+      </div>
+      ${si.map(item=>`<div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid var(--bd)"><span style="color:var(--t2)">${item[0]}</span><span style="font-weight:600;color:var(--tx)">${item[si_idx+1]||'~'}</span></div>`).join('')}
+    </div>`).join('') : '<p style="color:var(--t3);font-size:13px">Store info not available for this recipe.</p>';
+
+  // Preferences
+  document.getElementById('pref-conditions').innerHTML = (UP.condition||'None').split(', ').map(c=>`<div class="pchip on" style="margin:3px">${c}</div>`).join('');
+  document.getElementById('pref-avoid').innerHTML = (UP.avoid||[]).length ? UP.avoid.map(a=>`<div class="pchip ex" style="margin:3px">🚫 ${a}</div>`).join('') : '<p style="font-size:13px;color:var(--t3)">None</p>';
+
+  // Render star rating
+  renderStars(id, ratings[id]||0);
+
+  // Show overlay
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.tc').forEach(c=>c.classList.remove('on'));
+  document.querySelector('#detail-overlay .tbtn').classList.add('on');
+  document.getElementById('dtab-recipe').classList.add('on');
+  document.getElementById('detail-overlay').style.display = 'block';
+
+  // Back button
+  document.getElementById('detail-back').onclick = () => {
+    document.getElementById('detail-overlay').style.display = 'none';
+  };
+}
+
+function showDetailTab(tab, btn) {
+  document.querySelectorAll('#detail-overlay .tbtn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('#detail-overlay .tc').forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('dtab-'+tab).classList.add('on');
+}
+
+function toggleSaveDetail() {
+  if(!currentDetailId) return;
+  toggleSave(currentDetailId, null);
+  document.getElementById('d-save-btn').textContent = saved[currentDetailId] ? '❤️' : '🤍';
+}
+
+// ── SAVE / HEART ──
+function toggleSave(id, rObj) {
+  if(saved[id]) {
+    delete saved[id];
+    localStorage.removeItem('saved_recipe_'+id);
+  } else {
+    const r = rObj || R[id] || aiDailyRecipes.find(x=>x.id===id);
+    saved[id] = {savedAt:Date.now()};
+    if(r) localStorage.setItem('saved_recipe_'+id, JSON.stringify(r));
+  }
+  localStorage.setItem('carefed_saved', JSON.stringify(saved));
+  const btn = document.getElementById('heart-'+id);
+  if(btn) btn.textContent = saved[id] ? '❤️' : '🤍';
+  const dbtn = document.getElementById('d-save-btn');
+  if(dbtn && currentDetailId===id) dbtn.textContent = saved[id] ? '❤️' : '🤍';
+  if(Object.keys(saved).length >= 2) {
+    document.getElementById('ai-recs-sec').style.display = 'block';
+    genAIRecs();
+  }
+  renderSaved();
+}
+
+// ── HOME FILTERS ──
+function getFilteredIds() {
+  return Object.keys(R).filter(id => {
+    const r = R[id];
+    if(r.ai) return false;
+    if(currentSearch && !(r.name+r.cuisine+r.badge+(r.name_es||'')).toLowerCase().includes(currentSearch)) return false;
+    if(currentCount !== 'any' && r.count !== parseInt(currentCount)) return false;
+    if(currentHealth !== 'all' && r.badge !== currentHealth) return false;
+    if(currentQuick === 'quick' && parseInt(r.time) > 15) return false;
+    if(currentQuick === 'budget' && parseFloat(r.cost.replace('$','')) > 4) return false;
+    if(currentQuick === 'plant') {
+      const kw = ['bean','lentil','tofu','veggie','vegetable','chickpea','spinach','potato','tomato','rice','noodle','salad','soup','oat','edamame','mushroom','kefir'];
+      if(!kw.some(k=>r.name.toLowerCase().includes(k))) return false;
+    }
+    if(currentRegion !== 'all' && r.region !== currentRegion) return false;
+    if(currentSub !== 'all' && !currentSub.startsWith('all-') && r.cuisine !== currentSub) return false;
+    return true;
+  });
+}
+
+// ── RATING SYSTEM ──
+const RATING_LABELS = ['', 'Did not like', 'It was okay', 'Pretty good', 'Really liked it', 'Absolutely loved it!'];
+const RATING_EMOJIS = ['', '😞', '😐', '🙂', '😊', '🤩'];
+
+function renderStars(recipeId, current=0) {
+  const el = document.getElementById('star-display');
+  const fb = document.getElementById('rating-feedback');
+  if(!el) return;
+  el.innerHTML = [1,2,3,4,5].map(n => `
+    <span onclick="rateRecipe('${recipeId}',${n})"
+      style="font-size:28px;cursor:pointer;transition:transform .1s;display:inline-block"
+      onmouseover="previewRating(${n})"
+      onmouseout="renderStars('${recipeId}',${ratings[recipeId]||0})"
+    >${n <= current ? '⭐' : '☆'}</span>
+  `).join('');
+  if(current > 0 && fb) {
+    fb.innerHTML = `${RATING_EMOJIS[current]} ${RATING_LABELS[current]}`;
+    fb.style.color = 'var(--gm)';
+    fb.style.fontWeight = '600';
+  }
+}
+
+function previewRating(n) {
+  const el = document.getElementById('star-display');
+  if(!el) return;
+  el.querySelectorAll('span').forEach((s,i) => {
+    s.textContent = i < n ? '⭐' : '☆';
+  });
+}
+
+function rateRecipe(id, stars) {
+  ratings[id] = stars;
+  localStorage.setItem('carefed_ratings', JSON.stringify(ratings));
+  renderStars(id, stars);
+  const fb = document.getElementById('rating-feedback');
+  if(fb) {
+    fb.innerHTML = `${RATING_EMOJIS[stars]} ${RATING_LABELS[stars]} — saved!`;
+    fb.style.color = 'var(--gm)';
+    fb.style.fontWeight = '600';
+  }
+  // Auto-save recipe if rated 4+
+  if(stars >= 4 && !saved[id]) {
+    const r = R[id] || aiDailyRecipes.find(x=>x.id===id) || JSON.parse(localStorage.getItem('saved_recipe_'+id)||'null');
+    if(r) {
+      saved[id] = {savedAt:Date.now()};
+      localStorage.setItem('carefed_saved', JSON.stringify(saved));
+      localStorage.setItem('saved_recipe_'+id, JSON.stringify(r));
+      const hbtn = document.getElementById('heart-'+id);
+      if(hbtn) hbtn.textContent = '❤️';
+      const dbtn = document.getElementById('d-save-btn');
+      if(dbtn) dbtn.textContent = '❤️';
+    }
+  }
+  // Re-render home with updated scores after a moment
+  setTimeout(()=>renderHome(), 300);
+}
+
+function getRatingScore(id) {
+  return ratings[id] || 0;
+}
+
+function getRelatedIds(ratedIds) {
+  // Find cuisines and badges of highly rated recipes
+  const highRated = ratedIds.filter(id => (ratings[id]||0) >= 4);
+  const lowRated = ratedIds.filter(id => (ratings[id]||0) <= 2);
+  const likedCuisines = highRated.map(id => {
+    const r = R[id]||JSON.parse(localStorage.getItem('saved_recipe_'+id)||'null');
+    return r?.cuisine;
+  }).filter(Boolean);
+  const likedBadges = highRated.map(id => {
+    const r = R[id]||JSON.parse(localStorage.getItem('saved_recipe_'+id)||'null');
+    return r?.badge;
+  }).filter(Boolean);
+  const dislikedCuisines = lowRated.map(id => {
+    const r = R[id]||JSON.parse(localStorage.getItem('saved_recipe_'+id)||'null');
+    return r?.cuisine;
+  }).filter(Boolean);
+  return { likedCuisines, likedBadges, dislikedCuisines };
+}
+
+function renderTodaysPicks() {
+  const list = document.getElementById('daily-list');
+  if(!list) return;
+  const allIds = Object.keys(R).filter(id => !R[id].ai);
+  const personalizedIds = getPersonalizedIds(allIds);
+  const picks = [];
+  const usedBadges = new Set();
+  for(const id of personalizedIds) {
+    if(picks.length >= 4) break;
+    const r = R[id];
+    if(!usedBadges.has(r.badge) || picks.length >= 3) {
+      picks.push(id);
+      usedBadges.add(r.badge);
+    }
+  }
+  const seed = new Date().getDate();
+  const shuffled = [...picks].sort((a,b)=>{
+    const ra=(R[a].name.charCodeAt(0)+seed)%7;
+    const rb=(R[b].name.charCodeAt(0)+seed)%7;
+    return ra-rb;
+  });
+  list.innerHTML = shuffled.length
+    ? shuffled.map(id=>renderCard(id)).join('')
+    : '<p style="color:var(--t3);font-size:13px;padding:4px 0">Complete your profile to get personalized picks!</p>';
+}
+
+function getPersonalizedIds(allIds) {
+  const avoid = (UP.avoid||[]).map(a=>a.toLowerCase());
+  const condition = (UP.condition||'').toLowerCase();
+  const age = parseInt(UP.age) || 20;
+  const budget = parseFloat((UP.budget||'$50').replace('$','').replace('/week','')) || 50;
+  const household = parseInt(UP.household) || 1;
+  const hasEbt = UP.ebt || UP.wic;
+  // Per-person weekly budget
+  const perPersonBudget = budget / household;
+
+  return allIds
+    .filter(id => {
+      const r = R[id];
+      // Remove recipes with avoided ingredients
+      if(avoid.length > 0) {
+        const recipeText = (r.name+' '+(r.health||'')+' '+(r.steps||[]).join(' ')).toLowerCase();
+        if(avoid.some(a => recipeText.includes(a))) return false;
+      }
+      return true;
+    })
+    .map(id => {
+      const r = R[id];
+      let score = 0;
+
+      // ── HEALTH CONDITION ──
+      if(condition.includes('diabetes') && r.badge==='Diabetes-friendly') score += 10;
+      if((condition.includes('cardiovascular')||condition.includes('heart')) && r.badge==='Heart-healthy') score += 10;
+      if(condition.includes('cancer') && r.badge==='Low processed food') score += 8;
+
+      // ── BUDGET / EBT ──
+      const cost = parseFloat((r.cost||'$5').replace('$','')) || 5;
+      if(perPersonBudget < 30 || hasEbt) {
+        // Very tight budget — heavily prefer cheap recipes
+        if(cost <= 3) score += 12;
+        else if(cost <= 4) score += 8;
+        else if(cost <= 5) score += 4;
+        else score -= 3;
+      } else if(perPersonBudget < 60) {
+        // Moderate budget
+        if(cost <= 4) score += 6;
+        else if(cost <= 6) score += 3;
+      }
+
+      // ── AGE-BASED ──
+      if(age >= 13 && age <= 22) {
+        // Teens/college: quick, simple, trending
+        if(r.trending) score += 6;
+        const mins = parseInt(r.time) || 30;
+        if(mins <= 15) score += 5;
+        if(r.count <= 4) score += 3;
+      } else if(age >= 23 && age <= 35) {
+        // Young adults: balanced health + variety
+        if(r.badge==='Low processed food') score += 4;
+        if(r.region==='asian' || r.region==='mediterranean') score += 2;
+      } else if(age >= 36 && age <= 55) {
+        // Mid-age: heart health, fiber, diabetes prevention
+        if(r.badge==='Heart-healthy') score += 6;
+        if(r.badge==='Diabetes-friendly') score += 4;
+      } else if(age > 55) {
+        // Older: heart, low sodium, easy to digest
+        if(r.badge==='Heart-healthy') score += 8;
+        if(r.badge==='Diabetes-friendly') score += 6;
+        const mins = parseInt(r.time) || 30;
+        if(mins <= 20) score += 4;
+      }
+
+      // ── HOUSEHOLD SIZE ──
+      if(household >= 3) {
+        // Bigger household → prefer recipes with more servings value
+        if(r.count >= 4) score += 3; // more ingredients = more filling
+        if(cost <= 5) score += 4; // value for money
+      }
+
+      // ── SAVED CUISINE PREFERENCE ──
+      const savedIds = Object.keys(saved);
+      if(savedIds.length > 0) {
+        const savedCuisines = savedIds.map(sid => {
+          const sr = R[sid]||JSON.parse(localStorage.getItem('saved_recipe_'+sid)||'null');
+          return sr?.cuisine;
+        }).filter(Boolean);
+        if(savedCuisines.includes(r.cuisine)) score += 5;
+      }
+
+      // ── RATING-BASED ──
+      const ratedIds = Object.keys(ratings);
+      if(ratedIds.length > 0) {
+        const { likedCuisines, likedBadges, dislikedCuisines } = getRelatedIds(ratedIds);
+        // Boost similar to liked
+        if(likedCuisines.includes(r.cuisine)) score += 8;
+        if(likedBadges.includes(r.badge)) score += 6;
+        // Penalize similar to disliked
+        if(dislikedCuisines.includes(r.cuisine)) score -= 5;
+        // Direct rating of this recipe
+        const myRating = ratings[id] || 0;
+        if(myRating >= 4) score += 15;
+        else if(myRating === 3) score += 5;
+        else if(myRating <= 2 && myRating > 0) score -= 10;
+      }
+
+      // ── TRENDING ──
+      if(r.trending) score += 2;
+
+      return { id, score };
+    })
+    .sort((a,b) => b.score - a.score)
+    .map(x => x.id);
+}
+
+function renderHome() {
+  const allIds = getFilteredIds();
+  const personalizedIds = getPersonalizedIds(allIds);
+
+  document.getElementById('recipe-list').innerHTML = personalizedIds.length
+    ? personalizedIds.map(id=>renderCard(id)).join('')
+    : '<p style="color:var(--t3);font-size:14px;padding:8px 0">No recipes found.</p>';
+
+  // Top rated section
+  const topRatedIds = Object.keys(ratings)
+    .filter(id => ratings[id] >= 4 && R[id])
+    .sort((a,b) => ratings[b]-ratings[a])
+    .slice(0,3);
+  const topSec = document.getElementById('top-rated-sec');
+  const topList = document.getElementById('top-rated-list');
+  if(topRatedIds.length > 0 && topSec && topList) {
+    topSec.style.display = 'block';
+    topList.innerHTML = topRatedIds.map(id=>renderCard(id)).join('');
+  } else if(topSec) {
+    topSec.style.display = 'none';
+  }
+
+  // Daily
+  renderDailyList();
+  genAIRecs();
+}
+
+function handleSearch(val) {
+  currentSearch = val.trim().toLowerCase();
+  document.getElementById('search-clear').style.display = currentSearch ? 'block' : 'none';
+  renderHome();
+}
+function clearSearch() {
+  currentSearch = '';
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-clear').style.display = 'none';
+  renderHome();
+}
+function selectRegion(r, el) {
+  currentRegion=r; currentSub='all';
+  document.querySelectorAll('#region-tabs .ftab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  const wrap=document.getElementById('sub-wrap');
+  const subEl=document.getElementById('sub-tabs');
+  if(r==='all'){wrap.style.display='none';subEl.innerHTML='';}
+  else{
+    const subs=REGION_SUBS[r]||[];
+    subEl.innerHTML=subs.map(s=>`<div class="ftab${s.key.startsWith('all-')?' on':''}" onclick="selectSub('${s.key}',this)">${s.label}</div>`).join('');
+    wrap.style.display='block';
+  }
+  renderHome();
+}
+function selectSub(sub,el){currentSub=sub;document.querySelectorAll('#sub-tabs .ftab').forEach(t=>t.classList.remove('on'));el.classList.add('on');renderHome();}
+function filterHealth(h,el){currentHealth=h;document.querySelectorAll('#health-tabs .ftab').forEach(t=>t.classList.remove('on'));el.classList.add('on');renderHome();}
+function filterQuick(q,el){currentQuick=q;document.querySelectorAll('#quick-tabs .ftab').forEach(t=>t.classList.remove('on'));el.classList.add('on');renderHome();}
+function filterCount(n,el){currentCount=n;document.querySelectorAll('#count-tabs .ftab').forEach(t=>t.classList.remove('on'));el.classList.add('on');renderHome();}
+
+function toggleFilters(){
+  const p=document.getElementById('filter-panel');
+  const open=p.style.display!=='none';
+  p.style.display=open?'none':'block';
+  document.getElementById('filter-arrow').textContent=open?'▼':'▲';
+}
+
+// ── SAVED ──
+function renderSaved(){
+  const ids=Object.keys(saved);
+  const list=document.getElementById('saved-list');
+  const empty=document.getElementById('empty-sv');
+  if(ids.length===0){list.innerHTML='';empty.style.display='block';document.getElementById('saved-sub').textContent=t('heartRecipes');}
+  else{
+    empty.style.display='none';
+    document.getElementById('saved-sub').textContent=`${ids.length} recipe${ids.length>1?'s':''} saved`;
+    list.innerHTML=ids.map(id=>{
+      const r=R[id]||JSON.parse(localStorage.getItem('saved_recipe_'+id)||'null');
+      return r?renderCard(id,r.ai?r:null):'';
+    }).filter(Boolean).join('');
+    renderInsight(ids);
+  }
+}
+function renderInsight(ids){
+  const cuisines=[...new Set(ids.map(id=>{const r=R[id]||JSON.parse(localStorage.getItem('saved_recipe_'+id)||'null');return r?.cuisine;}).filter(Boolean))];
+  const hasDiab=ids.some(id=>{const r=R[id]||JSON.parse(localStorage.getItem('saved_recipe_'+id)||'null');return r?.badge?.includes('Diabetes');});
+  const text=`Based on your ${ids.length} saved recipe${ids.length>1?'s':''}, you prefer ${cuisines.join(' & ')||'varied'} cuisine${hasDiab?' with focus on blood sugar management':''}.`;
+  document.getElementById('ins-container').innerHTML=`<div class="ins-box"><div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gl);margin-bottom:7px">✨ Your Food Profile</div><div style="font-size:13px;color:rgba(255,255,255,.9);line-height:1.5;margin-bottom:11px">${text}</div><button onclick="showMain('home')" style="padding:9px 15px;background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:var(--rs2);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer">Discover More Recipes</button></div>`;
+}
+function genAIRecs(){
+  const ids=Object.keys(saved);
+  if(ids.length<2) return;
+  const list=document.getElementById('ai-recs-list');
+  const allIds=Object.keys(R).filter(id=>!saved[id]&&!R[id].ai);
+  const savedRecipes=ids.map(id=>R[id]||JSON.parse(localStorage.getItem('saved_recipe_'+id)||'null')).filter(Boolean);
+  const cuisineCount={};
+  savedRecipes.forEach(r=>{if(r.cuisine)cuisineCount[r.cuisine]=(cuisineCount[r.cuisine]||0)+1;});
+  const topCuisine=Object.entries(cuisineCount).sort((a,b)=>b[1]-a[1])[0]?.[0];
+  const topBadge=savedRecipes.map(r=>r.badge).filter(Boolean).sort((a,b)=>savedRecipes.filter(r=>r.badge===b).length-savedRecipes.filter(r=>r.badge===a).length)[0];
+  const scored=allIds.map(id=>{
+    const r=R[id]; let sc=0;
+    if(r.cuisine===topCuisine)sc+=3;
+    if(r.badge===topBadge)sc+=2;
+    if(r.trending)sc+=1;
+    if(UP.condition?.includes('Diabetes')&&r.badge==='Diabetes-friendly')sc+=2;
+    if(UP.condition?.includes('Cardiovascular')&&r.badge==='Heart-healthy')sc+=2;
+    return{id,sc};
+  }).sort((a,b)=>b.sc-a.sc).slice(0,3);
+  list.innerHTML=scored.map(({id})=>renderCard(id)).join('');
+}
+
+// ── STORE LOCATOR ──
+// Leaflet map
+let _map = null;
+let _markers = [];
+
+function initMap(lat, lng) {
+  if(_map) { _map.setView([lat,lng], 14); return; }
+  _map = L.map('store-map',{zoomControl:true}).setView([lat,lng],14);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'© OpenStreetMap contributors', maxZoom:19
+  }).addTo(_map);
+}
+
+function setMapMarkers(stores, userLat, userLng) {
+  if(!_map) return;
+  _markers.forEach(m=>m.remove());
+  _markers=[];
+  // User marker
+  if(userLat && userLng) {
+    const userIcon = L.divIcon({
+      html:'<div style="background:#1a3a2a;color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:16px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.4)">📍</div>',
+      iconSize:[30,30],iconAnchor:[15,15],className:''
+    });
+    const um = L.marker([userLat,userLng],{icon:userIcon}).addTo(_map).bindPopup('<b>Your location</b>');
+    _markers.push(um);
+  }
+  // Store markers
+  const bounds = userLat ? [[userLat,userLng]] : [];
+  stores.forEach(s=>{
+    if(!s.lat||!s.lng) return;
+    const icon = L.divIcon({
+      html:`<div style="background:#2d6a4f;color:#fff;border-radius:8px;padding:3px 7px;font-size:11px;font-weight:700;white-space:nowrap;border:1.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)">${s.name.split(' ')[0]}</div>`,
+      iconSize:[null,null],iconAnchor:[0,0],className:''
+    });
+    const m = L.marker([s.lat,s.lng],{icon}).addTo(_map).bindPopup(`<b>${s.name}</b><br>${s.dist||''}`);
+    _markers.push(m);
+    bounds.push([s.lat,s.lng]);
+  });
+  if(bounds.length>1) { try{ _map.fitBounds(bounds,{padding:[30,30],maxZoom:15}); }catch(e){} }
+}
+
+const DEFAULT_STORE_COORDS = [
+  {id:'heb',name:'H-E-B',lat:30.2566,lng:-97.7323,dist:'0.8 mi'},
+  {id:'fiesta',name:'Fiesta Mart',lat:30.2499,lng:-97.7108,dist:'1.2 mi'},
+  {id:'walmart',name:'Walmart',lat:30.3560,lng:-97.7175,dist:'2.1 mi'},
+  {id:'farmers',name:'Farmers Market',lat:30.2418,lng:-97.7107,dist:'0.5 mi'},
+  {id:'wheatsville',name:'Wheatsville',lat:30.2846,lng:-97.7453,dist:'3.2 mi'},
+  {id:'target',name:'Target',lat:30.2169,lng:-97.7891,dist:'2.8 mi'},
+];
+
+function updateGoogleMap(lat, lng, query) {
+  // Use Leaflet instead
+  if(lat && lng) {
+    setTimeout(()=>{ initMap(lat,lng); setMapMarkers(DEFAULT_STORE_COORDS,lat,lng); },200);
+  }
+}
+
+function updateStoreLocator(){
+  const sub=document.getElementById('store-subtitle');
+  if(sub) sub.textContent = UP.location || 'Austin, TX';
+  // Don't auto-filter - let user choose
+  // Update Google map with user location
+  const loc = UP.location || 'East Austin TX';
+  if(UP.lat && UP.lng) { setTimeout(()=>{ if(typeof L!=='undefined'){initMap(UP.lat,UP.lng);setMapMarkers(DEFAULT_STORE_COORDS,UP.lat,UP.lng);}},200); }
+  if(UP.lat&&UP.lng) fetchNearbyStores(UP.lat,UP.lng);
+  else renderStoreList();
+}
+function styleFilterBtn(id,on){const b=document.getElementById(id);if(!b)return;b.style.background=on?'var(--gp)':'var(--sd)';b.style.color=on?'var(--gm)':'var(--t2)';b.style.borderColor=on?'var(--gm)':'var(--bd)';}
+function toggleStoreFilter(type){storeFilters[type]=!storeFilters[type];styleFilterBtn(type+'-filter-btn',storeFilters[type]);renderStoreList();}
+function renderStoreList(){
+  const list=document.getElementById('store-list');
+  // GPS coords handled by updateStoreLocator - this is fallback
+  if(UP.lat && UP.lng){ fetchNearbyStores(UP.lat, UP.lng); return; }
+  let stores=STORES;
+  if(storeFilters.ebt)stores=stores.filter(s=>s.ebt);
+  if(storeFilters.wic)stores=stores.filter(s=>s.wic);
+  if(storeFilters.sale)stores=stores.filter(s=>s.sale);
+  if(!stores.length){list.innerHTML='<p style="color:var(--t3);font-size:14px;padding:8px 0">No stores match filters.</p>';return;}
+  list.innerHTML=stores.map(s=>`<div class="sli" onclick="openStoreDetail('${s.id}')">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px"><span style="font-size:15px;font-weight:600;color:var(--tx)">${s.name}</span><span style="font-size:12px;color:var(--t3)">${s.dist}</span></div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px">${s.ebt?'<span class="sli-b b-ebt">EBT ✓</span>':''}${s.wic?'<span class="sli-b b-wic">WIC ✓</span>':''}${s.sale?'<span class="sli-b b-sale">🔥 Sale</span>':''}${s.id==='farmers'?'<span class="sli-b b-snap">SNAP 2x</span>':''}</div>
+    <div style="font-size:12px;color:var(--t3)">${s.hours} · ${s.addr}</div>
+    ${s.sale&&s.sales.length?`<div style="font-size:12px;color:var(--gm);margin-top:5px;font-weight:500">🔥 ${s.sales[0].item} ${s.sales[0].price}</div>`:''}
+    <div style="font-size:12px;color:var(--gm);margin-top:4px;font-weight:500">Tap for details →</div>
+  </div>`).join('');
+}
+function openStoreDetail(id){
+  const s=STORES.find(x=>x.id===id);if(!s)return;
+  const el=document.getElementById('store-detail-content');
+  el.innerHTML=`<h2 style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--tx);margin-bottom:3px">${s.name}</h2>
+    <p style="font-size:13px;color:var(--t3);margin-bottom:13px">${s.dist} · ${s.addr}</p>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:13px">${s.ebt?'<span class="sli-b b-ebt">EBT ✓</span>':'<span style="font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--rs);color:var(--rd)">No EBT</span>'}${s.wic?'<span class="sli-b b-wic">WIC ✓</span>':''}${s.id==='farmers'?'<span class="sli-b b-snap">SNAP 2x Match</span>':''}</div>
+    <div style="background:var(--sd);border-radius:var(--rs2);padding:12px;margin-bottom:12px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--t3);margin-bottom:4px">Hours</div><div style="font-size:14px;color:var(--tx)">${s.hours}</div></div>
+    <div style="background:var(--sd);border-radius:var(--rs2);padding:12px;margin-bottom:12px;font-size:13px;color:var(--t2);line-height:1.5">${s.about}</div>
+    ${s.sales.length?`<div style="background:#fff;border-radius:var(--rs2);padding:13px;box-shadow:0 1px 3px rgba(0,0,0,.06)"><div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--at);margin-bottom:9px">🔥 This Week</div>${s.sales.map(i=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bd)"><span style="font-size:14px;color:var(--tx)">${i.item}</span><span style="font-size:14px;font-weight:700;color:var(--gm)">${i.price}</span></div>`).join('')}</div>`:''}`;
+  document.getElementById('store-detail').style.display='block';
+}
+function getLocationAndSearch(){
+  if(!navigator.geolocation){alert('Geolocation not supported. Please enter your address in Profile.');return;}
+  const list=document.getElementById('store-list');
+  list.innerHTML='<div class="ai-loading"><div class="spinner"></div><span style="font-size:13px;color:var(--gm)">Finding stores near you...</span></div>';
+  navigator.geolocation.getCurrentPosition(pos=>{
+    UP.lat=pos.coords.latitude; UP.lng=pos.coords.longitude;
+    localStorage.setItem('carefed_profile',JSON.stringify(UP));
+    fetchNearbyStores(UP.lat,UP.lng);
+  },()=>{list.innerHTML='';renderStoreList();});
+}
+async function fetchNearbyStores(lat,lng){
+  const list=document.getElementById('store-list');
+  if(!list) return;
+  list.innerHTML='<div class="ai-loading"><div class="spinner"></div><span style="font-size:13px;color:var(--gm)">Searching nearby stores...</span></div>';
+  try{
+    const r=UP.radius||3000;
+    const res=await fetch('/api/stores?lat='+lat+'&lng='+lng+'&radius='+r+'&_='+Date.now());
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    const stores=data.stores||[];
+    if(!stores.length){ showFallbackStores(lat,lng); return; }
+    setTimeout(()=>{
+      if(typeof L!=='undefined'){
+        initMap(lat,lng);
+        setMapMarkers(stores,lat,lng);
+      }
+    },200);
+    list.innerHTML=stores.map(s=>`<div class="sli" onclick="openRealStore('${s.id}','${encodeURIComponent(s.name||'')}','${s.dist}','${encodeURIComponent(s.addr||'')}','${encodeURIComponent(s.hours||'')}',${s.ebt},${s.lat||0},${s.lng||0})">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+        <span style="font-size:15px;font-weight:600;color:var(--tx)">${s.name}</span>
+        <span style="font-size:12px;color:var(--t3)">${s.dist}</span>
+      </div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px">
+        ${s.ebt?'<span class="sli-b b-ebt">EBT ✓</span>':''}
+        ${s.wic?'<span class="sli-b b-wic">WIC ✓</span>':''}
+        ${s.hours==='Open now'?'<span class="sli-b" style="background:#d1fae5;color:#065f46">Open</span>':s.hours==='Closed now'?'<span class="sli-b" style="background:#fee2e2;color:#991b1b">Closed</span>':''}
+      </div>
+      <div style="font-size:12px;color:var(--t3)">${s.addr||''}${s.rating?' · '+s.rating:''}</div>
+      <div style="font-size:12px;color:var(--gm);margin-top:4px;font-weight:500">Tap for details →</div>
+    </div>`).join('');
+  }catch(e){
+    showFallbackStores(lat,lng);
+  }
+}
+function openRealStore(id,nameEnc,dist,addrEnc,hoursEnc,ebt,lat,lng){
+  const name=decodeURIComponent(nameEnc);
+  const addr=decodeURIComponent(addrEnc);
+  const hours=decodeURIComponent(hoursEnc);
+  const el=document.getElementById('store-detail-content');
+  const mapsUrl=`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+  el.innerHTML=`<h2 style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--tx);margin-bottom:3px">${name}</h2>
+    <p style="font-size:13px;color:var(--t3);margin-bottom:13px">${dist}${addr?' · '+addr:''}</p>
+    ${ebt?'<span class="sli-b b-ebt" style="display:inline-block;margin-bottom:12px">EBT ✓</span>':''}
+    <div style="background:var(--sd);border-radius:var(--rs2);padding:12px;margin-bottom:12px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--t3);margin-bottom:4px">Hours</div><div style="font-size:14px;color:var(--tx)">${hours}</div></div>
+    <a href="${mapsUrl}" target="_blank" style="display:block;padding:12px;background:var(--gm);color:#fff;border-radius:var(--rs2);text-align:center;font-size:14px;font-weight:600;text-decoration:none;margin-bottom:10px">📍 Open in Google Maps</a>
+    <p style="font-size:12px;color:var(--t3)">EBT/WIC and sale info may vary. Verify with the store directly.</p>`;
+  document.getElementById('store-detail').style.display='block';
+}
+
+// ── PROFILE / ONBOARDING ──
+function toggleTog(id){document.getElementById(id).classList.toggle('off');}
+function toggleSingle(el,gid){document.querySelectorAll('#'+gid+' .ch').forEach(c=>c.classList.remove('on'));el.classList.add('on');}
+function toggleMulti(el){el.classList.toggle('on');}
+function useMyLocation(){
+  const btn=document.getElementById('loc-btn');
+  if(!navigator.geolocation){alert('Geolocation not supported.');return;}
+  btn.textContent='📍 Getting location...';
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    UP.lat=pos.coords.latitude;
+    UP.lng=pos.coords.longitude;
+    // Try reverse geocoding with Nominatim
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${UP.lat}&lon=${UP.lng}&addressdetails=1`,{
+        headers:{'Accept-Language':'en'}
+      });
+      const data = await res.json();
+      if(data && data.address) {
+        const a = data.address;
+        // Build human readable address
+        const parts = [];
+        if(a.house_number && a.road) parts.push(a.house_number + ' ' + a.road);
+        else if(a.road) parts.push(a.road);
+        if(a.city || a.town || a.village) parts.push(a.city || a.town || a.village);
+        if(a.state) parts.push(a.state);
+        if(a.postcode) parts.push(a.postcode);
+        const addr = parts.join(', ');
+        document.getElementById('ob-location').value = addr;
+        UP.location = addr;
+      } else {
+        document.getElementById('ob-location').value = `${UP.lat.toFixed(4)}, ${UP.lng.toFixed(4)}`;
+      }
+    } catch(e) {
+      document.getElementById('ob-location').value = `${UP.lat.toFixed(4)}, ${UP.lng.toFixed(4)}`;
+    }
+    btn.textContent='✅ Location set!';
+    btn.style.background='var(--gm)';
+    btn.style.color='#fff';
+    setTimeout(()=>{btn.textContent='📍 Use my current location';btn.style.background='var(--gp)';btn.style.color='var(--gm)';},2000);
+  },()=>{btn.textContent='📍 Use my current location';alert('Could not get location. Please type your address.');});
+}
+// Allergy tag management
+let tempAllergies = [];
+
+function renderAllergyTags(){
+  const el = document.getElementById('allergy-tags');
+  if(!el) return;
+  el.innerHTML = tempAllergies.map((a,i) => `
+    <div style="display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:16px;background:var(--rs);color:var(--rd);font-size:12px;font-weight:600">
+      🚫 ${a}<span onclick="removeAllergy(${i})" style="cursor:pointer;font-size:15px;margin-left:2px">×</span>
+    </div>`).join('');
+}
+
+function quickAddAllergy(name){
+  if(!tempAllergies.includes(name)){
+    tempAllergies.push(name);
+    renderAllergyTags();
+  }
+}
+
+function removeAllergy(i){
+  tempAllergies.splice(i,1);
+  renderAllergyTags();
+}
+
+function handleAllergyInput(e){
+  if(e.key === 'Enter' || e.key === ','){
+    e.preventDefault();
+    const input = document.getElementById('ob-allergies-input');
+    const val = input.value.trim().replace(',','');
+    if(val && !tempAllergies.includes(val)){
+      tempAllergies.push(val);
+      renderAllergyTags();
+    }
+    input.value = '';
+  }
+}
+
+function saveProfile(){
+  const age=parseInt(document.getElementById('ob-age').value)||18;
+  const household=parseInt(document.getElementById('ob-household').value)||1;
+  const budget=parseInt(document.getElementById('ob-budget').value)||50;
+  const location=document.getElementById('ob-location').value||'Austin, TX';
+  const radius=parseInt(document.getElementById('ob-radius').value)||2000;
+  const ebt=!document.getElementById('ob-ebt').classList.contains('off');
+  const wic=!document.getElementById('ob-wic').classList.contains('off');
+  const transport=document.querySelector('#ob-transport .ch.on')?.textContent?.trim()||'Walking';
+  const language=document.querySelector('#ob-lang .ch.on')?.textContent?.trim()||'English';
+  const conditions=[...document.querySelectorAll('#ob-conditions .ch.on')].map(c=>c.textContent.trim()).filter(c=>c!=='None');
+  // Add any typed but not confirmed allergy
+  const allergyInput = document.getElementById('ob-allergies-input');
+  if(allergyInput && allergyInput.value.trim()){
+    allergyInput.value.split(',').forEach(v=>{
+      const t=v.trim();
+      if(t && !tempAllergies.includes(t)) tempAllergies.push(t);
+    });
+    allergyInput.value='';
+  }
+  const avoid = [...tempAllergies];
+  const sameLocation = UP.location === location;
+  UP={age,household,condition:conditions.length?conditions.join(', '):'None',budget:'$'+budget+'/week',location,radius,ebt,wic,transport,avoid,language,lat:sameLocation?UP.lat:null,lng:sameLocation?UP.lng:null};
+  localStorage.setItem('carefed_profile',JSON.stringify(UP));
+  applyTranslations();
+  renderTodaysPicks();
+  showMain('home');
+}
+function loadProfileToForm(){
+  if(document.getElementById('ob-age')) document.getElementById('ob-age').value=UP.age||'';
+  if(document.getElementById('ob-household')) document.getElementById('ob-household').value=UP.household||1;
+  if(document.getElementById('ob-budget')) document.getElementById('ob-budget').value=parseInt(UP.budget)||'';
+  if(document.getElementById('ob-location')) document.getElementById('ob-location').value=UP.location||'';
+  if(document.getElementById('ob-radius')) document.getElementById('ob-radius').value=UP.radius||2000;
+  const ebtEl=document.getElementById('ob-ebt');if(ebtEl)ebtEl.classList.toggle('off',!UP.ebt);
+  const wicEl=document.getElementById('ob-wic');if(wicEl)wicEl.classList.toggle('off',!UP.wic);
+  // Restore allergies
+  tempAllergies = [...(UP.avoid||[])];
+  renderAllergyTags();
+}
+function previewLang(lang){UP.language=lang;applyTranslations();}
+
+// ── NAVIGATION ──
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const el=document.getElementById('screen-'+id);if(el)el.classList.add('active');}
+function showMain(tab){
+  document.getElementById('detail-overlay').style.display='none';
+  showScreen(tab);
+  document.querySelectorAll('.bnav .nb').forEach(b=>b.classList.remove('on'));
+  const activeScreen=document.getElementById('screen-'+tab);
+  if(activeScreen){const map={home:0,store:1,saved:2,chat:3};const nbs=activeScreen.querySelectorAll('.nb');if(map[tab]!==undefined&&nbs[map[tab]])nbs[map[tab]].classList.add('on');}
+  if(tab==='ob')loadProfileToForm();
+  if(tab==='store'){updateStoreLocator();}
+  if(tab==='saved')renderSaved();
+  if(tab==='home')renderHome();
+  if(tab==='chat')switchMode('chat');
+}
+
+// ── AI CHAT ──
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();}}
+function sendSugg(text){document.getElementById('cinput').value=text;document.getElementById('csugg').style.display='none';sendChat();}
+async function sendChat(){
+  if(isLoading)return;
+  const inp=document.getElementById('cinput');
+  const text=inp.value.trim();if(!text)return;
+  inp.value='';isLoading=true;document.getElementById('csend').disabled=true;
+  document.getElementById('csugg').style.display='none';
+  appendMsg(text,'usr');
+  chatHistory.push({role:'user',content:text});
+  const lel=appendMsg('','ai');
+  lel.innerHTML='<div class="tdots"><span></span><span></span><span></span></div>';
+  try{
+    const data=await callClaude({
+      system:`You are Carefed AI for low-income college students. Suggest healthy affordable recipes. User profile: condition=${UP.condition}, budget=${UP.budget}, avoid=${UP.avoid?.join(',')||'nothing'}, location=${UP.location}. Language: ${UP.language}. Keep responses friendly, concise, and practical.`,
+      messages:chatHistory
+    });
+    const reply=data.content?.[0]?.text||"Sorry, try again!";
+    chatHistory.push({role:'assistant',content:reply});
+    lel.textContent=reply;
+  }catch(e){lel.textContent="Couldn't connect. Check your internet and try again.";}
+  isLoading=false;document.getElementById('csend').disabled=false;
+  scrollChat();
+}
+function appendMsg(text,cls){const msgs=document.getElementById('chat-msgs');const el=document.createElement('div');el.className='msg '+cls;el.textContent=text;msgs.appendChild(el);scrollChat();return el;}
+function scrollChat(){const m=document.getElementById('chat-msgs');m.scrollTop=m.scrollHeight;}
+function switchMode(m){
+  const c=document.getElementById('mode-chat');const s=document.getElementById('mode-scan');
+  const mb=document.getElementById('mb-chat');const ms=document.getElementById('mb-scan');
+  if(m==='chat'){c.style.display='flex';s.style.display='none';mb.style.color='var(--gm)';mb.style.borderBottomColor='var(--gm)';mb.style.fontWeight='600';ms.style.color='var(--t3)';ms.style.borderBottomColor='transparent';ms.style.fontWeight='500';}
+  else{c.style.display='none';s.style.display='block';ms.style.color='var(--gm)';ms.style.borderBottomColor='var(--gm)';ms.style.fontWeight='600';mb.style.color='var(--t3)';mb.style.borderBottomColor='transparent';mb.style.fontWeight='500';}
+}
+function simScan(){['Eggs','Brown rice','Spinach','Garlic','Sesame oil'].forEach(t=>{if(!scanTags.includes(t))scanTags.push(t);});renderTags();document.getElementById('gen-btn').style.display='block';}
+function addTag(){const i=document.getElementById('scan-add-input');i.value.split(',').forEach(v=>{const tt=v.trim();if(tt&&!scanTags.includes(tt))scanTags.push(tt);});i.value='';renderTags();document.getElementById('gen-btn').style.display=scanTags.length?'block':'none';}
+function removeTag(i){scanTags.splice(i,1);renderTags();document.getElementById('gen-btn').style.display=scanTags.length?'block':'none';}
+function renderTags(){document.getElementById('scan-tags').innerHTML=scanTags.map((tt,i)=>`<div style="display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:16px;background:var(--gp);color:var(--gm);font-size:12px;font-weight:500">${tt}<span onclick="removeTag(${i})" style="cursor:pointer;font-size:15px;line-height:1;padding:2px 3px">×</span></div>`).join('');}
+async function genFromScan(){
+  if(isLoading||!scanTags.length)return;
+  isLoading=true;const btn=document.getElementById('gen-btn');
+  btn.textContent='✨ Generating...';btn.disabled=true;
+  document.getElementById('scan-result').innerHTML='';
+  try{
+    const data=await callClaude({messages:[{role:'user',content:`Carefed AI. Ingredients: ${scanTags.join(', ')}. User: ${UP.condition}, ${UP.budget}, avoid ${UP.avoid?.join(',')||'nothing'}. Language: ${UP.language}. Suggest ONE healthy recipe. Include name, why healthy (2 sentences), and 4 steps. Keep it practical and concise.`}]});
+    const reply=data.content?.[0]?.text||'Could not generate.';
+    document.getElementById('scan-result').innerHTML=`<div style="background:#fff;border-radius:var(--r);padding:15px;box-shadow:0 1px 4px rgba(0,0,0,.06)"><div class="aibadge" style="margin-bottom:9px">✨ AI Recipe from your scan</div><p style="font-size:14px;color:var(--t2);line-height:1.6;white-space:pre-line">${reply}</p></div>`;
+  }catch(e){document.getElementById('scan-result').innerHTML='<p style="color:var(--rd);font-size:13px">Could not connect. Try again!</p>';}
+  btn.textContent='✨ Generate Recipe';btn.disabled=false;isLoading=false;
+}
+
+// ── TRANSLATIONS ──
+const T={
+  English:{heartRecipes:'Heart recipes to build your profile',appTagline:'worry less · spend less · eat well',dailyTitle:'✨ Today\'s Picks',trendingTitle:'🔥 Trending Now',allTitle:'All Recipes',filterSummaryAll:'All recipes'},
+  Español:{heartRecipes:'Dale ❤️ a recetas para crear tu perfil',appTagline:'menos estrés · menos gasto · come bien',dailyTitle:'✨ Selecciones de Hoy',trendingTitle:'🔥 Lo que está de moda',allTitle:'Todas las Recetas',filterSummaryAll:'Todas las recetas'}
+};
+function t(key){return T[UP.language||'English']?.[key]||T.English[key]||key;}
+function applyTranslations(){
+  const isEs=UP.language==='Español';
+  const el=id=>document.getElementById(id);
+  const setText=(id,key)=>{const e=el(id);if(e)e.textContent=t(key);};
+  setText('ob-tagline','appTagline');setText('home-tagline','appTagline');
+  setText('daily-title','dailyTitle');setText('trending-title','trendingTitle');
+  setText('all-title','allTitle');
+  if(el('search-input'))el('search-input').placeholder=isEs?'Buscar recetas o ingredientes...':'Search recipes or ingredients...';
+  if(el('fab-btn'))el('fab-btn').textContent=isEs?'💬 Pregunta a IA / Escanear':'💬 Ask AI / Scan';
+  if(el('chat-title'))el('chat-title').textContent=isEs?'Carefed IA ✨':'Carefed AI ✨';
+  if(el('chat-sub'))el('chat-sub').textContent=isEs?'Chatea o escanea tu despensa':'Chat or scan your pantry';
+  if(el('scan-title'))el('scan-title').textContent=isEs?'Escanea tu refrigerador':'Scan your fridge or pantry';
+  if(el('scan-desc'))el('scan-desc').textContent=isEs?"Apunta la cámara a los ingredientes":"Point camera at ingredients — we'll detect them";
+  if(el('scan-open-camera'))el('scan-open-camera').textContent=isEs?'Abrir Cámara':'Open Camera';
+  if(el('scan-manual-label'))el('scan-manual-label').textContent=isEs?'O escribe manualmente':'Or type manually';
+  if(el('scan-add-input'))el('scan-add-input').placeholder=isEs?'ej. huevos, espinacas, ajo':'e.g. eggs, spinach, garlic';
+  if(el('scan-add-btn'))el('scan-add-btn').textContent=isEs?'Agregar':'Add';
+  if(el('gen-btn'))el('gen-btn').textContent=isEs?'✨ Generar Receta':'✨ Generate Recipe';
+  if(el('chat-welcome'))el('chat-welcome').textContent=isEs?'¡Hola! Dime qué ingredientes tienes y crearé una receta saludable para ti. 🌿':'Hey! Tell me what ingredients you have and I\'ll create a healthy recipe for you. 🌿';
+  ['nav-home','nav-store','nav-saved','nav-chat'].forEach((id,i)=>{
+    const labels=isEs?['Inicio','Tiendas','Guardado','Chat IA']:['Home','Stores','Saved','AI Chat'];
+    if(el(id))el(id).textContent=labels[i];
+  });
+
+  if(el('refresh-btn'))el('refresh-btn').textContent=isEs?'↻ Actualizar':'↻ Refresh';
+  if(el('store-title'))el('store-title').textContent=isEs?'Tiendas Cercanas':'Nearby Stores';
+  if(el('saved-title'))el('saved-title').textContent=isEs?'Recetas Guardadas':'Saved Recipes';
+  if(el('ebt-filter-btn')&&!storeFilters.ebt)el('ebt-filter-btn').textContent=isEs?'Solo EBT':'EBT Only';
+  if(el('wic-filter-btn')&&!storeFilters.wic)el('wic-filter-btn').textContent=isEs?'Solo WIC':'WIC Only';
+  if(el('sale-filter-btn')&&!storeFilters.sale)el('sale-filter-btn').textContent=isEs?'🔥 Oferta':'🔥 On Sale';
+  if(el('empty-txt'))el('empty-txt').textContent=isEs?'Dale ❤️ a recetas para guardarlas':'Heart recipes to save them here';
+  if(el('browse-btn'))el('browse-btn').textContent=isEs?'Explorar Recetas':'Browse Recipes';
+  // Suggestion buttons
+  const suggBtns=document.querySelectorAll('#csugg button');
+  if(isEs&&suggBtns.length>=4){
+    suggBtns[0].textContent='🥚 Huevos + arroz';
+    suggBtns[1].textContent='💰 Menos de $5';
+    suggBtns[2].textContent='⏱️ Rápido';
+    suggBtns[3].textContent='🌮 Comida latina';
+    suggBtns[0].onclick=()=>sendSugg('Tengo huevos, arroz y salsa de soya');
+    suggBtns[1].onclick=()=>sendSugg('Comida para diabetes por menos de $5');
+    suggBtns[2].onclick=()=>sendSugg('Comida rápida saludable en 15 minutos');
+    suggBtns[3].onclick=()=>sendSugg('Comida latinoamericana con lo que tengo');
+  } else if(suggBtns.length>=4){
+    suggBtns[0].textContent='🥚 Eggs + rice';
+    suggBtns[1].textContent='💰 Under $5';
+    suggBtns[2].textContent='⏱️ Quick';
+    suggBtns[3].textContent='🇰🇷 Korean';
+    suggBtns[0].onclick=()=>sendSugg('I have eggs, rice, and soy sauce');
+    suggBtns[1].onclick=()=>sendSugg('Under $5 for diabetes');
+    suggBtns[2].onclick=()=>sendSugg('Quick healthy meal under 15 minutes');
+    suggBtns[3].onclick=()=>sendSugg('Korean food with what I have');
+  }
+}
+
+// ── PWA ──
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+}
+
+// ── INIT ──
+applyTranslations();
+renderHome();
+renderTodaysPicks();
+
+</script>
+</body>
+</html>
