@@ -130,22 +130,34 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
   <div style="background:var(--cr);border-radius:28px 28px 0 0;padding:24px 20px;flex:1;overflow-y:auto">
     <div class="fl">Household</div>
     <div class="frow">
-      <div class="ff"><div class="ffl">Age</div><input id="ob-age" type="number" min="13" max="100" value="20" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+      <div class="ff"><div class="ffl">Age</div><input id="ob-age" type="number" min="13" max="100" value="" placeholder="e.g. 20" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
       <div class="ff"><div class="ffl">Household size</div><input id="ob-household" type="number" min="1" max="10" value="1" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
     </div>
     <div class="fl">Budget & Benefits</div>
-    <div class="ff" style="margin-bottom:8px"><div class="ffl">Weekly food budget ($)</div><input id="ob-budget" type="number" min="10" max="500" value="50" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+    <div class="ff" style="margin-bottom:8px"><div class="ffl">Weekly food budget ($)</div><input id="ob-budget" type="number" min="10" max="500" value="" placeholder="e.g. 50" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
     <div class="trow" onclick="toggleTog('ob-ebt')"><span style="font-size:14px;font-weight:500;color:var(--tx)">EBT / SNAP</span><div class="tog" id="ob-ebt"></div></div>
     <div class="trow" onclick="toggleTog('ob-wic')"><span style="font-size:14px;font-weight:500;color:var(--tx)">WIC</span><div class="tog off" id="ob-wic"></div></div>
     <div class="fl">Location & Transport</div>
-    <div class="ff" style="margin-bottom:8px"><div class="ffl">Home address</div><input id="ob-location" type="text" value="East Austin, TX 78702" style="font-size:13px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+    <div class="ff" style="margin-bottom:8px"><div class="ffl">Home address</div><input id="ob-location" type="text" value="" placeholder="Tap button or type your address" style="font-size:13px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
     <div style="margin-bottom:8px"><button id="loc-btn" onclick="useMyLocation()" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--gp);color:var(--gm);border:none;border-radius:var(--rs2);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer">📍 Use my current location</button></div>
     <div class="ff" style="margin-bottom:8px"><div class="ffl">Search radius</div><select id="ob-radius" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"><option value="1000">Walking (0.6 mi)</option><option value="2000" selected>Short drive (1.2 mi)</option><option value="5000">Drive (3 mi)</option><option value="10000">Far drive (6 mi)</option></select></div>
     <div class="cr2" id="ob-transport"><div class="ch on" onclick="toggleSingle(this,'ob-transport')">🚶 Walking</div><div class="ch" onclick="toggleSingle(this,'ob-transport')">🚌 Bus</div><div class="ch" onclick="toggleSingle(this,'ob-transport')">🚗 Car</div></div>
     <div class="fl">Health Conditions</div>
     <div class="cr2" id="ob-conditions"><div class="ch" onclick="toggleMulti(this)">Type 2 Diabetes</div><div class="ch" onclick="toggleMulti(this)">Cardiovascular</div><div class="ch" onclick="toggleMulti(this)">Cancer history</div><div class="ch on" onclick="toggleMulti(this)">None</div></div>
     <div class="fl">Allergies / Avoid</div>
-    <div class="cr2" id="ob-allergies"><div class="ch" onclick="toggleMulti(this)">Peanuts</div><div class="ch" onclick="toggleMulti(this)">Gluten</div><div class="ch" onclick="toggleMulti(this)">Dairy</div><div class="ch" onclick="toggleMulti(this)">Shellfish</div></div>
+    <div class="ff" style="margin-bottom:8px">
+      <div class="ffl">Type ingredients to avoid (comma separated)</div>
+      <input id="ob-allergies-input" type="text" onkeydown="handleAllergyInput(event)" placeholder="e.g. peanuts, gluten, dairy, shellfish" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px" id="allergy-tags"></div>
+    <div class="cr2" style="margin-bottom:4px">
+      <div class="ch" onclick="quickAddAllergy('Peanuts')">+ Peanuts</div>
+      <div class="ch" onclick="quickAddAllergy('Gluten')">+ Gluten</div>
+      <div class="ch" onclick="quickAddAllergy('Dairy')">+ Dairy</div>
+      <div class="ch" onclick="quickAddAllergy('Shellfish')">+ Shellfish</div>
+      <div class="ch" onclick="quickAddAllergy('Eggs')">+ Eggs</div>
+      <div class="ch" onclick="quickAddAllergy('Soy')">+ Soy</div>
+    </div>
     <div class="fl">Language</div>
     <div class="cr2" id="ob-lang"><div class="ch on" onclick="toggleSingle(this,'ob-lang');previewLang('English')">English</div><div class="ch" onclick="toggleSingle(this,'ob-lang');previewLang('Español')">Español</div></div>
     <button class="bp" onclick="saveProfile()">Get Started →</button>
@@ -206,6 +218,11 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
     </div>
   </div>
   <div class="sc">
+    <!-- Top Rated Picks -->
+    <div id="top-rated-sec" style="display:none">
+      <div class="sh"><span style="font-size:16px;font-weight:600;color:var(--tx)">⭐ Your Top Picks</span><span style="font-size:11px;color:var(--t3)">Based on your ratings</span></div>
+      <div id="top-rated-list" style="padding:0 20px"></div>
+    </div>
     <!-- AI Daily Picks -->
     <div id="ai-daily-sec">
       <div class="sh">
@@ -218,12 +235,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
       </div>
       <div id="daily-list" style="padding:0 20px"></div>
     </div>
-    <!-- Trending -->
-    <div id="trending-sec">
-      <div class="sh"><span style="font-size:16px;font-weight:600;color:var(--tx)" id="trending-title">🔥 Trending Now</span><span style="font-size:11px;color:var(--t3)" id="trending-sub">Viral recipes</span></div>
-      <div id="trending-list" style="padding:0 20px"></div>
-    </div>
-    <!-- All recipes -->
+    <!-- All recipes (trending mixed in) -->
     <div id="all-sec">
       <div class="sh"><span style="font-size:16px;font-weight:600;color:var(--tx)" id="all-title">All Recipes</span></div>
       <div id="recipe-list" style="padding:0 20px"></div>
@@ -367,6 +379,12 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
       <div id="ai-badge-d"></div>
       <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:11px">Steps</div>
       <div id="d-steps"></div>
+      <!-- Rating section -->
+      <div id="rating-section" style="margin-top:20px;padding:16px;background:var(--sd);border-radius:var(--r)">
+        <div style="font-size:13px;font-weight:700;color:var(--tx);margin-bottom:10px">⭐ Rate this recipe</div>
+        <div id="star-display" style="display:flex;gap:6px;margin-bottom:8px"></div>
+        <div id="rating-feedback" style="font-size:12px;color:var(--t3)">Tap a star to rate</div>
+      </div>
     </div>
     <div class="tc" id="dtab-why">
       <div style="background:var(--gp);border-radius:var(--rs2);padding:16px;margin-bottom:16px">
@@ -462,7 +480,7 @@ const STORES = [
 ];
 
 // ── STATE ──
-let UP = JSON.parse(localStorage.getItem('carefed_profile')||'null') || {age:20,household:1,condition:'None',budget:'$50/week',location:'East Austin, TX 78702',radius:2000,ebt:true,wic:false,transport:'Walking',avoid:[],language:'English',lat:null,lng:null};
+let UP = JSON.parse(localStorage.getItem('carefed_profile')||'null') || {age:'',household:1,condition:'None',budget:'',location:'',radius:2000,ebt:false,wic:false,transport:'Walking',avoid:[],language:'English',lat:null,lng:null};
 let saved = JSON.parse(localStorage.getItem('carefed_saved')||'{}');
 let chatHistory = [];
 let isLoading = false;
@@ -475,6 +493,7 @@ let currentHealth = 'all';
 let currentQuick = 'all';
 let storeFilters = {ebt:false,wic:false,sale:false};
 let currentDetailId = null;
+let ratings = JSON.parse(localStorage.getItem('carefed_ratings')||'{}');
 let aiDailyRecipes = [];
 
 const REGION_SUBS = {
@@ -508,10 +527,16 @@ async function loadDailyRecipes(force=false) {
   const lang = UP.language === 'Español';
   try {
     const conditions = UP.condition !== 'None' ? UP.condition : 'general health';
-    const avoid = UP.avoid?.length ? `Avoid: ${UP.avoid.join(', ')}.` : '';
+
+    const avoidList = (UP.avoid||[]).join(', ') || 'none';
+    const age = UP.age || 20;
+    const household = UP.household || 1;
+    const hasEbt = UP.ebt || UP.wic;
+    const budgetNote = hasEbt ? 'User has EBT/SNAP benefits — prioritize budget-friendly options under $5.' : `Budget: ${UP.budget} for ${household} person(s).`;
+    const ageNote = age <= 22 ? 'User is a college student — prefer quick, trendy recipes.' : age >= 55 ? 'User is older — prefer heart-healthy, easy-to-digest recipes.' : '';
     const prompt = lang
-      ? `Eres Carefed AI para estudiantes universitarios de bajos ingresos. Genera 6 recetas saludables únicas y variadas. Condición: ${conditions}. Presupuesto: ${UP.budget}. ${avoid} Responde SOLO con JSON array: [{"emoji":"🍳","name":"Nombre","cuisine":"korean","badge":"Apto para diabetes","cost":"$4.50","time":"15 min","count":3,"health":"Por qué es saludable en 2 frases.","steps":["paso 1","paso 2","paso 3","paso 4"],"ingredients":["ingrediente 1","ingrediente 2","ingrediente 3"]}]`
-      : `You are Carefed AI for low-income college students. Generate 6 unique, varied, healthy recipes. Condition: ${conditions}. Budget: ${UP.budget}. ${avoid} Reply ONLY with a JSON array: [{"emoji":"🍳","name":"Recipe Name","cuisine":"korean","badge":"Diabetes-friendly","cost":"$4.50","time":"15 min","count":3,"health":"Why it is healthy in 2 sentences.","steps":["step 1","step 2","step 3","step 4"],"ingredients":["ingredient 1","ingredient 2","ingredient 3"]}]`;
+      ? `Eres Carefed AI. Genera 6 recetas saludables únicas. Edad: ${age}. ${household} persona(s). ${hasEbt?'Tiene EBT/SNAP — recetas económicas bajo $5.':'Presupuesto: '+UP.budget+'.'} Condición: ${conditions}. EVITAR: ${avoidList}. ${ageNote} Prioriza según condición y presupuesto. Responde SOLO con JSON array: [{"emoji":"🍳","name":"Nombre","cuisine":"korean","badge":"Apto para diabetes","cost":"$4.50","time":"15 min","count":3,"health":"Por qué es saludable en 2 frases.","steps":["paso 1","paso 2","paso 3","paso 4"],"ingredients":["ingrediente 1","ingrediente 2","ingrediente 3"]}]`
+      : `You are Carefed AI. Generate 6 unique healthy recipes. User age: ${age}. Household: ${household} person(s). ${budgetNote} Health condition: ${conditions}. AVOID ingredients: ${avoidList}. ${ageNote} Prioritize recipes matching their health condition and budget. Reply ONLY with JSON array: [{"emoji":"🍳","name":"Recipe Name","cuisine":"korean","badge":"Diabetes-friendly","cost":"$4.50","time":"15 min","count":3,"health":"Why healthy in 2 sentences.","steps":["step 1","step 2","step 3","step 4"],"ingredients":["ingredient 1","ingredient 2","ingredient 3"]}]`;
 
     const data = await callClaude({messages:[{role:'user',content:prompt}]});
     const raw = data.content?.[0]?.text || '[]';
@@ -546,9 +571,12 @@ function renderCard(id, rObj) {
   return `<div class="rc" onclick="showRecipe('${id}',${rObj?'true':'false'})">
     <div class="re">${r.emoji}</div>
     <div class="ri">
-      <div class="rn">${name}${r.trending?'<span style="font-size:10px;background:#fff3e0;color:#e65100;padding:2px 6px;border-radius:5px;font-weight:600;margin-left:5px">🔥</span>':''}</div>
+      <div class="rn">${name}${r.trending?'<span style="font-size:10px;background:#fff3e0;color:#e65100;padding:2px 5px;border-radius:5px;font-weight:700;margin-left:5px">🔥 Trending</span>':''}</div>
       <div class="rm"><span>${r.count||'?'} ingredients</span><div class="md"></div><span>${r.cost||'?'}</span><div class="md"></div><span>${r.time||'?'}</span></div>
-      <div class="cb ${badgeClass}" style="margin-top:4px">✓ ${badge}</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap">
+        <div class="cb ${badgeClass}">✓ ${badge}</div>
+        ${ratings[id]>0?`<span style="font-size:11px;color:#f59e0b;font-weight:600">${'⭐'.repeat(ratings[id])}</span>`:''}
+      </div>
     </div>
     <button class="hbtn" onclick="event.stopPropagation();toggleSave('${id}',${rObj?JSON.stringify(rObj):'null'})" id="heart-${id}">${isLiked?'❤️':'🤍'}</button>
   </div>`;
@@ -592,6 +620,9 @@ function showRecipe(id, isAI=false) {
   // Preferences
   document.getElementById('pref-conditions').innerHTML = (UP.condition||'None').split(', ').map(c=>`<div class="pchip on" style="margin:3px">${c}</div>`).join('');
   document.getElementById('pref-avoid').innerHTML = (UP.avoid||[]).length ? UP.avoid.map(a=>`<div class="pchip ex" style="margin:3px">🚫 ${a}</div>`).join('') : '<p style="font-size:13px;color:var(--t3)">None</p>';
+
+  // Render star rating
+  renderStars(id, ratings[id]||0);
 
   // Show overlay
   document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
@@ -661,18 +692,216 @@ function getFilteredIds() {
   });
 }
 
+// ── RATING SYSTEM ──
+const RATING_LABELS = ['', 'Did not like', 'It was okay', 'Pretty good', 'Really liked it', 'Absolutely loved it!'];
+const RATING_EMOJIS = ['', '😞', '😐', '🙂', '😊', '🤩'];
+
+function renderStars(recipeId, current=0) {
+  const el = document.getElementById('star-display');
+  const fb = document.getElementById('rating-feedback');
+  if(!el) return;
+  el.innerHTML = [1,2,3,4,5].map(n => `
+    <span onclick="rateRecipe('${recipeId}',${n})"
+      style="font-size:28px;cursor:pointer;transition:transform .1s;display:inline-block"
+      onmouseover="previewRating(${n})"
+      onmouseout="renderStars('${recipeId}',${ratings[recipeId]||0})"
+    >${n <= current ? '⭐' : '☆'}</span>
+  `).join('');
+  if(current > 0 && fb) {
+    fb.innerHTML = `${RATING_EMOJIS[current]} ${RATING_LABELS[current]}`;
+    fb.style.color = 'var(--gm)';
+    fb.style.fontWeight = '600';
+  }
+}
+
+function previewRating(n) {
+  const el = document.getElementById('star-display');
+  if(!el) return;
+  el.querySelectorAll('span').forEach((s,i) => {
+    s.textContent = i < n ? '⭐' : '☆';
+  });
+}
+
+function rateRecipe(id, stars) {
+  ratings[id] = stars;
+  localStorage.setItem('carefed_ratings', JSON.stringify(ratings));
+  renderStars(id, stars);
+  const fb = document.getElementById('rating-feedback');
+  if(fb) {
+    fb.innerHTML = `${RATING_EMOJIS[stars]} ${RATING_LABELS[stars]} — saved!`;
+    fb.style.color = 'var(--gm)';
+    fb.style.fontWeight = '600';
+  }
+  // Auto-save recipe if rated 4+
+  if(stars >= 4 && !saved[id]) {
+    const r = R[id] || aiDailyRecipes.find(x=>x.id===id) || JSON.parse(localStorage.getItem('saved_recipe_'+id)||'null');
+    if(r) {
+      saved[id] = {savedAt:Date.now()};
+      localStorage.setItem('carefed_saved', JSON.stringify(saved));
+      localStorage.setItem('saved_recipe_'+id, JSON.stringify(r));
+      const hbtn = document.getElementById('heart-'+id);
+      if(hbtn) hbtn.textContent = '❤️';
+      const dbtn = document.getElementById('d-save-btn');
+      if(dbtn) dbtn.textContent = '❤️';
+    }
+  }
+  // Re-render home with updated scores after a moment
+  setTimeout(()=>renderHome(), 300);
+}
+
+function getRatingScore(id) {
+  return ratings[id] || 0;
+}
+
+function getRelatedIds(ratedIds) {
+  // Find cuisines and badges of highly rated recipes
+  const highRated = ratedIds.filter(id => (ratings[id]||0) >= 4);
+  const lowRated = ratedIds.filter(id => (ratings[id]||0) <= 2);
+  const likedCuisines = highRated.map(id => {
+    const r = R[id]||JSON.parse(localStorage.getItem('saved_recipe_'+id)||'null');
+    return r?.cuisine;
+  }).filter(Boolean);
+  const likedBadges = highRated.map(id => {
+    const r = R[id]||JSON.parse(localStorage.getItem('saved_recipe_'+id)||'null');
+    return r?.badge;
+  }).filter(Boolean);
+  const dislikedCuisines = lowRated.map(id => {
+    const r = R[id]||JSON.parse(localStorage.getItem('saved_recipe_'+id)||'null');
+    return r?.cuisine;
+  }).filter(Boolean);
+  return { likedCuisines, likedBadges, dislikedCuisines };
+}
+
+function getPersonalizedIds(allIds) {
+  const avoid = (UP.avoid||[]).map(a=>a.toLowerCase());
+  const condition = (UP.condition||'').toLowerCase();
+  const age = parseInt(UP.age) || 20;
+  const budget = parseFloat((UP.budget||'$50').replace('$','').replace('/week','')) || 50;
+  const household = parseInt(UP.household) || 1;
+  const hasEbt = UP.ebt || UP.wic;
+  // Per-person weekly budget
+  const perPersonBudget = budget / household;
+
+  return allIds
+    .filter(id => {
+      const r = R[id];
+      // Remove recipes with avoided ingredients
+      if(avoid.length > 0) {
+        const recipeText = (r.name+' '+(r.health||'')+' '+(r.steps||[]).join(' ')).toLowerCase();
+        if(avoid.some(a => recipeText.includes(a))) return false;
+      }
+      return true;
+    })
+    .map(id => {
+      const r = R[id];
+      let score = 0;
+
+      // ── HEALTH CONDITION ──
+      if(condition.includes('diabetes') && r.badge==='Diabetes-friendly') score += 10;
+      if((condition.includes('cardiovascular')||condition.includes('heart')) && r.badge==='Heart-healthy') score += 10;
+      if(condition.includes('cancer') && r.badge==='Low processed food') score += 8;
+
+      // ── BUDGET / EBT ──
+      const cost = parseFloat((r.cost||'$5').replace('$','')) || 5;
+      if(perPersonBudget < 30 || hasEbt) {
+        // Very tight budget — heavily prefer cheap recipes
+        if(cost <= 3) score += 12;
+        else if(cost <= 4) score += 8;
+        else if(cost <= 5) score += 4;
+        else score -= 3;
+      } else if(perPersonBudget < 60) {
+        // Moderate budget
+        if(cost <= 4) score += 6;
+        else if(cost <= 6) score += 3;
+      }
+
+      // ── AGE-BASED ──
+      if(age >= 13 && age <= 22) {
+        // Teens/college: quick, simple, trending
+        if(r.trending) score += 6;
+        const mins = parseInt(r.time) || 30;
+        if(mins <= 15) score += 5;
+        if(r.count <= 4) score += 3;
+      } else if(age >= 23 && age <= 35) {
+        // Young adults: balanced health + variety
+        if(r.badge==='Low processed food') score += 4;
+        if(r.region==='asian' || r.region==='mediterranean') score += 2;
+      } else if(age >= 36 && age <= 55) {
+        // Mid-age: heart health, fiber, diabetes prevention
+        if(r.badge==='Heart-healthy') score += 6;
+        if(r.badge==='Diabetes-friendly') score += 4;
+      } else if(age > 55) {
+        // Older: heart, low sodium, easy to digest
+        if(r.badge==='Heart-healthy') score += 8;
+        if(r.badge==='Diabetes-friendly') score += 6;
+        const mins = parseInt(r.time) || 30;
+        if(mins <= 20) score += 4;
+      }
+
+      // ── HOUSEHOLD SIZE ──
+      if(household >= 3) {
+        // Bigger household → prefer recipes with more servings value
+        if(r.count >= 4) score += 3; // more ingredients = more filling
+        if(cost <= 5) score += 4; // value for money
+      }
+
+      // ── SAVED CUISINE PREFERENCE ──
+      const savedIds = Object.keys(saved);
+      if(savedIds.length > 0) {
+        const savedCuisines = savedIds.map(sid => {
+          const sr = R[sid]||JSON.parse(localStorage.getItem('saved_recipe_'+sid)||'null');
+          return sr?.cuisine;
+        }).filter(Boolean);
+        if(savedCuisines.includes(r.cuisine)) score += 5;
+      }
+
+      // ── RATING-BASED ──
+      const ratedIds = Object.keys(ratings);
+      if(ratedIds.length > 0) {
+        const { likedCuisines, likedBadges, dislikedCuisines } = getRelatedIds(ratedIds);
+        // Boost similar to liked
+        if(likedCuisines.includes(r.cuisine)) score += 8;
+        if(likedBadges.includes(r.badge)) score += 6;
+        // Penalize similar to disliked
+        if(dislikedCuisines.includes(r.cuisine)) score -= 5;
+        // Direct rating of this recipe
+        const myRating = ratings[id] || 0;
+        if(myRating >= 4) score += 15;
+        else if(myRating === 3) score += 5;
+        else if(myRating <= 2 && myRating > 0) score -= 10;
+      }
+
+      // ── TRENDING ──
+      if(r.trending) score += 2;
+
+      return { id, score };
+    })
+    .sort((a,b) => b.score - a.score)
+    .map(x => x.id);
+}
+
 function renderHome() {
   const allIds = getFilteredIds();
-  // Trending
-  const tIds = allIds.filter(id=>R[id]?.trending);
-  const tsec = document.getElementById('trending-sec');
-  tsec.style.display = tIds.length ? 'block' : 'none';
-  document.getElementById('trending-list').innerHTML = tIds.map(id=>renderCard(id)).join('');
-  // All
-  const nonTrending = allIds.filter(id=>!R[id]?.trending);
-  document.getElementById('recipe-list').innerHTML = nonTrending.length
-    ? nonTrending.map(id=>renderCard(id)).join('')
+  const personalizedIds = getPersonalizedIds(allIds);
+
+  document.getElementById('recipe-list').innerHTML = personalizedIds.length
+    ? personalizedIds.map(id=>renderCard(id)).join('')
     : '<p style="color:var(--t3);font-size:14px;padding:8px 0">No recipes found.</p>';
+
+  // Top rated section
+  const topRatedIds = Object.keys(ratings)
+    .filter(id => ratings[id] >= 4 && R[id])
+    .sort((a,b) => ratings[b]-ratings[a])
+    .slice(0,3);
+  const topSec = document.getElementById('top-rated-sec');
+  const topList = document.getElementById('top-rated-list');
+  if(topRatedIds.length > 0 && topSec && topList) {
+    topSec.style.display = 'block';
+    topList.innerHTML = topRatedIds.map(id=>renderCard(id)).join('');
+  } else if(topSec) {
+    topSec.style.display = 'none';
+  }
+
   // Daily
   renderDailyList();
   genAIRecs();
@@ -830,14 +1059,19 @@ function styleFilterBtn(id,on){const b=document.getElementById(id);if(!b)return;
 function toggleStoreFilter(type){storeFilters[type]=!storeFilters[type];styleFilterBtn(type+'-filter-btn',storeFilters[type]);renderStoreList();}
 function renderStoreList(){
   const list=document.getElementById('store-list');
-  // Init map with default Austin coords if no GPS
-  setTimeout(()=>{
-    if(!_map && typeof L !== 'undefined') {
-      const lat=UP.lat||30.260, lng=UP.lng||-97.729;
-      initMap(lat,lng);
-      setMapMarkers(DEFAULT_STORE_COORDS,UP.lat,UP.lng);
-    }
-  },300);
+  // If user has GPS coords, show real nearby stores
+  if(UP.lat && UP.lng){
+    fetchNearbyStores(UP.lat, UP.lng);
+    return;
+  }
+  // Otherwise show empty state with prompt
+  list.innerHTML=`<div style="text-align:center;padding:30px 20px;background:var(--sd);border-radius:var(--r);margin-bottom:12px">
+    <div style="font-size:36px;margin-bottom:10px">📍</div>
+    <p style="font-size:15px;font-weight:600;color:var(--tx);margin-bottom:6px">Find stores near you</p>
+    <p style="font-size:13px;color:var(--t3);margin-bottom:14px">Tap the button above to find grocery stores near your location</p>
+    <button onclick="getLocationAndSearch()" style="padding:11px 22px;background:var(--gm);color:#fff;border:none;border-radius:var(--rs2);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer">📍 Use My Location</button>
+  </div>`;
+  return;
   let stores=STORES;
   if(storeFilters.ebt)stores=stores.filter(s=>s.ebt);
   if(storeFilters.wic)stores=stores.filter(s=>s.wic);
@@ -932,15 +1166,78 @@ function useMyLocation(){
   const btn=document.getElementById('loc-btn');
   if(!navigator.geolocation){alert('Geolocation not supported.');return;}
   btn.textContent='📍 Getting location...';
-  navigator.geolocation.getCurrentPosition(pos=>{
-    UP.lat=pos.coords.latitude; UP.lng=pos.coords.longitude;
-    document.getElementById('ob-location').value=`${UP.lat.toFixed(4)}, ${UP.lng.toFixed(4)} (GPS)`;
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    UP.lat=pos.coords.latitude;
+    UP.lng=pos.coords.longitude;
+    // Try reverse geocoding with Nominatim
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${UP.lat}&lon=${UP.lng}&addressdetails=1`,{
+        headers:{'Accept-Language':'en'}
+      });
+      const data = await res.json();
+      if(data && data.address) {
+        const a = data.address;
+        // Build human readable address
+        const parts = [];
+        if(a.house_number && a.road) parts.push(a.house_number + ' ' + a.road);
+        else if(a.road) parts.push(a.road);
+        if(a.city || a.town || a.village) parts.push(a.city || a.town || a.village);
+        if(a.state) parts.push(a.state);
+        if(a.postcode) parts.push(a.postcode);
+        const addr = parts.join(', ');
+        document.getElementById('ob-location').value = addr;
+        UP.location = addr;
+      } else {
+        document.getElementById('ob-location').value = `${UP.lat.toFixed(4)}, ${UP.lng.toFixed(4)}`;
+      }
+    } catch(e) {
+      document.getElementById('ob-location').value = `${UP.lat.toFixed(4)}, ${UP.lng.toFixed(4)}`;
+    }
     btn.textContent='✅ Location set!';
-    setTimeout(()=>btn.textContent='📍 Use my current location',2000);
+    btn.style.background='var(--gm)';
+    btn.style.color='#fff';
+    setTimeout(()=>{btn.textContent='📍 Use my current location';btn.style.background='var(--gp)';btn.style.color='var(--gm)';},2000);
   },()=>{btn.textContent='📍 Use my current location';alert('Could not get location. Please type your address.');});
 }
+// Allergy tag management
+let tempAllergies = [];
+
+function renderAllergyTags(){
+  const el = document.getElementById('allergy-tags');
+  if(!el) return;
+  el.innerHTML = tempAllergies.map((a,i) => `
+    <div style="display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:16px;background:var(--rs);color:var(--rd);font-size:12px;font-weight:600">
+      🚫 ${a}<span onclick="removeAllergy(${i})" style="cursor:pointer;font-size:15px;margin-left:2px">×</span>
+    </div>`).join('');
+}
+
+function quickAddAllergy(name){
+  if(!tempAllergies.includes(name)){
+    tempAllergies.push(name);
+    renderAllergyTags();
+  }
+}
+
+function removeAllergy(i){
+  tempAllergies.splice(i,1);
+  renderAllergyTags();
+}
+
+function handleAllergyInput(e){
+  if(e.key === 'Enter' || e.key === ','){
+    e.preventDefault();
+    const input = document.getElementById('ob-allergies-input');
+    const val = input.value.trim().replace(',','');
+    if(val && !tempAllergies.includes(val)){
+      tempAllergies.push(val);
+      renderAllergyTags();
+    }
+    input.value = '';
+  }
+}
+
 function saveProfile(){
-  const age=parseInt(document.getElementById('ob-age').value)||20;
+  const age=parseInt(document.getElementById('ob-age').value)||18;
   const household=parseInt(document.getElementById('ob-household').value)||1;
   const budget=parseInt(document.getElementById('ob-budget').value)||50;
   const location=document.getElementById('ob-location').value||'Austin, TX';
@@ -950,7 +1247,16 @@ function saveProfile(){
   const transport=document.querySelector('#ob-transport .ch.on')?.textContent?.trim()||'Walking';
   const language=document.querySelector('#ob-lang .ch.on')?.textContent?.trim()||'English';
   const conditions=[...document.querySelectorAll('#ob-conditions .ch.on')].map(c=>c.textContent.trim()).filter(c=>c!=='None');
-  const avoid=[...document.querySelectorAll('#ob-allergies .ch.on')].map(c=>c.textContent.trim());
+  // Add any typed but not confirmed allergy
+  const allergyInput = document.getElementById('ob-allergies-input');
+  if(allergyInput && allergyInput.value.trim()){
+    allergyInput.value.split(',').forEach(v=>{
+      const t=v.trim();
+      if(t && !tempAllergies.includes(t)) tempAllergies.push(t);
+    });
+    allergyInput.value='';
+  }
+  const avoid = [...tempAllergies];
   const sameLocation = UP.location === location;
   UP={age,household,condition:conditions.length?conditions.join(', '):'None',budget:'$'+budget+'/week',location,radius,ebt,wic,transport,avoid,language,lat:sameLocation?UP.lat:null,lng:sameLocation?UP.lng:null};
   localStorage.setItem('carefed_profile',JSON.stringify(UP));
@@ -959,13 +1265,16 @@ function saveProfile(){
   showMain('home');
 }
 function loadProfileToForm(){
-  if(document.getElementById('ob-age')) document.getElementById('ob-age').value=UP.age||20;
+  if(document.getElementById('ob-age')) document.getElementById('ob-age').value=UP.age||'';
   if(document.getElementById('ob-household')) document.getElementById('ob-household').value=UP.household||1;
-  if(document.getElementById('ob-budget')) document.getElementById('ob-budget').value=parseInt(UP.budget)||50;
+  if(document.getElementById('ob-budget')) document.getElementById('ob-budget').value=parseInt(UP.budget)||'';
   if(document.getElementById('ob-location')) document.getElementById('ob-location').value=UP.location||'';
   if(document.getElementById('ob-radius')) document.getElementById('ob-radius').value=UP.radius||2000;
   const ebtEl=document.getElementById('ob-ebt');if(ebtEl)ebtEl.classList.toggle('off',!UP.ebt);
   const wicEl=document.getElementById('ob-wic');if(wicEl)wicEl.classList.toggle('off',!UP.wic);
+  // Restore allergies
+  tempAllergies = [...(UP.avoid||[])];
+  renderAllergyTags();
 }
 function previewLang(lang){UP.language=lang;applyTranslations();}
 
