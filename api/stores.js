@@ -1,6 +1,5 @@
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET');
 
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -9,84 +8,58 @@ export default async function handler(req, res) {
   const { lat, lng, radius = 3000 } = req.query;
   if (!lat || !lng) return res.status(400).json({ error: 'lat and lng required' });
 
-  const query = `[out:json][timeout:25];(node["shop"~"supermarket|grocery"](around:${radius},${lat},${lng});way["shop"~"supermarket|grocery"](around:${radius},${lat},${lng}););out center 15;`;
+  const apiKey = process.env.GOOGLE_PLACES_KEY;
+  if (!apiKey) return res.status(500).json({ error: 'API key not configured' });
 
-  // Try multiple Overpass endpoints
-  const endpoints = [
-    'https://overpass-api.de/api/interpreter',
-    'https://lz4.overpass-api.de/api/interpreter',
-    'https://z.overpass-api.de/api/interpreter',
-  ];
+  try {
+    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${radius}&type=grocery_or_supermarket&key=${apiKey}`;
+    const response = await fetch(url);
+    const data = await response.json();
 
-  let data = null;
-  for (const endpoint of endpoints) {
-    try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'User-Agent': 'Carefed App/1.0'
-        },
-        body: `data=${encodeURIComponent(query)}`
-      });
-
-      const text = await response.text();
-      // Make sure it's JSON, not HTML
-      if (!text.startsWith('<')) {
-        data = JSON.parse(text);
-        break;
-      }
-    } catch (e) {
-      continue;
+    if (data.status !== 'OK' && data.status !== 'ZERO_RESULTS') {
+      return res.status(200).json({ stores: [], error: data.status });
     }
-  }
 
-  if (!data || !data.elements) {
-    return res.status(200).json({ stores: [], message: 'Could not fetch stores' });
-  }
+    const ebtChains = ['h-e-b', 'heb', 'walmart', 'fiesta', 'aldi', 'kroger', 'randalls', 'whole foods', 'costco', 'target', 'sprouts', 'trader joe'];
+    const wicChains = ['h-e-b', 'heb', 'walmart', 'kroger', 'randalls'];
 
-  const ebtChains = ['h-e-b', 'heb', 'walmart', 'fiesta', 'aldi', 'kroger', 'randalls', 'whole foods', 'costco', 'target'];
-  const wicChains = ['h-e-b', 'heb', 'walmart', 'kroger', 'randalls'];
+    const latN = parseFloat(lat);
+    const lngN = parseFloat(lng);
 
-  const latN = parseFloat(lat);
-  const lngN = parseFloat(lng);
-
-  const stores = data.elements
-    .map(el => {
-      const slat = el.lat || el.center?.lat;
-      const slng = el.lon || el.center?.lon;
-      const km = slat && slng
-        ? Math.sqrt(
-            Math.pow((slat - latN) * 111, 2) +
-            Math.pow((slng - lngN) * 111 * Math.cos(latN * Math.PI / 180), 2)
-          )
-        : null;
-      const dist = km
-        ? km < 1 ? `${(km * 1000).toFixed(0)}m` : `${km.toFixed(1)} km`
-        : '?';
-      const name = el.tags?.name || el.tags?.['name:en'] || '';
-      if (!name) return null;
+    const stores = (data.results || []).map(place => {
+      const slat = place.geometry.location.lat;
+      const slng = place.geometry.location.lng;
+      const km = Math.sqrt(
+        Math.pow((slat - latN) * 111, 2) +
+        Math.pow((slng - lngN) * 111 * Math.cos(latN * Math.PI / 180), 2)
+      );
+      const dist = km < 1 ? `${(km * 1000).toFixed(0)}m` : `${km.toFixed(1)} km`;
+      const name = place.name;
       const nameLow = name.toLowerCase();
-      const addr = [el.tags?.['addr:housenumber'], el.tags?.['addr:street']]
-        .filter(Boolean).join(' ') || el.tags?.['addr:full'] || '';
-      const hours = el.tags?.opening_hours || 'Call for hours';
+      const addr = place.vicinity || '';
+      const isOpen = place.opening_hours?.open_now;
+      const hours = isOpen === true ? 'Open now' : isOpen === false ? 'Closed now' : 'Hours not listed';
+      const rating = place.rating ? `⭐ ${place.rating}` : '';
 
       return {
-        id: 'osm-' + el.id,
+        id: 'gp-' + place.place_id,
         name,
         dist,
-        distNum: km || 999,
+        distNum: km,
         addr,
         hours,
+        rating,
         ebt: ebtChains.some(c => nameLow.includes(c)),
         wic: wicChains.some(c => nameLow.includes(c)),
         lat: slat,
         lng: slng
       };
     })
-    .filter(Boolean)
     .sort((a, b) => a.distNum - b.distNum)
     .slice(0, 12);
 
-  return res.status(200).json({ stores });
+    return res.status(200).json({ stores });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
 }
