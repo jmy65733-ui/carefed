@@ -1141,7 +1141,7 @@ async function fetchNearbyStores(lat,lng){
   try{
     const r=UP.radius||2000;
     const q=`[out:json][timeout:15];(node["shop"~"supermarket|grocery"](around:${r},${lat},${lng});way["shop"~"supermarket|grocery"](around:${r},${lat},${lng}););out center;`;
-    const res=await fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:q});
+    const res=await fetch(`/api/stores?lat=${lat}&lng=${lng}&radius=${r}`);
     const data=await res.json();
     if(data.elements?.length){
       const ebtChains=['h-e-b','heb','walmart','fiesta','aldi','kroger','randalls','whole foods'];
