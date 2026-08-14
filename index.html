@@ -170,7 +170,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
   <div style="padding:12px 20px 0;flex-shrink:0">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
       <div style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--tx)">Carefed</div>
-      <div onclick="showScreen('ob');loadProfileToForm()" style="width:34px;height:34px;background:var(--gp);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--gm);cursor:pointer" id="avatar">JY</div>
+      <div onclick="openSettings()" style="width:34px;height:34px;background:var(--gp);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer" id="avatar">⚙️</div>
     </div>
     <div id="home-tagline" style="font-size:11px;color:var(--t3);margin-bottom:12px">worry less · spend less · eat well</div>
     <div style="background:var(--sd);border-radius:var(--rs2);padding:10px 14px;display:flex;align-items:center;gap:8px;margin-bottom:12px">
@@ -352,6 +352,51 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
     <button class="nb" onclick="showMain('store')"><span class="ni">📍</span><span class="nl">Stores</span></button>
     <button class="nb" onclick="showMain('saved')"><span class="ni">🔖</span><span class="nl">Saved</span></button>
     <button class="nb on" onclick="showMain('chat')"><span class="ni">💬</span><span class="nl">AI Chat</span></button>
+  </div>
+</div>
+
+<!-- SETTINGS OVERLAY -->
+<div id="settings-overlay" style="display:none;position:absolute;inset:0;background:var(--cr);z-index:400;overflow-y:auto;border-radius:inherit">
+  <div style="background:var(--gd);padding:18px 18px 24px;flex-shrink:0">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <button onclick="document.getElementById('settings-overlay').style.display='none'" style="color:rgba(255,255,255,.7);font-size:14px;cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif">← Back</button>
+    </div>
+    <h2 style="font-family:'DM Serif Display',serif;font-size:28px;color:#fff;margin-bottom:4px">Settings</h2>
+    <p style="font-size:13px;color:rgba(255,255,255,.6)">Update your preferences</p>
+  </div>
+  <div style="padding:20px">
+    <div class="fl">Household</div>
+    <div class="frow">
+      <div class="ff"><div class="ffl">Age</div><input id="s-age" type="number" min="13" max="100" placeholder="e.g. 20" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+      <div class="ff"><div class="ffl">Household size</div><input id="s-household" type="number" min="1" max="10" value="1" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+    </div>
+    <div class="fl">Budget & Benefits</div>
+    <div class="ff" style="margin-bottom:8px"><div class="ffl">Weekly food budget ($)</div><input id="s-budget" type="number" min="10" max="500" placeholder="e.g. 50" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+    <div class="trow" onclick="toggleSettingsTog('s-ebt')"><span style="font-size:14px;font-weight:500;color:var(--tx)">EBT / SNAP</span><div class="tog off" id="s-ebt"></div></div>
+    <div class="trow" onclick="toggleSettingsTog('s-wic')"><span style="font-size:14px;font-weight:500;color:var(--tx)">WIC</span><div class="tog off" id="s-wic"></div></div>
+    <div class="fl">Location</div>
+    <div class="ff" style="margin-bottom:8px"><div class="ffl">Home address</div><input id="s-location" type="text" placeholder="Enter your address" style="font-size:13px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+    <div style="margin-bottom:8px"><button onclick="useMyLocationSettings()" id="s-loc-btn" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--gp);color:var(--gm);border:none;border-radius:var(--rs2);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer">📍 Use my current location</button></div>
+    <div class="ff" style="margin-bottom:8px"><div class="ffl">Search radius</div><select id="s-radius" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"><option value="1000">Walking (0.6 mi)</option><option value="2000" selected>Short drive (1.2 mi)</option><option value="5000">Drive (3 mi)</option><option value="10000">Far drive (6 mi)</option></select></div>
+    <div class="fl">Health Conditions</div>
+    <div class="cr2" id="s-conditions"><div class="ch" onclick="toggleMulti(this)">Type 2 Diabetes</div><div class="ch" onclick="toggleMulti(this)">Cardiovascular</div><div class="ch" onclick="toggleMulti(this)">Cancer history</div><div class="ch on" onclick="toggleMulti(this)">None</div></div>
+    <div class="fl">Allergies / Avoid</div>
+    <div class="ff" style="margin-bottom:8px">
+      <div class="ffl">Type ingredients to avoid (comma separated)</div>
+      <input id="s-allergies-input" type="text" placeholder="e.g. peanuts, gluten, dairy" onkeydown="handleSettingsAllergyInput(event)" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px" id="s-allergy-tags"></div>
+    <div class="cr2" style="margin-bottom:8px">
+      <div class="ch" onclick="quickAddSettingsAllergy('Peanuts')">+ Peanuts</div>
+      <div class="ch" onclick="quickAddSettingsAllergy('Gluten')">+ Gluten</div>
+      <div class="ch" onclick="quickAddSettingsAllergy('Dairy')">+ Dairy</div>
+      <div class="ch" onclick="quickAddSettingsAllergy('Shellfish')">+ Shellfish</div>
+      <div class="ch" onclick="quickAddSettingsAllergy('Eggs')">+ Eggs</div>
+      <div class="ch" onclick="quickAddSettingsAllergy('Soy')">+ Soy</div>
+    </div>
+    <div class="fl">Language</div>
+    <div class="cr2" id="s-lang"><div class="ch on" onclick="toggleSingle(this,'s-lang')">English</div><div class="ch" onclick="toggleSingle(this,'s-lang')">Español</div></div>
+    <button class="bp" onclick="saveSettings()">Save Changes</button>
   </div>
 </div>
 
@@ -1070,6 +1115,116 @@ function handleAllergyInput(e){
   }
 }
 
+// ── SETTINGS OVERLAY ──
+let settingsAllergies = [];
+
+function openSettings() {
+  // Load current profile into settings form
+  const el = id => document.getElementById(id);
+  if(el('s-age')) el('s-age').value = UP.age || '';
+  if(el('s-household')) el('s-household').value = UP.household || 1;
+  if(el('s-budget')) el('s-budget').value = parseInt(UP.budget) || '';
+  if(el('s-location')) el('s-location').value = UP.location || '';
+  if(el('s-radius')) el('s-radius').value = UP.radius || 2000;
+  if(el('s-ebt')) el('s-ebt').classList.toggle('off', !UP.ebt);
+  if(el('s-wic')) el('s-wic').classList.toggle('off', !UP.wic);
+  settingsAllergies = [...(UP.avoid||[])];
+  renderSettingsAllergyTags();
+  // Set language
+  const lang = UP.language || 'English';
+  document.querySelectorAll('#s-lang .ch').forEach(c => {
+    c.classList.toggle('on', c.textContent === lang);
+  });
+  // Set health conditions
+  const cond = UP.condition || 'None';
+  document.querySelectorAll('#s-conditions .ch').forEach(c => {
+    c.classList.toggle('on', cond.includes(c.textContent.trim()));
+  });
+  document.getElementById('settings-overlay').style.display = 'block';
+}
+
+function toggleSettingsTog(id) {
+  document.getElementById(id).classList.toggle('off');
+}
+
+function renderSettingsAllergyTags() {
+  const el = document.getElementById('s-allergy-tags');
+  if(!el) return;
+  el.innerHTML = settingsAllergies.map((a,i) => `
+    <div style="display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:16px;background:var(--rs);color:var(--rd);font-size:12px;font-weight:600">
+      🚫 ${a}<span onclick="removeSettingsAllergy(${i})" style="cursor:pointer;font-size:15px;margin-left:2px">×</span>
+    </div>`).join('');
+}
+
+function quickAddSettingsAllergy(name) {
+  if(!settingsAllergies.includes(name)) { settingsAllergies.push(name); renderSettingsAllergyTags(); }
+}
+
+function removeSettingsAllergy(i) {
+  settingsAllergies.splice(i,1); renderSettingsAllergyTags();
+}
+
+function handleSettingsAllergyInput(e) {
+  if(e.key==='Enter'||e.key===',') {
+    e.preventDefault();
+    const input = document.getElementById('s-allergies-input');
+    const val = input.value.trim().replace(',','');
+    if(val && !settingsAllergies.includes(val)) { settingsAllergies.push(val); renderSettingsAllergyTags(); }
+    input.value = '';
+  }
+}
+
+function useMyLocationSettings() {
+  const btn = document.getElementById('s-loc-btn');
+  if(!navigator.geolocation) return;
+  btn.textContent = '📍 Getting location...';
+  navigator.geolocation.getCurrentPosition(async pos => {
+    UP.lat = pos.coords.latitude; UP.lng = pos.coords.longitude;
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${UP.lat}&lon=${UP.lng}&addressdetails=1`,{headers:{'Accept-Language':'en'}});
+      const data = await res.json();
+      if(data?.address) {
+        const a = data.address;
+        const parts = [];
+        if(a.house_number && a.road) parts.push(a.house_number+' '+a.road);
+        else if(a.road) parts.push(a.road);
+        if(a.city||a.town||a.village) parts.push(a.city||a.town||a.village);
+        if(a.state) parts.push(a.state);
+        if(a.postcode) parts.push(a.postcode);
+        const addr = parts.join(', ');
+        document.getElementById('s-location').value = addr;
+        UP.location = addr;
+      }
+    } catch(e) {}
+    btn.textContent = '✅ Location set!';
+    setTimeout(()=>btn.textContent='📍 Use my current location', 2000);
+  }, () => { btn.textContent='📍 Use my current location'; });
+}
+
+function saveSettings() {
+  const age = parseInt(document.getElementById('s-age').value) || 18;
+  const household = parseInt(document.getElementById('s-household').value) || 1;
+  const budget = parseInt(document.getElementById('s-budget').value) || 50;
+  const location = document.getElementById('s-location').value || UP.location || '';
+  const radius = parseInt(document.getElementById('s-radius').value) || 2000;
+  const ebt = !document.getElementById('s-ebt').classList.contains('off');
+  const wic = !document.getElementById('s-wic').classList.contains('off');
+  const language = document.querySelector('#s-lang .ch.on')?.textContent?.trim() || 'English';
+  const conditions = [...document.querySelectorAll('#s-conditions .ch.on')].map(c=>c.textContent.trim()).filter(c=>c!=='None');
+  const allergyInput = document.getElementById('s-allergies-input');
+  if(allergyInput && allergyInput.value.trim()) {
+    allergyInput.value.split(',').forEach(v=>{ const t=v.trim(); if(t&&!settingsAllergies.includes(t)) settingsAllergies.push(t); });
+    allergyInput.value = '';
+  }
+  const sameLocation = UP.location === location;
+  UP = {...UP, age, household, condition:conditions.length?conditions.join(', '):'None', budget:'$'+budget+'/week', location, radius, ebt, wic, language, avoid:[...settingsAllergies], lat:sameLocation?UP.lat:null, lng:sameLocation?UP.lng:null};
+  localStorage.setItem('carefed_profile', JSON.stringify(UP));
+  applyTranslations();
+  renderHome();
+  window._cachedStores = null;
+  document.getElementById('settings-overlay').style.display = 'none';
+}
+
 function saveProfile(){
   const age=parseInt(document.getElementById('ob-age').value)||18;
   const household=parseInt(document.getElementById('ob-household').value)||1;
@@ -1113,7 +1268,12 @@ function loadProfileToForm(){
 function previewLang(lang){UP.language=lang;applyTranslations();}
 
 // ── NAVIGATION ──
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const el=document.getElementById('screen-'+id);if(el)el.classList.add('active');}
+function showScreen(id){
+  if(id==='ob') { openSettings(); return; }
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById('screen-'+id);
+  if(el)el.classList.add('active');
+}
 
 // ── SHOW RECIPE ──
 function showRecipe(id, isAI=false) {
@@ -1300,7 +1460,7 @@ function showMain(tab){
   document.querySelectorAll('.bnav .nb').forEach(b=>b.classList.remove('on'));
   const activeScreen=document.getElementById('screen-'+tab);
   if(activeScreen){const map={home:0,store:1,saved:2,chat:3};const nbs=activeScreen.querySelectorAll('.nb');if(map[tab]!==undefined&&nbs[map[tab]])nbs[map[tab]].classList.add('on');}
-  if(tab==='ob')loadProfileToForm();
+  // ob screen handled separately via openSettings()
   if(tab==='store'){updateStoreLocator();}
   if(tab==='saved')renderSaved();
   if(tab==='home')renderHome();
@@ -1322,7 +1482,7 @@ async function sendChat(){
   lel.innerHTML='<div class="tdots"><span></span><span></span><span></span></div>';
   try{
     const data=await callClaude({
-      system:`You are Carefed AI for low-income college students. Suggest healthy affordable recipes. User profile: condition=${UP.condition}, budget=${UP.budget}, avoid=${UP.avoid?.join(',')||'nothing'}, location=${UP.location}. Language: ${UP.language}. Keep responses friendly, concise, and practical.`,
+      system:`You are Carefed AI. Suggest healthy affordable recipes for families. User profile: condition=${UP.condition}, budget=${UP.budget}, avoid=${UP.avoid?.join(',')||'nothing'}, location=${UP.location}. Language: ${UP.language}. Keep responses friendly, concise, and practical. IMPORTANT: Do NOT use markdown formatting. No ##, **, --, ~~, __, or bullet symbols. Write in plain conversational text only.`,
       messages:chatHistory
     });
     const reply=data.content?.[0]?.text||"Sorry, try again!";
