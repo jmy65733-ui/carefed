@@ -1482,7 +1482,7 @@ async function sendChat(){
   lel.innerHTML='<div class="tdots"><span></span><span></span><span></span></div>';
   try{
     const data=await callClaude({
-      system:`You are Carefed AI. Suggest healthy affordable recipes for families. User profile: condition=${UP.condition}, budget=${UP.budget}, avoid=${UP.avoid?.join(',')||'nothing'}, location=${UP.location}. Language: ${UP.language}. Keep responses friendly, concise, and practical. IMPORTANT: Do NOT use markdown formatting. No ##, **, --, ~~, __, or bullet symbols. Write in plain conversational text only.`,
+      system:`You are Carefed AI. Suggest healthy affordable recipes for families. User profile: condition=${UP.condition}, budget=${UP.budget}, avoid=${UP.avoid?.join(',')||'nothing'}, location=${UP.location}. IMPORTANT: Always reply in the same language the user writes in. If they write in Korean, reply in Korean. If they write in Spanish, reply in Spanish. If they write in English, reply in English. Do NOT use markdown formatting. No ##, **, --, ~~, __, or bullet symbols. Write in plain conversational text only.`,
       messages:chatHistory
     });
     const reply=data.content?.[0]?.text||"Sorry, try again!";
