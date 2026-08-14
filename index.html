@@ -135,8 +135,20 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
     </div>
     <div class="fl">Budget & Benefits</div>
     <div class="ff" style="margin-bottom:8px"><div class="ffl">Weekly food budget ($)</div><input id="ob-budget" type="number" min="10" max="500" value="" placeholder="e.g. 50" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
-    <div class="trow" onclick="toggleTog('ob-ebt')"><span style="font-size:14px;font-weight:500;color:var(--tx)">EBT / SNAP</span><div class="tog" id="ob-ebt"></div></div>
-    <div class="trow" onclick="toggleTog('ob-wic')"><span style="font-size:14px;font-weight:500;color:var(--tx)">WIC</span><div class="tog off" id="ob-wic"></div></div>
+    <div class="trow" onclick="toggleTog('ob-ebt')">
+      <div>
+        <div style="font-size:14px;font-weight:500;color:var(--tx)">EBT / SNAP</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:2px">Supplemental Nutrition Assistance Program — grocery benefits for low-income households</div>
+      </div>
+      <div class="tog" id="ob-ebt"></div>
+    </div>
+    <div class="trow" onclick="toggleTog('ob-wic')">
+      <div>
+        <div style="font-size:14px;font-weight:500;color:var(--tx)">WIC</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:2px">Women, Infants & Children — nutrition benefits for pregnant women & young children</div>
+      </div>
+      <div class="tog off" id="ob-wic"></div>
+    </div>
     <div class="fl">Location & Transport</div>
     <div class="ff" style="margin-bottom:8px"><div class="ffl">Home address</div><input id="ob-location" type="text" value="" placeholder="Tap button or type your address" style="font-size:13px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
     <div style="margin-bottom:8px"><button id="loc-btn" onclick="useMyLocation()" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--gp);color:var(--gm);border:none;border-radius:var(--rs2);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer">📍 Use my current location</button></div>
@@ -372,8 +384,20 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
     </div>
     <div class="fl">Budget & Benefits</div>
     <div class="ff" style="margin-bottom:8px"><div class="ffl">Weekly food budget ($)</div><input id="s-budget" type="number" min="10" max="500" placeholder="e.g. 50" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
-    <div class="trow" onclick="toggleSettingsTog('s-ebt')"><span style="font-size:14px;font-weight:500;color:var(--tx)">EBT / SNAP</span><div class="tog off" id="s-ebt"></div></div>
-    <div class="trow" onclick="toggleSettingsTog('s-wic')"><span style="font-size:14px;font-weight:500;color:var(--tx)">WIC</span><div class="tog off" id="s-wic"></div></div>
+    <div class="trow" onclick="toggleSettingsTog('s-ebt')">
+      <div>
+        <div style="font-size:14px;font-weight:500;color:var(--tx)">EBT / SNAP</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:2px">Supplemental Nutrition Assistance Program</div>
+      </div>
+      <div class="tog off" id="s-ebt"></div>
+    </div>
+    <div class="trow" onclick="toggleSettingsTog('s-wic')">
+      <div>
+        <div style="font-size:14px;font-weight:500;color:var(--tx)">WIC</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:2px">Women, Infants & Children</div>
+      </div>
+      <div class="tog off" id="s-wic"></div>
+    </div>
     <div class="fl">Location</div>
     <div class="ff" style="margin-bottom:8px"><div class="ffl">Home address</div><input id="s-location" type="text" placeholder="Enter your address" style="font-size:13px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
     <div style="margin-bottom:8px"><button onclick="useMyLocationSettings()" id="s-loc-btn" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--gp);color:var(--gm);border:none;border-radius:var(--rs2);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer">📍 Use my current location</button></div>
