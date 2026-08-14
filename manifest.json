@@ -1,24 +1,32 @@
 {
   "name": "Carefed",
   "short_name": "Carefed",
-  "description": "Worry less, spend less, eat well",
+  "description": "Healthy recipes with real grocery prices near you",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1a3a2a",
   "theme_color": "#2d6a4f",
   "orientation": "portrait",
+  "id": "com.carefed.app",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ]
 }
