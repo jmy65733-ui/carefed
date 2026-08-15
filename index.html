@@ -748,11 +748,24 @@ function getPersonalizedIds(allIds) {
 }
 
 function renderTodaysPicks() {
-  const list=document.getElementById('daily-list');
+  const list = document.getElementById('daily-list');
+  const sec = document.getElementById('ai-daily-sec');
   if(!list) return;
-  const allIds=Object.keys(R).filter(id=>!R[id].ai);
-  const personalizedIds=getPersonalizedIds(allIds);
-  const picks=[]; const usedBadges=new Set();
+
+  // Only show if user has rated, saved, or set health condition
+  const hasRatings = Object.keys(ratings).length > 0;
+  const hasSaved = Object.keys(saved).length > 0;
+  const hasCondition = UP.condition && UP.condition !== 'None';
+
+  if(!hasRatings && !hasSaved && !hasCondition) {
+    if(sec) sec.style.display = 'none';
+    return;
+  }
+  if(sec) sec.style.display = 'block';
+
+  const allIds = Object.keys(R).filter(id=>!R[id].ai);
+  const personalizedIds = getPersonalizedIds(allIds);
+  const picks = []; const usedBadges = new Set();
   for(const id of personalizedIds){
     if(picks.length>=4) break;
     const r=R[id];
@@ -764,9 +777,7 @@ function renderTodaysPicks() {
     const rb=(R[b].name.charCodeAt(0)+seed)%7;
     return ra-rb;
   });
-  list.innerHTML=shuffled.length
-    ?shuffled.map(id=>renderCard(id)).join('')
-    :'<p style="color:var(--t3);font-size:13px;padding:4px 0">Complete your profile to get personalized picks!</p>';
+  list.innerHTML=shuffled.length ? shuffled.map(id=>renderCard(id)).join('') : '';
 }
 
 function loadDailyRecipes(){renderTodaysPicks();}
