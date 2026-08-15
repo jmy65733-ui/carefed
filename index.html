@@ -121,7 +121,6 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
 
 <!-- ONBOARDING -->
 <div class="screen active" id="screen-ob" style="background:var(--gd)">
-  <div style="padding:14px 20px 0;display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:rgba(255,255,255,.5)"><span>9:41</span></div>
   <div style="padding:50px 28px 32px;flex-shrink:0">
     <div id="ob-tagline" style="font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--gl);text-transform:uppercase;margin-bottom:14px">worry less · spend less · eat well</div>
     <h1 style="font-family:'DM Serif Display',serif;font-size:44px;color:#fff;line-height:1.05;margin-bottom:10px">Care<span style="color:var(--gl)">fed</span></h1>
@@ -130,17 +129,17 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
   <div style="background:var(--cr);border-radius:28px 28px 0 0;padding:24px 20px;flex:1;overflow-y:auto">
     <div class="fl">Household</div>
     <div class="frow">
-      <div class="ff"><div class="ffl">Age</div><input id="ob-age" type="number" min="13" max="100" value="" placeholder="e.g. 20" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+      <div class="ff"><div class="ffl">Age</div><input id="ob-age" type="number" min="13" max="100" value="" placeholder="" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
       <div class="ff"><div class="ffl">Household size</div><input id="ob-household" type="number" min="1" max="10" value="1" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
     </div>
     <div class="fl">Budget & Benefits</div>
-    <div class="ff" style="margin-bottom:8px"><div class="ffl">Weekly food budget ($)</div><input id="ob-budget" type="number" min="10" max="500" value="" placeholder="e.g. 50" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+    <div class="ff" style="margin-bottom:8px"><div class="ffl">Weekly food budget ($)</div><input id="ob-budget" type="number" min="10" max="500" value="" placeholder="" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
     <div class="trow" onclick="toggleTog('ob-ebt')">
       <div>
         <div style="font-size:14px;font-weight:500;color:var(--tx)">EBT / SNAP</div>
         <div style="font-size:11px;color:var(--t3);margin-top:2px">Supplemental Nutrition Assistance Program — grocery benefits for low-income households</div>
       </div>
-      <div class="tog" id="ob-ebt"></div>
+      <div class="tog off" id="ob-ebt"></div>
     </div>
     <div class="trow" onclick="toggleTog('ob-wic')">
       <div>
@@ -150,7 +149,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
       <div class="tog off" id="ob-wic"></div>
     </div>
     <div class="fl">Location & Transport</div>
-    <div class="ff" style="margin-bottom:8px"><div class="ffl">Home address</div><input id="ob-location" type="text" value="" placeholder="Tap button or type your address" style="font-size:13px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+    <div class="ff" style="margin-bottom:8px"><div class="ffl">Home address</div><input id="ob-location" type="text" value="" placeholder="" style="font-size:13px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
     <div style="margin-bottom:8px"><button id="loc-btn" onclick="useMyLocation()" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--gp);color:var(--gm);border:none;border-radius:var(--rs2);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer">📍 Use my current location</button></div>
     <div class="ff" style="margin-bottom:8px"><div class="ffl">Search radius</div><select id="ob-radius" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"><option value="1000">Walking (0.6 mi)</option><option value="2000" selected>Short drive (1.2 mi)</option><option value="5000">Drive (3 mi)</option><option value="10000">Far drive (6 mi)</option></select></div>
     <div class="cr2" id="ob-transport"><div class="ch on" onclick="toggleSingle(this,'ob-transport')">🚶 Walking</div><div class="ch" onclick="toggleSingle(this,'ob-transport')">🚌 Bus</div><div class="ch" onclick="toggleSingle(this,'ob-transport')">🚗 Car</div></div>
@@ -159,7 +158,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
     <div class="fl">Allergies / Avoid</div>
     <div class="ff" style="margin-bottom:8px">
       <div class="ffl">Type ingredients to avoid (comma separated)</div>
-      <input id="ob-allergies-input" type="text" onkeydown="handleAllergyInput(event)" placeholder="e.g. peanuts, gluten, dairy, shellfish" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/>
+      <input id="ob-allergies-input" type="text" onkeydown="handleAllergyInput(event)" placeholder="" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/>
     </div>
     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px" id="allergy-tags"></div>
     <div class="cr2" style="margin-bottom:4px">
@@ -178,7 +177,6 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
 
 <!-- HOME -->
 <div class="screen" id="screen-home">
-  <div class="sb"><span>9:41</span></div>
   <div style="padding:12px 20px 0;flex-shrink:0">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
       <div style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--tx)">Carefed</div>
@@ -268,7 +266,6 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
 
 <!-- STORE -->
 <div class="screen" id="screen-store">
-  <div class="sb"><span>9:41</span></div>
   <div style="padding:16px 20px 12px;flex-shrink:0">
     <h2 style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--tx);margin-bottom:3px" id="store-title">Nearby Stores</h2>
     <p style="font-size:13px;color:var(--t3)" id="store-subtitle">Find stores near you</p>
@@ -295,7 +292,6 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
 
 <!-- SAVED -->
 <div class="screen" id="screen-saved">
-  <div class="sb"><span>9:41</span></div>
   <div style="padding:16px 20px 12px;flex-shrink:0">
     <h2 style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--tx);margin-bottom:3px" id="saved-title">Saved Recipes</h2>
     <p style="font-size:13px;color:var(--t3)" id="saved-sub">Heart recipes to build your profile</p>
@@ -319,7 +315,6 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
 
 <!-- CHAT -->
 <div class="screen" id="screen-chat">
-  <div class="sb"><span>9:41</span></div>
   <div style="padding:12px 20px 12px;border-bottom:1px solid var(--bd);flex-shrink:0;display:flex;align-items:center;gap:10px">
     <button onclick="showMain('home')" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--t2)">←</button>
     <div><h3 id="chat-title" style="font-size:16px;font-weight:600;color:var(--tx)">Carefed AI ✨</h3><p id="chat-sub" style="font-size:12px;color:var(--t3)">Chat or scan your pantry</p></div>
@@ -353,7 +348,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
     <p id="scan-manual-label" style="font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:9px">Or type manually</p>
     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px" id="scan-tags"></div>
     <div style="display:flex;gap:8px;margin-bottom:12px">
-      <input id="scan-add-input" placeholder="e.g. eggs, spinach, garlic" onkeydown="if(event.key==='Enter')addTag()" style="flex:1;background:var(--sd);border:none;border-radius:var(--rs2);padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--tx);outline:none"/>
+      <input id="scan-add-input" placeholder="" onkeydown="if(event.key==='Enter')addTag()" style="flex:1;background:var(--sd);border:none;border-radius:var(--rs2);padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--tx);outline:none"/>
       <button id="scan-add-btn" onclick="addTag()" style="padding:10px 15px;background:var(--gm);color:#fff;border:none;border-radius:var(--rs2);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer">Add</button>
     </div>
     <button id="gen-btn" onclick="genFromScan()" style="width:100%;padding:13px;background:var(--gm);color:#fff;border:none;border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;display:none">✨ Generate Recipe</button>
@@ -379,11 +374,11 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
   <div style="padding:20px">
     <div class="fl">Household</div>
     <div class="frow">
-      <div class="ff"><div class="ffl">Age</div><input id="s-age" type="number" min="13" max="100" placeholder="e.g. 20" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+      <div class="ff"><div class="ffl">Age</div><input id="s-age" type="number" min="13" max="100" placeholder="" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
       <div class="ff"><div class="ffl">Household size</div><input id="s-household" type="number" min="1" max="10" value="1" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
     </div>
     <div class="fl">Budget & Benefits</div>
-    <div class="ff" style="margin-bottom:8px"><div class="ffl">Weekly food budget ($)</div><input id="s-budget" type="number" min="10" max="500" placeholder="e.g. 50" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+    <div class="ff" style="margin-bottom:8px"><div class="ffl">Weekly food budget ($)</div><input id="s-budget" type="number" min="10" max="500" placeholder="" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
     <div class="trow" onclick="toggleSettingsTog('s-ebt')">
       <div>
         <div style="font-size:14px;font-weight:500;color:var(--tx)">EBT / SNAP</div>
@@ -399,7 +394,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
       <div class="tog off" id="s-wic"></div>
     </div>
     <div class="fl">Location</div>
-    <div class="ff" style="margin-bottom:8px"><div class="ffl">Home address</div><input id="s-location" type="text" placeholder="Enter your address" style="font-size:13px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+    <div class="ff" style="margin-bottom:8px"><div class="ffl">Home address</div><input id="s-location" type="text" placeholder="" style="font-size:13px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
     <div style="margin-bottom:8px"><button onclick="useMyLocationSettings()" id="s-loc-btn" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--gp);color:var(--gm);border:none;border-radius:var(--rs2);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer">📍 Use my current location</button></div>
     <div class="ff" style="margin-bottom:8px"><div class="ffl">Search radius</div><select id="s-radius" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"><option value="1000">Walking (0.6 mi)</option><option value="2000" selected>Short drive (1.2 mi)</option><option value="5000">Drive (3 mi)</option><option value="10000">Far drive (6 mi)</option></select></div>
     <div class="fl">Health Conditions</div>
@@ -407,7 +402,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
     <div class="fl">Allergies / Avoid</div>
     <div class="ff" style="margin-bottom:8px">
       <div class="ffl">Type ingredients to avoid (comma separated)</div>
-      <input id="s-allergies-input" type="text" placeholder="e.g. peanuts, gluten, dairy" onkeydown="handleSettingsAllergyInput(event)" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/>
+      <input id="s-allergies-input" type="text" placeholder="" onkeydown="handleSettingsAllergyInput(event)" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/>
     </div>
     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px" id="s-allergy-tags"></div>
     <div class="cr2" style="margin-bottom:8px">
@@ -538,7 +533,7 @@ const R = {
 // ── STORES DATA ──
 const STORES = [
   {id:'heb',name:'H-E-B',dist:'0.8 mi',addr:'E 7th St',hours:'6am–11pm',ebt:true,wic:true,sale:true,sales:[{item:'🥦 Broccoli',price:'$0.99/lb'},{item:'🍅 Tomatoes',price:'$1.29/lb'},{item:'🥚 Eggs (12-pk)',price:'$2.49'},{item:'🍌 Bananas',price:'$0.29/lb'},{item:'🔪 Chicken breast',price:'$2.49/lb'},{item:'🍎 Apples (3lb)',price:'$3.99'},{item:'🫘 Black beans',price:'$0.79'},{item:'🧅 Onions (3lb)',price:'$1.99'}],about:'Texas-based grocery chain with excellent produce. Accepts EBT, SNAP, and WIC.'},
-  {id:'fiesta',name:'Fiesta Mart',dist:'1.2 mi',addr:'E Cesar Chavez',hours:'7am–10pm',ebt:true,wic:false,sale:true,sales:[{item:'🌽 Corn tortillas',price:'$1.19'},{item:'🫘 Black beans',price:'$0.79'},{item:'🧅 Onions',price:'$0.49/lb'},{item:'🍋 Limes 5-pk',price:'$1.00'},{item:'🌶️ Jalapeños',price:'$0.89/lb'}],about:'Specializes in Latin American groceries. Spanish-speaking staff. EBT/SNAP accepted.'},
+  {id:'fiesta',name:'Fiesta Mart',dist:'1.2 mi',addr:'E Cesar Chavez',hours:'7am–10pm',ebt:false,wic:false,sale:true,sales:[{item:'🌽 Corn tortillas',price:'$1.19'},{item:'🫘 Black beans',price:'$0.79'},{item:'🧅 Onions',price:'$0.49/lb'},{item:'🍋 Limes 5-pk',price:'$1.00'},{item:'🌶️ Jalapeños',price:'$0.89/lb'}],about:'Specializes in Latin American groceries. Spanish-speaking staff. EBT/SNAP accepted.'},
   {id:'walmart',name:'Walmart Neighborhood',dist:'2.1 mi',addr:'Rundberg Ln',hours:'Open 24hrs',ebt:true,wic:true,sale:false,sales:[{item:'🥫 Canned tuna',price:'$1.09'},{item:'🍚 Brown rice (2lb)',price:'$2.29'},{item:'🫙 Greek yogurt',price:'$1.39'},{item:'🥛 Milk (gallon)',price:'$3.49'}],about:'Open 24 hours. Best for bulk staples and store brands. EBT, SNAP, and WIC accepted.'},
   {id:'farmers',name:'E Austin Farmers Market',dist:'0.5 mi',addr:'Boggy Creek Farm',hours:'Sat 9am–1pm',ebt:true,wic:false,sale:false,sales:[{item:'🥬 Seasonal greens',price:'~$3.00'},{item:'🍅 Heirloom tomatoes',price:'~$4.00/lb'},{item:'🥚 Farm eggs (dozen)',price:'~$6.00'}],about:'SNAP 2x Match — spend $10 EBT, get $20 in produce tokens. Cash and EBT accepted.'},
   {id:'wheatsville',name:'Wheatsville Food Co-op',dist:'3.2 mi',addr:'Guadalupe St',hours:'7am–11pm',ebt:true,wic:false,sale:false,sales:[{item:'🥦 Organic broccoli',price:'$2.49/lb'},{item:'🌾 Bulk oats',price:'$1.29/lb'},{item:'🫘 Bulk lentils',price:'$1.79/lb'}],about:'Community-owned co-op with bulk foods. Great for buying exactly what you need. EBT accepted.'},
