@@ -129,11 +129,11 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
   <div style="background:var(--cr);border-radius:28px 28px 0 0;padding:24px 20px;flex:1;overflow-y:auto">
     <div class="fl">Household</div>
     <div class="frow">
-      <div class="ff"><div class="ffl">Age</div><input id="ob-age" type="number" min="13" max="100" value="" placeholder="" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+      <div class="ff"><div class="ffl">Age</div><input id="ob-age" type="number" min="13" max="100" value="" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
       <div class="ff"><div class="ffl">Household size</div><input id="ob-household" type="number" min="1" max="10" value="1" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
     </div>
     <div class="fl">Budget & Benefits</div>
-    <div class="ff" style="margin-bottom:8px"><div class="ffl">Weekly food budget ($)</div><input id="ob-budget" type="number" min="10" max="500" value="" placeholder="" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+    <div class="ff" style="margin-bottom:8px"><div class="ffl">Weekly food budget ($)</div><input id="ob-budget" type="number" min="10" max="500" value="" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
     <div class="trow" onclick="toggleTog('ob-ebt')">
       <div>
         <div style="font-size:14px;font-weight:500;color:var(--tx)">EBT / SNAP</div>
@@ -149,7 +149,7 @@ body{font-family:'DM Sans',sans-serif;background:#e8ebe3;min-height:100vh;displa
       <div class="tog off" id="ob-wic"></div>
     </div>
     <div class="fl">Location & Transport</div>
-    <div class="ff" style="margin-bottom:8px"><div class="ffl">Home address</div><input id="ob-location" type="text" value="" placeholder="" style="font-size:13px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
+    <div class="ff" style="margin-bottom:8px"><div class="ffl">Home address</div><input id="ob-location" type="text" value="" style="font-size:13px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"/></div>
     <div style="margin-bottom:8px"><button id="loc-btn" onclick="useMyLocation()" style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--gp);color:var(--gm);border:none;border-radius:var(--rs2);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer">📍 Use my current location</button></div>
     <div class="ff" style="margin-bottom:8px"><div class="ffl">Search radius</div><select id="ob-radius" style="font-size:14px;font-weight:500;color:var(--tx);background:none;border:none;outline:none;width:100%;font-family:'DM Sans',sans-serif"><option value="1000">Walking (0.6 mi)</option><option value="2000" selected>Short drive (1.2 mi)</option><option value="5000">Drive (3 mi)</option><option value="10000">Far drive (6 mi)</option></select></div>
     <div class="cr2" id="ob-transport"><div class="ch on" onclick="toggleSingle(this,'ob-transport')">🚶 Walking</div><div class="ch" onclick="toggleSingle(this,'ob-transport')">🚌 Bus</div><div class="ch" onclick="toggleSingle(this,'ob-transport')">🚗 Car</div></div>
@@ -915,10 +915,10 @@ function updateGoogleMap(lat, lng, query) {
 
 function updateStoreLocator(){
   const sub=document.getElementById('store-subtitle');
-  if(sub) sub.textContent = UP.location || 'Austin, TX';
+  if(sub) sub.textContent = UP.location || 'Find stores near you';
   // Don't auto-filter - let user choose
   // Update Google map with user location
-  const loc = UP.location || 'East Austin TX';
+  const loc = UP.location || '';
   if(UP.lat && UP.lng) { setTimeout(()=>{ if(typeof L!=='undefined'){initMap(UP.lat,UP.lng);setMapMarkers(DEFAULT_STORE_COORDS,UP.lat,UP.lng);}},200); }
   if(UP.lat&&UP.lng) fetchNearbyStores(UP.lat,UP.lng);
   else renderStoreList();
@@ -1142,7 +1142,8 @@ function openSettings() {
   const el = id => document.getElementById(id);
   if(el('s-age')) el('s-age').value = UP.age || '';
   if(el('s-household')) el('s-household').value = UP.household || 1;
-  if(el('s-budget')) el('s-budget').value = parseInt(UP.budget) || '';
+  const budgetNum = UP.budget ? parseInt(UP.budget) : '';
+  if(el('s-budget')) el('s-budget').value = budgetNum || '';
   if(el('s-location')) el('s-location').value = UP.location || '';
   if(el('s-radius')) el('s-radius').value = UP.radius || 2000;
   if(el('s-ebt')) el('s-ebt').classList.toggle('off', !UP.ebt);
@@ -1221,7 +1222,7 @@ function useMyLocationSettings() {
 }
 
 function saveSettings() {
-  const age = parseInt(document.getElementById('s-age').value) || 18;
+  const age = document.getElementById('s-age').value ? parseInt(document.getElementById('s-age').value) : '';
   const household = parseInt(document.getElementById('s-household').value) || 1;
   const budget = parseInt(document.getElementById('s-budget').value) || 50;
   const location = document.getElementById('s-location').value || UP.location || '';
@@ -1245,10 +1246,10 @@ function saveSettings() {
 }
 
 function saveProfile(){
-  const age=parseInt(document.getElementById('ob-age').value)||18;
+  const age=document.getElementById('ob-age').value?parseInt(document.getElementById('ob-age').value):'';
   const household=parseInt(document.getElementById('ob-household').value)||1;
   const budget=parseInt(document.getElementById('ob-budget').value)||50;
-  const location=document.getElementById('ob-location').value||'Austin, TX';
+  const location=document.getElementById('ob-location').value||'';
   const radius=parseInt(document.getElementById('ob-radius').value)||2000;
   const ebt=!document.getElementById('ob-ebt').classList.contains('off');
   const wic=!document.getElementById('ob-wic').classList.contains('off');
@@ -1273,9 +1274,9 @@ function saveProfile(){
   showMain('home');
 }
 function loadProfileToForm(){
-  if(document.getElementById('ob-age')) document.getElementById('ob-age').value=UP.age||'';
+  if(document.getElementById('ob-age')) document.getElementById('ob-age').value=UP.age===0?'':UP.age||'';
   if(document.getElementById('ob-household')) document.getElementById('ob-household').value=UP.household||1;
-  if(document.getElementById('ob-budget')) document.getElementById('ob-budget').value=parseInt(UP.budget)||'';
+  if(document.getElementById('ob-budget')) document.getElementById('ob-budget').value=UP.budget?parseInt(UP.budget):'';
   if(document.getElementById('ob-location')) document.getElementById('ob-location').value=UP.location||'';
   if(document.getElementById('ob-radius')) document.getElementById('ob-radius').value=UP.radius||2000;
   const ebtEl=document.getElementById('ob-ebt');if(ebtEl)ebtEl.classList.toggle('off',!UP.ebt);
